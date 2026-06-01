@@ -1,0 +1,18 @@
+# Dependencias
+node_modules/
+.pnpm-debug.log*
+
+# Compilación y caché
+dist/
+.tsbuildinfo
+
+# Secretos y credenciales locales
+.env
+service-account.json
+
+# Sesión local de WhatsApp (Baileys)
+auth_info_baileys/
+
+# Configuración del agente y logs locales
+.agents/
+.system_generated/
