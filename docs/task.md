@@ -498,5 +498,117 @@ Este documento detalla cada una de las tareas del proyecto bajo un enfoque de de
 ## Checkpoint 5: Fase 4 Completada y Lista para Entrega
 
 - [x] Todo el sistema compila de forma limpia y transparente sin errores.
+- [x] La suite de pruebas# Fase 5: Validación de Disponibilidad (Anti-Choques)
+
+## Task 21: Actualizar Prompt de IA en ai.ts
+
+**Description:** Modificar el System Prompt de `analyzeInitialIntent` en `src/services/ai.ts`. Incorporar la regla de que si el usuario solicita agendar en horario no laboral o domingos, la acción sea `PREGUNTA` y el `reply` explique el horario y sugiera elegir otra fecha. Añadir también la regla de que los mensajes de cortesía/despedida se clasifiquen como `PREGUNTA` y den una cortesía en `reply` manteniéndose en `IDLE`.
+
+**Acceptance criteria:**
+- [x] System Prompt en `src/services/ai.ts` actualizado con las nuevas reglas.
+- [x] Los mensajes de despedida/cortesía y los agendamientos fuera de horario retornan la acción `PREGUNTA` con sus textos descriptivos en el JSON.
+
+**Verification:**
+- [x] Validar compilación de tipos: `pnpm tsc --noEmit`
+
+**Dependencies:** Checkpoint 5
+
+**Files likely touched:**
+- `src/services/ai.ts`
+
+**Estimated scope:** Medium (1 archivo)
+
+---
+
+## Task 22: checkAvailability en calendar.ts
+
+**Description:** Implementar la función `checkAvailability(date: Date): Promise<boolean>` en `src/services/calendar.ts` utilizando `calendar.events.list`. Debe buscar superposiciones restando 1 segundo del `timeMax` para evitar falsos positivos con citas adyacentes y retornar `true` si está libre (0 eventos) o `false` si está ocupado.
+
+**Acceptance criteria:**
+- [x] Función `checkAvailability` declarada y exportada en `src/services/calendar.ts`.
+- [x] Consulta la API de Calendar con `timeMin` y `timeMax` (menos 1 segundo) con `singleEvents: true` de forma atómica.
+- [x] Retorna `true` ante 0 colisiones, y `false` en caso contrario.
+
+**Verification:**
+- [x] Validar tipos: `pnpm tsc --noEmit`
+
+**Dependencies:** Task 21
+
+**Files likely touched:**
+- `src/services/calendar.ts`
+
+**Estimated scope:** Medium (1 archivo)
+
+---
+
+## Task 23: Integrar checkAvailability en whatsapp.ts
+
+**Description:** Integrar la validación de disponibilidad previa al guardado en los estados `AWAITING_DNI` (flujo de atajo inteligente) y `AWAITING_DATE` (flujo clásico). Si está ocupado, debe redirigir al usuario al estado `AWAITING_DATE` y solicitar amigablemente otra fecha/hora sin guardar datos.
+
+**Acceptance criteria:**
+- [x] `AWAITING_DNI` invoca `checkAvailability` si hay fecha y redirige amigablemente a `AWAITING_DATE` si está ocupado.
+- [x] `AWAITING_DATE` invoca `checkAvailability` y solicita otra fecha si está ocupado.
+- [x] Solo se persiste en Sheets y Calendar si la disponibilidad retorna libre.
+
+**Verification:**
+- [x] Validar tipos: `pnpm tsc --noEmit`
+
+**Dependencies:** Task 22
+
+**Files likely touched:**
+- `src/services/whatsapp.ts`
+
+**Estimated scope:** Large (1 archivo)
+
+---
+
+## Task 24: Actualizar Pruebas Unitarias de IA y Calendar
+
+**Description:** Actualizar `tests/ai.test.ts` para validar los nuevos intents de cortesía e inactividad laboral. Actualizar `tests/calendar.test.ts` mockeando `events.list` para dar cobertura a la comprobación de disponibilidad.
+
+**Acceptance criteria:**
+- [x] `tests/ai.test.ts` aserta que agendamientos en domingos y cortesías sean `PREGUNTA` con sus replies.
+- [x] `tests/calendar.test.ts` comprueba los retornos `true` y `false` de disponibilidad.
+
+**Verification:**
+- [x] Ejecutar pruebas de IA: `pnpm vitest run tests/ai.test.ts`
+- [x] Ejecutar pruebas de Calendar: `pnpm vitest run tests/calendar.test.ts`
+
+**Dependencies:** Task 23
+
+**Files likely touched:**
+- `tests/ai.test.ts`
+- `tests/calendar.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 25: Actualizar Pruebas FSM y Correr Suite Completa
+
+**Description:** Modificar `tests/fsm.test.ts` para mockear la disponibilidad de Google Calendar y añadir cobertura ante un rechazo por colisión de horarios y respuestas cortas de cortesía desde `IDLE`.
+
+**Acceptance criteria:**
+- [x] Las pruebas de Vitest cubren el flujo de colisión de horarios y respuestas en `IDLE` de cortesía.
+- [x] Toda la suite de Vitest (mínimo 42 pruebas) pasa exitosamente.
+- [x] La compilación final del bundle corre limpia.
+
+**Verification:**
+- [x] Compilación final: `pnpm build`
+- [x] Ejecución de la suite completa: `pnpm test`
+
+**Dependencies:** Task 24
+
+**Files likely touched:**
+- `tests/fsm.test.ts`
+
+**Estimated scope:** Large (1 archivo)
+
+---
+
+## Checkpoint 6: Sistema Completo con Validación Anti-Choques Listo para Producción
+
+- [x] Todo el sistema compila de forma limpia y transparente sin errores.
 - [x] La suite de pruebas de Vitest pasa con 100% de éxito.
-- [x] El bot de WhatsApp rutea de forma inteligente entre preguntas e inicio de agendamiento atajo o clásico en tiempo de ejecución.
+- [x] El bot de WhatsApp impide colisiones de horarios en tiempo real y rutea y asiste al usuario de forma sumamente inteligente.
+

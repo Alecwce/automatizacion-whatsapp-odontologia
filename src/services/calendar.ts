@@ -65,3 +65,31 @@ export async function createAppointment(patientName: string, date: Date): Promis
     return false;
   }
 }
+
+/**
+ * Verifica si hay citas agendadas en Google Calendar que se superpongan con el bloque de 1 hora solicitado.
+ * Retorna true si el horario está libre (0 eventos), o false si está ocupado.
+ */
+export async function checkAvailability(date: Date): Promise<boolean> {
+  try {
+    const calendar = getCalendarClient();
+    
+    const timeMin = date.toISOString();
+    // Restamos 1 segundo del final del bloque de 1 hora para evitar falsos positivos con citas consecutivas
+    const timeMax = new Date(date.getTime() + 60 * 60 * 1000 - 1000).toISOString();
+
+    const response = await calendar.events.list({
+      calendarId: env.calendarId,
+      timeMin,
+      timeMax,
+      singleEvents: true,
+      maxResults: 1,
+    });
+
+    const events = response.data.items || [];
+    return events.length === 0;
+  } catch (error) {
+    console.error('Error al verificar disponibilidad en Google Calendar:', error instanceof Error ? error.message : error);
+    return false;
+  }
+}

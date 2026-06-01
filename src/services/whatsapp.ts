@@ -10,7 +10,7 @@ import { Boom } from '@hapi/boom';
 import { UserSession } from '../types.js';
 import { parsePatientName, parsePatientDni } from '../utils/parser.js';
 import { appendPatientData } from './sheets.js';
-import { createAppointment } from './calendar.js';
+import { createAppointment, checkAvailability } from './calendar.js';
 import { extractDateFromIntent, analyzeInitialIntent } from './ai.js';
 
 // Adaptador de interoperabilidad ESM/CommonJS para Baileys
@@ -122,6 +122,19 @@ export async function handleUserMessage(
       session.patientDni = parsedDni;
 
       if (session.patientDate) {
+        const isAvailable = await checkAvailability(session.patientDate);
+
+        if (!isAvailable) {
+          session.state = 'AWAITING_DATE';
+          session.attempts = 0;
+          sessions.set(senderJid, session);
+          await sender.sendMessage(
+            senderJid,
+            'Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora que te quede bien?'
+          );
+          return;
+        }
+
         const patientName = session.patientName || 'Paciente';
         const patientDni = parsedDni;
         const phoneClean = senderJid.split('@')[0];
@@ -217,6 +230,19 @@ export async function handleUserMessage(
       }
 
       const parsedDate = new Date(parsedDateStr);
+
+      const isAvailable = await checkAvailability(parsedDate);
+
+      if (!isAvailable) {
+        session.state = 'AWAITING_DATE';
+        sessions.set(senderJid, session);
+        await sender.sendMessage(
+          senderJid,
+          'Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora que te quede bien?'
+        );
+        return;
+      }
+
       session.patientDate = parsedDate;
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';

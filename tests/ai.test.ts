@@ -133,14 +133,14 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
       expect(result.reply).toBeNull();
     });
 
-    it('debe retornar dateIso null si la cita cae fuera del horario laboral o en domingo', async () => {
+    it('debe clasificar como PREGUNTA si la cita cae fuera del horario laboral o en domingo', async () => {
       const genAIInstance = new GoogleGenerativeAI('test-key');
       const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
       
       const mockJsonResponse = JSON.stringify({
-        action: 'AGENDAR',
+        action: 'PREGUNTA',
         dateIso: null,
-        reply: null
+        reply: 'El consultorio atiende de Lunes a Viernes de 9:00 AM a 1:00 PM y de 3:00 PM a 7:00 PM, y los Sábados de 9:00 AM a 1:00 PM. Los domingos no atendemos. Por favor, elige otro horario hábil.'
       });
 
       vi.mocked(modelInstance.generateContent).mockResolvedValueOnce({
@@ -151,9 +151,32 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
       const result = await analyzeInitialIntent('quiero cita el domingo a las 3 am');
 
-      expect(result.action).toBe('AGENDAR');
+      expect(result.action).toBe('PREGUNTA');
       expect(result.dateIso).toBeNull();
-      expect(result.reply).toBeNull();
+      expect(result.reply).toContain('Lunes a Viernes');
+    });
+
+    it('debe clasificar como PREGUNTA los mensajes de cortesia o agradecimiento (gracias, chao, etc.)', async () => {
+      const genAIInstance = new GoogleGenerativeAI('test-key');
+      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      
+      const mockJsonResponse = JSON.stringify({
+        action: 'PREGUNTA',
+        dateIso: null,
+        reply: '¡Gracias a ti! Que tengas un excelente día.'
+      });
+
+      vi.mocked(modelInstance.generateContent).mockResolvedValueOnce({
+        response: {
+          text: () => mockJsonResponse,
+        },
+      } as any);
+
+      const result = await analyzeInitialIntent('muchas gracias por la informacion');
+
+      expect(result.action).toBe('PREGUNTA');
+      expect(result.dateIso).toBeNull();
+      expect(result.reply).toContain('Gracias a ti');
     });
   });
 });

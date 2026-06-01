@@ -11,7 +11,13 @@ vi.mock('../src/services/sheets.js', () => {
 
 vi.mock('../src/services/calendar.js', () => {
   return {
-    createAppointment: vi.fn().mockResolvedValue(true)
+    createAppointment: vi.fn().mockResolvedValue(true),
+    checkAvailability: vi.fn().mockImplementation((date: Date) => {
+      if (date.getFullYear() === 2030) {
+        return Promise.resolve(false);
+      }
+      return Promise.resolve(true);
+    })
   };
 });
 
@@ -20,6 +26,9 @@ vi.mock('../src/services/ai.js', () => {
     extractDateFromIntent: vi.fn().mockImplementation((msg: string) => {
       if (msg.includes('invalido') || msg.includes('fallo') || msg.includes('invalida')) {
         return Promise.resolve(null);
+      }
+      if (msg.includes('choque') || msg.includes('ocupado') || msg.includes('2030')) {
+        return Promise.resolve('2030-06-15T14:30:00.000-05:00');
       }
       const nextYear = new Date().getFullYear() + 1;
       return Promise.resolve(`${nextYear}-06-15T14:30:00.000-05:00`);
@@ -33,6 +42,13 @@ vi.mock('../src/services/ai.js', () => {
         });
       }
       if (msg.includes('agendar') || msg.includes('cita')) {
+        if (msg.includes('choque') || msg.includes('ocupado')) {
+          return Promise.resolve({
+            action: 'AGENDAR',
+            dateIso: '2030-06-15T10:00:00.000-05:00',
+            reply: null
+          });
+        }
         if (msg.includes('mañana') || msg.includes('10am') || msg.includes('con fecha')) {
           const nextYear = new Date().getFullYear() + 1;
           return Promise.resolve({
@@ -295,5 +311,82 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
       expect.stringContaining('registro se ha cancelado')
     );
     expect(sessions.has(testJid)).toBe(false);
+  });
+
+  it('debe detectar choque de citas en flujo clasico (AWAITING_DATE) y solicitar otra fecha sin guardar datos', async () => {
+    sessions.set(testJid, {
+      state: 'AWAITING_DATE',
+      patientName: 'Carlos Pérez',
+      patientDni: '12345678',
+      attempts: 0,
+      lastInteraction: new Date()
+    });
+
+    // Enviar una fecha que choque (usando texto que retorne el año 2030 en el mock)
+    await handleUserMessage(testJid, 'mañana a la hora de choque', mockSender);
+
+    // No debe persistir en Sheets ni en Calendar
+    expect(sheetsService.appendPatientData).not.toHaveBeenCalled();
+    expect(calendarService.createAppointment).not.toHaveBeenCalled();
+
+    // Debe responder indicando que el horario está reservado
+    expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('ese horario ya se encuentra reservado')
+    );
+
+    // Debe mantenerse en AWAITING_DATE para intentar otra fecha
+    const session = sessions.get(testJid);
+    expect(session?.state).toBe('AWAITING_DATE');
+    expect(session?.attempts).toBe(0); // Intentos restablecidos
+  });
+
+  it('debe detectar choque de citas en flujo de atajo inteligente (AWAITING_DNI) al registrar DNI, y redirigir a AWAITING_DATE sin guardar datos', async () => {
+    // 1. Enviar mensaje inicial en IDLE que pida cita ocupada (que causará choque)
+    await handleUserMessage(testJid, 'quiero agendar ocupado', mockSender);
+
+    const sessionInit = sessions.get(testJid);
+    expect(sessionInit?.state).toBe('AWAITING_NAME');
+    expect(sessionInit?.patientDate?.getFullYear()).toBe(2030); // Validar que guardó la fecha de choque
+
+    // 2. Enviar nombre
+    await handleUserMessage(testJid, 'Carlos Pérez', mockSender);
+
+    const sessionName = sessions.get(testJid);
+    expect(sessionName?.state).toBe('AWAITING_DNI');
+
+    // 3. Enviar DNI -> Al validar DNI se realiza la persistencia del atajo, detecta el choque, bloquea el guardado y transiciona a AWAITING_DATE
+    mockSender.sendMessage.mockClear();
+    await handleUserMessage(testJid, '12345678', mockSender);
+
+    // No debe persistir nada
+    expect(sheetsService.appendPatientData).not.toHaveBeenCalled();
+    expect(calendarService.createAppointment).not.toHaveBeenCalled();
+
+    // Debe responder con el mensaje de choque y pedir nueva fecha
+    expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('ese horario ya se encuentra reservado')
+    );
+
+    // Debe transicionar al estado clásico AWAITING_DATE para que ingrese otra fecha
+    const sessionDni = sessions.get(testJid);
+    expect(sessionDni?.state).toBe('AWAITING_DATE');
+    expect(sessionDni?.attempts).toBe(0);
+  });
+
+  it('debe responder amablemente a un mensaje de cortesia o despedida clasificado como PREGUNTA y mantenerse en IDLE', async () => {
+    await handleUserMessage(testJid, 'muchas gracias por la informacion', mockSender);
+
+    expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('Atendemos de Lunes a Viernes') // Reply del mock de pregunta en FSM
+    );
+
+    const session = sessions.get(testJid);
+    expect(session?.state).toBe('IDLE');
   });
 });

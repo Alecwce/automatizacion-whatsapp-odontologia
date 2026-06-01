@@ -1,5 +1,5 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { createAppointment } from '../src/services/calendar.js';
+import { createAppointment, checkAvailability } from '../src/services/calendar.js';
 import { google } from 'googleapis';
 
 vi.mock('googleapis', () => {
@@ -10,9 +10,17 @@ vi.mock('googleapis', () => {
     },
   });
 
+  const mockList = vi.fn().mockResolvedValue({
+    status: 200,
+    data: {
+      items: [],
+    },
+  });
+
   const mockCalendar = vi.fn().mockReturnValue({
     events: {
       insert: mockInsert,
+      list: mockList,
     },
   });
 
@@ -73,5 +81,45 @@ describe('Servicio de Google Calendar', () => {
     const result = await createAppointment('Carlos Pérez', testDate);
 
     expect(result).toBe(false);
+  });
+
+  describe('Verificación de Disponibilidad (checkAvailability)', () => {
+    it('debe retornar true si el horario se encuentra completamente libre (0 eventos colisionando)', async () => {
+      const calendarInstance = google.calendar({ version: 'v3' });
+      vi.mocked(calendarInstance.events.list).mockResolvedValueOnce({
+        status: 200,
+        data: {
+          items: [],
+        },
+      } as any);
+
+      const testDate = new Date('2026-06-15T15:30:00.000Z');
+      const isAvailable = await checkAvailability(testDate);
+
+      expect(isAvailable).toBe(true);
+      expect(calendarInstance.events.list).toHaveBeenCalledWith(
+        expect.objectContaining({
+          calendarId: expect.any(String),
+          timeMin: testDate.toISOString(),
+          timeMax: new Date(testDate.getTime() + 60 * 60 * 1000 - 1000).toISOString(),
+          singleEvents: true,
+        })
+      );
+    });
+
+    it('debe retornar false si el horario ya cuenta con eventos registrados (superposición ocupada)', async () => {
+      const calendarInstance = google.calendar({ version: 'v3' });
+      vi.mocked(calendarInstance.events.list).mockResolvedValueOnce({
+        status: 200,
+        data: {
+          items: [{ id: 'event-id-123', summary: 'Ocupado' }],
+        },
+      } as any);
+
+      const testDate = new Date('2026-06-15T15:30:00.000Z');
+      const isAvailable = await checkAvailability(testDate);
+
+      expect(isAvailable).toBe(false);
+    });
   });
 });
