@@ -137,7 +137,7 @@ export async function handleUserMessage(
 
         const patientName = session.patientName || 'Paciente';
         const patientDni = parsedDni;
-        const phoneClean = senderJid.split('@')[0];
+        const phoneClean = senderJid.split('@')[0].split(':')[0];
         const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
         const appointmentDateStr = session.patientDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
 
@@ -246,7 +246,7 @@ export async function handleUserMessage(
       session.patientDate = parsedDate;
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';
-      const phoneClean = senderJid.split('@')[0];
+      const phoneClean = senderJid.split('@')[0].split(':')[0];
       const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
 
       // Formato local localizable de la cita para registrar en Sheets
