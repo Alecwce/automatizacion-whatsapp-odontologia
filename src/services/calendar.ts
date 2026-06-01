@@ -36,7 +36,7 @@ function getCalendarClient() {
 /**
  * Agenda una cita odontológica de 1 hora en Google Calendar para un paciente.
  */
-export async function createAppointment(patientName: string, date: Date): Promise<boolean> {
+export async function createAppointment(patientName: string, date: Date, reason?: string): Promise<boolean> {
   try {
     const calendar = getCalendarClient();
     
@@ -47,7 +47,7 @@ export async function createAppointment(patientName: string, date: Date): Promis
       calendarId: env.calendarId,
       requestBody: {
         summary: `Cita Odontológica - ${patientName}`,
-        description: `Cita odontológica agendada automáticamente para el paciente: ${patientName}.`,
+        description: `Cita odontológica agendada automáticamente para el paciente: ${patientName}.${reason ? ` Motivo: ${reason}` : ''}`,
         start: {
           dateTime: startDateTime,
           timeZone: 'America/Bogota', // Zona horaria por defecto para odontología en Bogotá/Colombia

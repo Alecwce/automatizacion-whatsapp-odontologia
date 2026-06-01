@@ -111,7 +111,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(session?.patientDate).toBeUndefined();
   });
 
-  it('debe ejecutar el atajo inteligente completo (flujo corto Fase 4)', async () => {
+  it('debe ejecutar el atajo inteligente completo (flujo corto Fase 4 con Motivo de Consulta)', async () => {
     // 1. Enviar cita con fecha inicial -> transiciona a AWAITING_NAME guardando la fecha
     await handleUserMessage(testJid, 'quiero cita mañana a las 10am', mockSender);
 
@@ -136,9 +136,20 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(sessionAfterName?.state).toBe('AWAITING_DNI');
     expect(sessionAfterName?.patientName).toBe('Carlos Pérez');
 
-    // 3. Enviar DNI -> detecta patientDate pre-existente, guarda en Sheets y Calendar en paralelo y vuelve a IDLE
-    mockSender.sendMessage.mockClear();
+    // 3. Enviar DNI -> al detectar patientDate, transiciona a AWAITING_REASON pidiendo motivo
     await handleUserMessage(testJid, '12345678', mockSender);
+
+    const sessionAfterDni = sessions.get(testJid);
+    expect(sessionAfterDni?.state).toBe('AWAITING_REASON');
+    expect(sessionAfterDni?.patientDni).toBe('12345678');
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('¿Cuál es el motivo principal de tu consulta')
+    );
+
+    // 4. Enviar Motivo -> guarda en Sheets y Calendar en paralelo y vuelve a IDLE
+    mockSender.sendMessage.mockClear();
+    await handleUserMessage(testJid, 'Limpieza y control general', mockSender);
 
     expect(sheetsService.appendPatientData).toHaveBeenCalledTimes(1);
     expect(sheetsService.appendPatientData).toHaveBeenCalledWith(
@@ -146,11 +157,17 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
         phone: '57300112233',
         name: 'Carlos Pérez',
         dni: '12345678',
-        appointmentDate: expect.any(String)
+        appointmentDate: expect.any(String),
+        patientReason: 'Limpieza y control general'
       })
     );
 
     expect(calendarService.createAppointment).toHaveBeenCalledTimes(1);
+    expect(calendarService.createAppointment).toHaveBeenCalledWith(
+      'Carlos Pérez',
+      expect.any(Date),
+      'Limpieza y control general'
+    );
 
     expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
@@ -240,7 +257,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(sessions.has(testJid)).toBe(false);
   });
 
-  it('debe agendar en Calendar, guardar en Sheets (5 columnas) y confirmar éxito al recibir fecha válida en AWAITING_DATE', async () => {
+  it('debe transicionar a AWAITING_REASON al recibir fecha válida en AWAITING_DATE, capturar el motivo, guardar en Sheets (6 columnas) y confirmar éxito', async () => {
     sessions.set(testJid, {
       state: 'AWAITING_DATE',
       patientName: 'Carlos Pérez',
@@ -249,33 +266,45 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
       lastInteraction: new Date()
     });
 
+    // 1. Enviar fecha -> transiciona a AWAITING_REASON
     await handleUserMessage(testJid, 'mañana a las 2:30 pm', mockSender);
 
-    // Debe persistir de forma paralela en Sheets (con 5 columnas) y Calendar
+    const sessionAfterDate = sessions.get(testJid);
+    expect(sessionAfterDate?.state).toBe('AWAITING_REASON');
+    expect(sessionAfterDate?.patientDate).toBeInstanceOf(Date);
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('¿Cuál es el motivo principal de tu consulta')
+    );
+
+    // 2. Enviar motivo -> guarda en Sheets y Calendar en paralelo
+    mockSender.sendMessage.mockClear();
+    await handleUserMessage(testJid, 'Dolor de muela severo', mockSender);
+
     expect(sheetsService.appendPatientData).toHaveBeenCalledTimes(1);
     expect(sheetsService.appendPatientData).toHaveBeenCalledWith(
       expect.objectContaining({
         phone: '57300112233',
         name: 'Carlos Pérez',
         dni: '12345678',
-        appointmentDate: expect.any(String) // 5ta columna
+        appointmentDate: expect.any(String),
+        patientReason: 'Dolor de muela severo' // 6ta columna
       })
     );
 
     expect(calendarService.createAppointment).toHaveBeenCalledTimes(1);
     expect(calendarService.createAppointment).toHaveBeenCalledWith(
       'Carlos Pérez',
-      expect.any(Date)
+      expect.any(Date),
+      'Dolor de muela severo'
     );
 
-    // Debe enviar mensaje de confirmación de éxito de ambos servicios
     expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
       expect.stringContaining('agendados de forma exitosa')
     );
 
-    // Debe resetear la sesión
     expect(sessions.has(testJid)).toBe(false);
   });
 
@@ -313,17 +342,18 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(sessions.has(testJid)).toBe(false);
   });
 
-  it('debe detectar choque de citas en flujo clasico (AWAITING_DATE) y solicitar otra fecha sin guardar datos', async () => {
+  it('debe detectar choque de citas en AWAITING_REASON al capturar el motivo, y redirigir a AWAITING_DATE sin guardar datos', async () => {
     sessions.set(testJid, {
-      state: 'AWAITING_DATE',
+      state: 'AWAITING_REASON',
       patientName: 'Carlos Pérez',
       patientDni: '12345678',
+      patientDate: new Date('2030-06-15T10:00:00.000-05:00'), // Fecha ocupada 2030
       attempts: 0,
       lastInteraction: new Date()
     });
 
-    // Enviar una fecha que choque (usando texto que retorne el año 2030 en el mock)
-    await handleUserMessage(testJid, 'mañana a la hora de choque', mockSender);
+    // Enviar motivo -> al validar disponibilidad choca y redirige a AWAITING_DATE
+    await handleUserMessage(testJid, 'Limpieza dental', mockSender);
 
     // No debe persistir en Sheets ni en Calendar
     expect(sheetsService.appendPatientData).not.toHaveBeenCalled();
@@ -336,19 +366,19 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
       expect.stringContaining('ese horario ya se encuentra reservado')
     );
 
-    // Debe mantenerse en AWAITING_DATE para intentar otra fecha
+    // Debe mandarlo de vuelta a AWAITING_DATE para intentar otra fecha
     const session = sessions.get(testJid);
     expect(session?.state).toBe('AWAITING_DATE');
-    expect(session?.attempts).toBe(0); // Intentos restablecidos
+    expect(session?.attempts).toBe(0);
   });
 
-  it('debe detectar choque de citas en flujo de atajo inteligente (AWAITING_DNI) al registrar DNI, y redirigir a AWAITING_DATE sin guardar datos', async () => {
+  it('debe detectar choque de citas en flujo de atajo inteligente (AWAITING_REASON) al registrar el motivo, y redirigir a AWAITING_DATE sin guardar datos', async () => {
     // 1. Enviar mensaje inicial en IDLE que pida cita ocupada (que causará choque)
     await handleUserMessage(testJid, 'quiero agendar ocupado', mockSender);
 
     const sessionInit = sessions.get(testJid);
     expect(sessionInit?.state).toBe('AWAITING_NAME');
-    expect(sessionInit?.patientDate?.getFullYear()).toBe(2030); // Validar que guardó la fecha de choque
+    expect(sessionInit?.patientDate?.getFullYear()).toBe(2030);
 
     // 2. Enviar nombre
     await handleUserMessage(testJid, 'Carlos Pérez', mockSender);
@@ -356,9 +386,15 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     const sessionName = sessions.get(testJid);
     expect(sessionName?.state).toBe('AWAITING_DNI');
 
-    // 3. Enviar DNI -> Al validar DNI se realiza la persistencia del atajo, detecta el choque, bloquea el guardado y transiciona a AWAITING_DATE
-    mockSender.sendMessage.mockClear();
+    // 3. Enviar DNI -> transiciona a AWAITING_REASON pidiendo motivo
     await handleUserMessage(testJid, '12345678', mockSender);
+
+    const sessionReason = sessions.get(testJid);
+    expect(sessionReason?.state).toBe('AWAITING_REASON');
+
+    // 4. Enviar Motivo -> al validar disponibilidad detecta el choque de 2030, bloquea el guardado y transiciona a AWAITING_DATE
+    mockSender.sendMessage.mockClear();
+    await handleUserMessage(testJid, 'Consulta general', mockSender);
 
     // No debe persistir nada
     expect(sheetsService.appendPatientData).not.toHaveBeenCalled();
@@ -371,7 +407,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
       expect.stringContaining('ese horario ya se encuentra reservado')
     );
 
-    // Debe transicionar al estado clásico AWAITING_DATE para que ingrese otra fecha
+    // Debe transicionar al estado clásico AWAITING_DATE
     const sessionDni = sessions.get(testJid);
     expect(sessionDni?.state).toBe('AWAITING_DATE');
     expect(sessionDni?.attempts).toBe(0);

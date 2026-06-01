@@ -122,78 +122,14 @@ export async function handleUserMessage(
       session.patientDni = parsedDni;
 
       if (session.patientDate) {
-        const isAvailable = await checkAvailability(session.patientDate);
+        session.state = 'AWAITING_REASON';
+        session.attempts = 0;
+        sessions.set(senderJid, session);
 
-        if (!isAvailable) {
-          session.state = 'AWAITING_DATE';
-          session.attempts = 0;
-          sessions.set(senderJid, session);
-          await sender.sendMessage(
-            senderJid,
-            'Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora que te quede bien?'
-          );
-          return;
-        }
-
-        const patientName = session.patientName || 'Paciente';
-        const patientDni = parsedDni;
-        const phoneClean = senderJid.split('@')[0].split(':')[0];
-        const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
-        const appointmentDateStr = session.patientDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
-
-        const sheetsPromise = appendPatientData({
-          timestamp,
-          phone: phoneClean,
-          name: patientName,
-          dni: patientDni,
-          appointmentDate: appointmentDateStr
-        });
-
-        const calendarPromise = createAppointment(patientName, session.patientDate);
-
-        const [sheetsSuccess, calendarSuccess] = await Promise.all([
-          sheetsPromise,
-          calendarPromise
-        ]);
-
-        const dateReadable = session.patientDate.toLocaleString('es-ES', {
-          timeZone: 'America/Bogota',
-          weekday: 'long',
-          year: 'numeric',
-          month: 'long',
-          day: 'numeric',
-          hour: '2-digit',
-          minute: '2-digit'
-        });
-
-        if (sheetsSuccess && calendarSuccess) {
-          await sender.sendMessage(
-            senderJid,
-            `¡Excelente! Tu registro y cita para el día *${dateReadable}* han sido agendados de forma exitosa en nuestro consultorio. ¡Te esperamos!`
-          );
-        } else {
-          if (sheetsSuccess && !calendarSuccess) {
-            await sender.sendMessage(
-              senderJid,
-              `¡Perfecto! Hemos registrado tus datos exitosamente en la base de datos, pero tuvimos un inconveniente técnico temporal al agendar el espacio en el calendario. Sin embargo, no te preocupes, un asesor se contactará contigo para confirmar el horario. ¡Te esperamos!`
-            );
-            console.warn(`[WARN] Cita de Google Calendar falló pero Sheets tuvo éxito: Nombre: ${patientName}, Fecha: ${dateReadable}`);
-          } else if (!sheetsSuccess && calendarSuccess) {
-            await sender.sendMessage(
-              senderJid,
-              `¡Perfecto! Tu cita para el *${dateReadable}* ha sido agendada con éxito en nuestro calendario, pero tuvimos una demora al escribir tus datos. Tu cita está reservada. ¡Te esperamos!`
-            );
-            console.warn(`[WARN] Registro en Sheets falló pero Google Calendar tuvo éxito: Nombre: ${patientName}, Fecha: ${dateReadable}`);
-          } else {
-            await sender.sendMessage(
-              senderJid,
-              `Disculpa, tuvimos un inconveniente técnico al guardar tu cita. Sin embargo, hemos capturado tus datos localmente en la terminal para agendarte manualmente. ¡Un asesor se contactará contigo en breve!`
-            );
-            console.error(`[FALTO CRÍTICO] Falló Sheets y Calendar: Teléfono: ${phoneClean}, Nombre: ${patientName}, DNI: ${patientDni}, Fecha: ${dateReadable}`);
-          }
-        }
-
-        sessions.delete(senderJid);
+        await sender.sendMessage(
+          senderJid,
+          '¡Perfecto! Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+        );
       } else {
         session.state = 'AWAITING_DATE';
         session.attempts = 0;
@@ -231,10 +167,38 @@ export async function handleUserMessage(
 
       const parsedDate = new Date(parsedDateStr);
 
-      const isAvailable = await checkAvailability(parsedDate);
+      session.patientDate = parsedDate;
+      session.state = 'AWAITING_REASON';
+      session.attempts = 0;
+      sessions.set(senderJid, session);
+
+      await sender.sendMessage(
+        senderJid,
+        '¡Perfecto! Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+      );
+      break;
+    }
+
+    case 'AWAITING_REASON': {
+      session.patientReason = normalizedText;
+
+      const patientDate = session.patientDate;
+      if (!patientDate) {
+        session.state = 'AWAITING_DATE';
+        session.attempts = 0;
+        sessions.set(senderJid, session);
+        await sender.sendMessage(
+          senderJid,
+          'Tuvimos un inconveniente al recordar el horario. Por favor, indícame nuevamente el día y la hora de tu preferencia:'
+        );
+        return;
+      }
+
+      const isAvailable = await checkAvailability(patientDate);
 
       if (!isAvailable) {
         session.state = 'AWAITING_DATE';
+        session.attempts = 0;
         sessions.set(senderJid, session);
         await sender.sendMessage(
           senderJid,
@@ -243,32 +207,29 @@ export async function handleUserMessage(
         return;
       }
 
-      session.patientDate = parsedDate;
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';
       const phoneClean = senderJid.split('@')[0].split(':')[0];
       const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
+      const appointmentDateStr = patientDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
 
-      // Formato local localizable de la cita para registrar en Sheets
-      const appointmentDateStr = parsedDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
-
-      // Ejecutar la persistencia en paralelo a Google Sheets y Google Calendar para mejor rendimiento
       const sheetsPromise = appendPatientData({
         timestamp,
         phone: phoneClean,
         name: patientName,
         dni: patientDni,
-        appointmentDate: appointmentDateStr
+        appointmentDate: appointmentDateStr,
+        patientReason: session.patientReason
       });
 
-      const calendarPromise = createAppointment(patientName, parsedDate);
+      const calendarPromise = createAppointment(patientName, patientDate, session.patientReason);
 
       const [sheetsSuccess, calendarSuccess] = await Promise.all([
         sheetsPromise,
         calendarPromise
       ]);
 
-      const dateReadable = parsedDate.toLocaleString('es-ES', {
+      const dateReadable = patientDate.toLocaleString('es-ES', {
         timeZone: 'America/Bogota',
         weekday: 'long',
         year: 'numeric',

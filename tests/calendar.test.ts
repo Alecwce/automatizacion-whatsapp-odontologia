@@ -71,6 +71,22 @@ describe('Servicio de Google Calendar', () => {
     );
   });
 
+  it('debe registrar de forma exitosa una cita incluyendo el motivo en la descripción', async () => {
+    const testDate = new Date('2026-06-15T15:30:00.000Z');
+    const result = await createAppointment('Carlos Pérez', testDate, 'Limpieza dental');
+
+    expect(result).toBe(true);
+
+    const calendarInstance = google.calendar({ version: 'v3' });
+    expect(calendarInstance.events.insert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        requestBody: expect.objectContaining({
+          description: expect.stringContaining('Motivo: Limpieza dental'),
+        }),
+      })
+    );
+  });
+
   it('debe manejar errores de la API de Google Calendar de forma segura', async () => {
     const calendarInstance = google.calendar({ version: 'v3' });
     vi.mocked(calendarInstance.events.insert).mockRejectedValueOnce(

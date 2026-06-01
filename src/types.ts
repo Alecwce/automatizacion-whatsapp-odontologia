@@ -1,10 +1,11 @@
-export type SessionState = 'IDLE' | 'AWAITING_NAME' | 'AWAITING_DNI' | 'AWAITING_DATE';
+export type SessionState = 'IDLE' | 'AWAITING_NAME' | 'AWAITING_DNI' | 'AWAITING_DATE' | 'AWAITING_REASON';
 
 export interface UserSession {
   state: SessionState;
   patientName?: string;
   patientDni?: string;
   patientDate?: Date;
+  patientReason?: string;
   attempts: number;
   lastInteraction: Date;
 }
@@ -15,6 +16,7 @@ export interface PatientData {
   name: string;
   dni: string;
   appointmentDate?: string;
+  patientReason?: string;
 }
 
 export interface ParserResult {

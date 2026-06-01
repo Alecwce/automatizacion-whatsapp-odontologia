@@ -41,7 +41,7 @@ function getSheetsClient() {
 export async function appendPatientData(data: PatientData): Promise<boolean> {
   try {
     const sheets = getSheetsClient();
-    const range = 'Sheet1!A:E';
+    const range = 'Sheet1!A:F';
 
     const values = [
       [
@@ -49,7 +49,8 @@ export async function appendPatientData(data: PatientData): Promise<boolean> {
         data.phone,
         data.name,
         data.dni,
-        data.appointmentDate || ''
+        data.appointmentDate || '',
+        data.patientReason || ''
       ]
     ];
 
