@@ -23,12 +23,12 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
     vi.clearAllMocks();
   });
 
-  it('debe inicializar el cliente e invocar exitosamente gemini-2.5-flash retornando una fecha válida en el futuro', async () => {
+  it('debe inicializar el cliente e invocar exitosamente gemini-3.1-flash-lite retornando una fecha válida en el futuro', async () => {
     const nextYear = new Date().getFullYear() + 1;
     const mockIsoString = `${nextYear}-06-15T14:30:00.000-05:00`;
     
     const genAIInstance = new GoogleGenerativeAI('test-key');
-    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
     
     vi.mocked(modelInstance.generateContent).mockResolvedValueOnce({
       response: {
@@ -49,7 +49,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
     expect(genAIInstance.getGenerativeModel).toHaveBeenCalledWith(
       expect.objectContaining({
-        model: 'gemini-2.5-flash',
+        model: 'gemini-3.1-flash-lite',
         systemInstruction: expect.stringContaining('Contexto temporal real de referencia'),
       })
     );
@@ -57,7 +57,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
   it('debe retornar null si la IA devuelve "null" o no comprende la intención', async () => {
     const genAIInstance = new GoogleGenerativeAI('test-key');
-    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
     
     vi.mocked(modelInstance.generateContent).mockResolvedValueOnce({
       response: {
@@ -71,7 +71,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
   it('debe retornar null si la IA responde con una fecha en el pasado', async () => {
     const genAIInstance = new GoogleGenerativeAI('test-key');
-    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+    const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
     
     vi.mocked(modelInstance.generateContent).mockResolvedValueOnce({
       response: {
@@ -86,7 +86,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
   describe('Clasificador de Intenciones Iniciales (analyzeInitialIntent)', () => {
     it('debe clasificar una pregunta informativa de forma exitosa y retornar PREGUNTA', async () => {
       const genAIInstance = new GoogleGenerativeAI('test-key');
-      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
       
       const mockJsonResponse = JSON.stringify({
         action: 'PREGUNTA',
@@ -112,7 +112,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
       const mockIsoString = `${nextYear}-06-15T10:00:00.000-05:00`;
       
       const genAIInstance = new GoogleGenerativeAI('test-key');
-      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
       
       const mockJsonResponse = JSON.stringify({
         action: 'AGENDAR',
@@ -135,7 +135,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
     it('debe clasificar como PREGUNTA si la cita cae fuera del horario laboral o en domingo', async () => {
       const genAIInstance = new GoogleGenerativeAI('test-key');
-      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
       
       const mockJsonResponse = JSON.stringify({
         action: 'PREGUNTA',
@@ -158,7 +158,7 @@ describe('Servicio de Inteligencia Artificial (Gemini)', () => {
 
     it('debe clasificar como PREGUNTA los mensajes de cortesia o agradecimiento (gracias, chao, etc.)', async () => {
       const genAIInstance = new GoogleGenerativeAI('test-key');
-      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-2.5-flash' });
+      const modelInstance = genAIInstance.getGenerativeModel({ model: 'gemini-3.1-flash-lite' });
       
       const mockJsonResponse = JSON.stringify({
         action: 'PREGUNTA',

@@ -81,9 +81,9 @@ Instrucciones estrictas de comportamiento:
 4. Queda estrictamente PROHIBIDO incluir explicaciones, comentarios, saltos de línea ni formato markdown (prohibido usar bloques de código con comillas invertidas como \`\`\`json o \`\`\`text). La respuesta debe ser únicamente el string ISO o la palabra 'null'.
     `.trim();
 
-    // Inicializar el modelo obligatorio especificado: gemini-2.5-flash
+    // Inicializar el modelo obligatorio especificado: gemini-3.1-flash-lite
     const model = ai.getGenerativeModel({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.1-flash-lite',
       systemInstruction: systemInstruction,
     });
 
@@ -176,9 +176,9 @@ Devolver EXCLUSIVAMENTE un string JSON plano y válido con la siguiente estructu
 {"action": "AGENDAR" | "PREGUNTA", "dateIso": "YYYY-MM-DDTHH:mm:ss.sssZ" | null, "reply": "Respuesta corta o nulo"}
     `.trim();
 
-    // Inicializar el modelo obligatorio especificado: gemini-2.5-flash
+    // Inicializar el modelo obligatorio especificado: gemini-3.1-flash-lite
     const model = ai.getGenerativeModel({
-      model: 'gemini-2.5-flash',
+      model: 'gemini-3.1-flash-lite',
       systemInstruction: systemInstruction,
     });
 
