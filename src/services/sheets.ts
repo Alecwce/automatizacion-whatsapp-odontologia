@@ -41,14 +41,15 @@ function getSheetsClient() {
 export async function appendPatientData(data: PatientData): Promise<boolean> {
   try {
     const sheets = getSheetsClient();
-    const range = 'Sheet1!A:D';
+    const range = 'Sheet1!A:E';
 
     const values = [
       [
         data.timestamp,
         data.phone,
         data.name,
-        data.dni
+        data.dni,
+        data.appointmentDate || ''
       ]
     ];
 

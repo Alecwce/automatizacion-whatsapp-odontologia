@@ -1,0 +1,183 @@
+import { GoogleGenerativeAI } from '@google/generative-ai';
+import { env } from '../config/env.js';
+
+let genAI: GoogleGenerativeAI | null = null;
+
+function getAIClient(): GoogleGenerativeAI {
+  if (!genAI) {
+    genAI = new GoogleGenerativeAI(env.geminiApiKey);
+  }
+  return genAI;
+}
+
+/**
+ * Procesa el mensaje del usuario en lenguaje natural mediante Gemini AI para extraer la fecha y hora deseadas.
+ * Devuelve la fecha calculada en formato ISO 8601 si es una fecha futura válida, o null en caso contrario.
+ */
+export async function extractDateFromIntent(userMessage: string): Promise<string | null> {
+  try {
+    const ai = getAIClient();
+    const currentDate = new Date();
+    
+    // Formatear la fecha local de Bogotá/Colombia como contexto temporal de referencia
+    const currentDateStr = currentDate.toLocaleString('es-ES', { 
+      timeZone: 'America/Bogota',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    const systemInstruction = `
+Eres un sistema de inteligencia artificial especializado en extraer fechas y horas de citas médicas a partir de mensajes de texto en lenguaje natural en español.
+
+Contexto temporal real de referencia en el servidor:
+- Fecha y hora actual del sistema: ${currentDateStr} (Zona horaria: America/Bogota)
+
+Instrucciones estrictas de comportamiento:
+1. Analiza el mensaje del usuario e identifica la fecha y hora de la cita que desea agendar.
+2. Resuelve referencias relativas ("hoy", "mañana", "pasado mañana", "el viernes a las 3", "este lunes a las 10:30 am", etc.) calculando la fecha exacta basándote en el contexto temporal de referencia provisto arriba.
+3. Tu respuesta debe consistir EXCLUSIVAMENTE de la fecha y hora calculada en formato ISO 8601 local (ejemplo: '2026-06-01T15:30:00.000Z' o con offset local '2026-06-01T15:30:00.000-05:00') o la palabra literal 'null' si el texto no contiene información clara de fecha y hora, si es ambiguo, o si no se puede determinar.
+4. Queda estrictamente PROHIBIDO incluir explicaciones, comentarios, saltos de línea ni formato markdown (prohibido usar bloques de código con comillas invertidas como \`\`\`json o \`\`\`text). La respuesta debe ser únicamente el string ISO o la palabra 'null'.
+    `.trim();
+
+    // Inicializar el modelo obligatorio especificado: gemini-2.5-flash
+    const model = ai.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      systemInstruction: systemInstruction,
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: userMessage }] }]
+    });
+
+    const responseText = result.response.text().trim().replace(/```[a-z]*|```/g, '').trim();
+
+    if (!responseText || responseText.toLowerCase() === 'null') {
+      return null;
+    }
+
+    const parsedDate = new Date(responseText);
+
+    // Validar que represente una fecha válida y que no se desborde o sea inválida
+    if (isNaN(parsedDate.getTime())) {
+      return null;
+    }
+
+    // Verificar que sea una fecha en el futuro (tolerancia de 2 minutos para el procesamiento)
+    if (parsedDate.getTime() <= currentDate.getTime() - 2 * 60 * 1000) {
+      return null;
+    }
+
+    return parsedDate.toISOString();
+  } catch (error) {
+    console.error('Error al procesar la intención con Gemini AI:', error instanceof Error ? error.message : error);
+    return null;
+  }
+}
+
+export interface IntentAnalysis {
+  action: 'AGENDAR' | 'PREGUNTA';
+  dateIso: string | null;
+  reply: string | null;
+}
+
+/**
+ * Analiza el mensaje inicial en IDLE para clasificar la intención en agendar o realizar una pregunta.
+ * Devolverá un objeto estructurado según la clasificación de Gemini AI.
+ */
+export async function analyzeInitialIntent(userMessage: string): Promise<IntentAnalysis> {
+  try {
+    const ai = getAIClient();
+    const currentDate = new Date();
+    
+    // Formatear la fecha local de Bogotá/Colombia como contexto temporal de referencia
+    const currentDateStr = currentDate.toLocaleString('es-ES', { 
+      timeZone: 'America/Bogota',
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+
+    const systemInstruction = `
+Eres el enrutador inteligente y clasificador de intenciones iniciales del consultorio odontológico "Clínica Odontológica".
+
+Tu rol es clasificar el mensaje entrante del usuario de forma nativa e inteligente bajo una de las dos siguientes intenciones/acciones:
+
+1. "action": "AGENDAR"
+   - Si el usuario expresa clara intención de programar, agendar, pedir, reservar, o solicitar una cita o consulta con el dentista/odontólogo.
+   - Si el mensaje incluye alguna referencia de fecha y hora (ej: "quiero cita para mañana a las diez de la mañana"), debes calcular la fecha exacta en formato ISO 8601 local basándote en el contexto temporal de referencia actual provisto abajo.
+   - REGLAS ESTRICTAS DE HORARIOS DE ATENCIÓN:
+     * Lunes a Viernes: 9:00 AM a 1:00 PM y de 3:00 PM a 7:00 PM.
+     * Sábados: 9:00 AM a 1:00 PM.
+     * Domingos: CERRADO (No se atiende, domingos es cerrado).
+     * Si la fecha/hora calculada cae en domingo o fuera de estos rangos de horario hábiles, el valor del campo "dateIso" DEBE ser estrictamente null.
+     * Si el usuario no menciona ninguna fecha/hora en su mensaje, el campo "dateIso" debe ser null.
+     * El campo "reply" debe ser null en el caso de AGENDAR.
+
+2. "action": "PREGUNTA"
+   - Si el usuario realiza una pregunta informativa (horarios, servicios, ubicación, precios) o simplemente saluda ("hola", "buenos días", "buenas tardes") sin intenciones específicas de agendar de forma inmediata.
+   - En este caso, debes redactar en el campo "reply" una respuesta corta, amigable y sumamente profesional en español de máximo 2 oraciones dando respuesta o asistiendo al usuario (ej: dando el horario de atención o saludándolo calurosamente).
+   - El campo "dateIso" debe ser null en el caso de PREGUNTA.
+
+Contexto temporal de referencia en el servidor:
+- Fecha y hora actual del sistema: ${currentDateStr} (America/Bogota)
+
+RESTRICCIÓN ESTRICTA DE SALIDA:
+Devolver EXCLUSIVAMENTE un string JSON plano y válido con la siguiente estructura, sin saltos de línea adicionales y sin bloques de formato markdown (PROHIBIDO usar bloques de código como \`\`\`json o \`\`\`):
+{"action": "AGENDAR" | "PREGUNTA", "dateIso": "YYYY-MM-DDTHH:mm:ss.sssZ" | null, "reply": "Respuesta corta o nulo"}
+    `.trim();
+
+    // Inicializar el modelo obligatorio especificado: gemini-2.5-flash
+    const model = ai.getGenerativeModel({
+      model: 'gemini-2.5-flash',
+      systemInstruction: systemInstruction,
+    });
+
+    const result = await model.generateContent({
+      contents: [{ role: 'user', parts: [{ text: userMessage }] }]
+    });
+
+    const responseText = result.response.text().trim().replace(/```[a-z]*|```/g, '').trim();
+
+    try {
+      const parsed: IntentAnalysis = JSON.parse(responseText);
+      
+      // Sanitizar retornos de Gemini
+      if (parsed.action !== 'AGENDAR' && parsed.action !== 'PREGUNTA') {
+        parsed.action = 'PREGUNTA';
+      }
+
+      // Validar fecha futura si existe
+      if (parsed.action === 'AGENDAR' && parsed.dateIso) {
+        const parsedDate = new Date(parsed.dateIso);
+        if (isNaN(parsedDate.getTime()) || parsedDate.getTime() <= currentDate.getTime() - 2 * 60 * 1000) {
+          parsed.dateIso = null;
+        }
+      }
+
+      return parsed;
+    } catch (parseError) {
+      console.error('Error al parsear el JSON de la intención inicial de Gemini:', responseText, parseError);
+      return {
+        action: 'PREGUNTA',
+        dateIso: null,
+        reply: '¡Hola! Bienvenido a nuestra Clínica Odontológica. ¿En qué podemos ayudarte hoy?'
+      };
+    }
+  } catch (error) {
+    console.error('Error en analyzeInitialIntent:', error instanceof Error ? error.message : error);
+    return {
+      action: 'PREGUNTA',
+      dateIso: null,
+      reply: '¡Hola! Bienvenido a nuestra Clínica Odontológica. ¿En qué podemos ayudarte hoy?'
+    };
+  }
+}

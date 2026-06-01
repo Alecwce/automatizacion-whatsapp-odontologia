@@ -136,3 +136,367 @@ Este documento detalla cada una de las tareas del proyecto bajo un enfoque de de
 - [x] Todo el sistema compila de forma limpia y transparente sin errores.
 - [x] El suite completo de pruebas unitarias pasa exitosamente: `pnpm test` con >85% de cobertura general.
 - [x] Las sesiones persisten correctamente al reiniciar el cliente de WhatsApp sin requerir nuevo QR.
+
+---
+
+# Fase 2: Integración con Google Calendar
+
+## Task 6: Actualizar Configuración y Tipos (Env, Types)
+
+**Description:** Incorporar la variable de entorno `CALENDAR_ID` al validador de configuración y expandir los tipos de la FSM para dar soporte al nuevo estado conversacional de captura de fechas.
+
+**Acceptance criteria:**
+- [x] `.env.example` contiene la variable `CALENDAR_ID`.
+- [x] `src/config/env.ts` valida en runtime que `CALENDAR_ID` esté presente y no esté vacío.
+- [x] `src/types.ts` incorpora `'AWAITING_DATE'` a `SessionState` y la propiedad opcional `patientDate?: Date` a `UserSession`.
+
+**Verification:**
+- [x] Validar compilación de tipos con: `pnpm tsc --noEmit`
+
+**Dependencies:** Checkpoint 2
+
+**Files likely touched:**
+- `.env.example`
+- `src/config/env.ts`
+- `src/types.ts`
+
+**Estimated scope:** Small (3 archivos)
+
+---
+
+## Task 7: Lógica del Parser de Fechas
+
+**Description:** Desarrollar el validador y parseador determinista de fecha y hora basándose en expresiones regulares y validaciones de coherencia temporal en español, evitando fechas pasadas.
+
+**Acceptance criteria:**
+- [x] `src/utils/parser.ts` implementa la función `parseAppointmentDate(text: string): Date | null`.
+- [x] La función valida estrictamente el formato `YYYY-MM-DD HH:mm` y descarta fechas inválidas (ej: 31 de febrero o horas como 26:00).
+- [x] La función asegura que la fecha sea futura (no menor a la fecha/hora actual del sistema).
+- [x] `tests/parser.test.ts` añade al menos 6 casos de pruebas para verificar el comportamiento correcto e incorrecto.
+
+**Verification:**
+- [x] Ejecutar exitosamente las pruebas: `pnpm vitest run tests/parser.test.ts`
+
+**Dependencies:** Task 6
+
+**Files likely touched:**
+- `src/utils/parser.ts`
+- `tests/parser.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 8: Servicio de Google Calendar
+
+**Description:** Crear el servicio que interactúa con Google Calendar API para agendar citas de 1 hora de duración utilizando la Cuenta de Servicio compartida.
+
+**Acceptance criteria:**
+- [x] `src/services/calendar.ts` inicializa de forma lazy el cliente `google.calendar` reutilizando las credenciales de `service-account.json`.
+- [x] El método `createAppointment(patientName: string, date: Date): Promise<boolean>` crea correctamente un evento en el ID del calendario provisto.
+- [x] El evento tiene exactamente 1 hora de duración (End Date = Start Date + 1 hora) y tiene formato ISO correcto.
+- [x] El servicio maneja errores de red o cuotas de API de forma segura.
+- [x] `tests/calendar.test.ts` implementa mocks y valida los parámetros de llamada de `calendar.events.insert`.
+
+**Verification:**
+- [x] Ejecutar con éxito las pruebas: `pnpm vitest run tests/calendar.test.ts`
+
+**Dependencies:** Task 7
+
+**Files likely touched:**
+- `src/services/calendar.ts`
+- `tests/calendar.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 9: Integración de la FSM de WhatsApp
+
+**Description:** Integrar el estado `AWAITING_DATE` en la FSM conversacional de WhatsApp, permitiendo capturar el Nombre, el DNI y finalmente la Fecha, persistiendo los datos de forma sincrónica y paralela en Sheets y Calendar.
+
+**Acceptance criteria:**
+- [x] `src/services/whatsapp.ts` añade la lógica de transición al estado `AWAITING_DATE` tras procesar un DNI correcto.
+- [x] Solicita al usuario ingresar la fecha en el formato indicado y gestiona hasta 3 intentos fallidos antes de cancelar la sesión.
+- [x] Al recibir una fecha válida, procesa la inserción en Sheets y Calendar de forma paralela usando `Promise.all` y responde con la confirmación.
+- [x] `tests/fsm.test.ts` se actualiza para evaluar la transición al estado `AWAITING_DATE` y mockea las llamadas de persistencia del bot.
+
+**Verification:**
+- [x] Ejecutar con éxito las pruebas integradas: `pnpm vitest run tests/fsm.test.ts`
+
+**Dependencies:** Task 8
+
+**Files likely touched:**
+- `src/services/whatsapp.ts`
+- `tests/fsm.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 10: Punto de Entrada y Compilación de Producción
+
+**Description:** Realizar la verificación integrada del bot CLI con todas sus nuevas dependencias de persistencia paralela de citas y hojas de cálculo y asegurar su resiliencia.
+
+**Acceptance criteria:**
+- [x] El compilador `tsc` construye el bundle sin errores.
+- [x] El bot CLI arranca con éxito localmente leyendo todas las variables del `.env`.
+
+**Verification:**
+- [x] Compilación exitosa en producción: `pnpm build`
+- [x] Ejecución de la suite completa de pruebas unitarias integradas: `pnpm test`
+
+**Dependencies:** Task 9
+
+**Files likely touched:**
+- `src/index.ts`
+
+**Estimated scope:** Small (1 archivo)
+
+---
+
+## Checkpoint 3: Fase 2 Completada y Lista para Entrega
+
+- [x] Todo el sistema compila de forma limpia y transparente sin errores.
+- [x] La suite de pruebas de Vitest pasa con 100% de éxito (mínimo 26 pruebas integradas).
+- [x] El bot de WhatsApp agenda citas en Google Calendar y escribe en Google Sheets de forma coordinada y paralela.
+
+---
+
+# Fase 3: Procesamiento de Lenguaje Natural con Gemini AI
+
+## Task 11: Instalar Dependencia Generative AI y Validar API Key
+
+**Description:** Instalar el SDK oficial de Google para inteligencia artificial y configurar y validar de forma estricta la presencia de `GEMINI_API_KEY` en el entorno.
+
+**Acceptance criteria:**
+- [x] El SDK `@google/generative-ai` está instalado en `package.json` mediante `pnpm`.
+- [x] `src/config/env.ts` incorpora `geminiApiKey` en la interfaz `Config` y en la lógica del validador `validateEnv` lanzando error descriptivo si está ausente.
+- [x] `.env.example` incluye la variable de ejemplo `GEMINI_API_KEY`.
+
+**Verification:**
+- [x] Validar tipos del compilador: `pnpm tsc --noEmit`
+
+**Dependencies:** Checkpoint 3
+
+**Files likely touched:**
+- `package.json`
+- `src/config/env.ts`
+- `.env.example`
+
+**Estimated scope:** Small (3 archivos)
+
+---
+
+## Task 12: Actualizar Google Sheets para Soportar 5 Columnas
+
+**Description:** Expandir el registro de base de datos de pacientes en la hoja de cálculo de Google Sheets para almacenar una 5ta columna que contenga la fecha/hora reservada de la cita médica, actualizando tipos y tests unitarios.
+
+**Acceptance criteria:**
+- [x] `PatientData` en `src/types.ts` incluye la propiedad opcional `appointmentDate?: string`.
+- [x] `src/services/sheets.ts` actualiza la inserción en Sheets para añadir un 5to valor en la fila con la fecha de la cita formateada localmente en Bogotá/Colombia.
+- [x] `tests/sheets.test.ts` actualiza los mocks y aserciones del API para validar que se inserten 5 valores por fila de forma correcta.
+
+**Verification:**
+- [x] Ejecutar exitosamente las pruebas unitarias: `pnpm vitest run tests/sheets.test.ts`
+
+**Dependencies:** Task 11
+
+**Files likely touched:**
+- `src/types.ts`
+- `src/services/sheets.ts`
+- `tests/sheets.test.ts`
+
+**Estimated scope:** Medium (3 archivos)
+
+---
+
+## Task 13: Implementar Servicio de Gemini AI con gemini-2.5-flash
+
+**Description:** Construir el servicio de inteligencia artificial encargado de parsear el lenguaje natural ingresado por el paciente y transformarlo en una fecha estructurada ISO determinista, alimentando la petición con contexto en tiempo real del sistema. La función debe retornar estrictamente el string ISO o null.
+
+**Acceptance criteria:**
+- [x] `src/services/ai.ts` inicializa la SDK de Google usando `gemini-2.5-flash` de forma estricta.
+- [x] La función `extractDateFromIntent(userMessage: string): Promise<string | null>` inyecta un System Prompt robusto con la fecha y hora actual en tiempo real del sistema para resolver expresiones como "mañana", "el próximo lunes", etc.
+- [x] El modelo se configura para retornar exclusivamente un string en formato ISO o la palabra literal `null` si no entiende.
+- [x] `tests/ai.test.ts` mockea `@google/generative-ai` y comprueba la resolución de respuestas válidas de Gemini e inputs inválidos/nulos retornando strings en formato ISO o null.
+
+**Verification:**
+- [x] Ejecutar exitosamente las pruebas: `pnpm vitest run tests/ai.test.ts`
+
+**Dependencies:** Task 12
+
+**Files likely touched:**
+- `src/services/ai.ts`
+- `tests/ai.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 14: Integrar Gemini en la FSM de WhatsApp
+
+**Description:** Conectar el servicio conversacional de WhatsApp en la FSM para que solicite la fecha en lenguaje natural al paciente y procese la respuesta a través del servicio de IA, persistiendo en Sheets y Calendar de manera sincrónica paralela.
+
+**Acceptance criteria:**
+- [x] `src/services/whatsapp.ts` actualiza la pregunta al paciente de fecha a algo amigable y conversacional (sin formatos).
+- [x] El caso `AWAITING_DATE` procesa el texto con `extractDateFromIntent` y maneja su retorno de tipo `string | null`.
+- [x] Si se detecta fecha correcta, persiste los datos en Sheets (con 5 columnas) y Calendar en paralelo usando `Promise.all` e informa amigablemente al usuario.
+- [x] `tests/fsm.test.ts` se actualiza para mockear las llamadas de IA de Baileys y Google Sheets/Calendar de acuerdo al nuevo formato string de retorno.
+
+**Verification:**
+- [x] Ejecutar exitosamente las pruebas integradas: `pnpm vitest run tests/fsm.test.ts`
+
+**Dependencies:** Task 13
+
+**Files likely touched:**
+- `src/services/whatsapp.ts`
+- `tests/fsm.test.ts`
+
+**Estimated scope:** Medium (2 archivos)
+
+---
+
+## Task 15: Verificación Integrada Final y Bundle de Producción
+
+**Description:** Garantizar la calidad, compilación y empaquetado final de todo el sistema integrado con soporte multicanal de persistencia de citas de lenguaje natural.
+
+**Acceptance criteria:**
+- [x] El suite completo de pruebas unitarias de regresión pasa con 100% de éxito en Vitest.
+- [x] El compilador TypeScript construye el bundle final de producción en `dist/` de forma exitosa y sin fallos de compilación.
+
+**Verification:**
+- [x] Compilación de producción: `pnpm build`
+- [x] Ejecución de la suite completa de pruebas unitarias: `pnpm test`
+
+**Dependencies:** Task 14
+
+**Files likely touched:**
+- `src/index.ts`
+
+**Estimated scope:** Small (1 archivo)
+
+---
+
+## Checkpoint 4: Sistema Completo e Inteligente Listo para Producción
+
+- [x] Todo el sistema compila de forma limpia y transparente sin errores.
+- [x] La suite de pruebas de Vitest pasa con 100% de éxito.
+- [x] El bot de WhatsApp procesa lenguaje natural para agendar citas en Google Calendar y registrar en 5 columnas en Google Sheets de forma coordinada y paralela.
+
+---
+
+# Fase 4: Enrutamiento Inteligente (Intent Classifier)
+
+## Task 16: Clasificador de Intención Inicial en Gemini
+
+**Description:** Desarrollar e implementar la función `analyzeInitialIntent` en `src/services/ai.ts` utilizando `gemini-2.5-flash`. El prompt debe clasificar la intención del usuario en `AGENDAR` o `PREGUNTA`. Se deben inyectar las reglas del horario de atención del consultorio: Lunes a Viernes de 9:00 AM a 1:00 PM y de 3:00 PM a 7:00 PM, Sábados de 9:00 AM a 1:00 PM, Domingos cerrado. Si se solicita fuera de horario o domingos, el campo `dateIso` debe ser `null`. Retornar estrictamente JSON nativo.
+
+**Acceptance criteria:**
+- [x] La función `analyzeInitialIntent(userMessage: string)` está declarada en `src/services/ai.ts` y exportada correctamente.
+- [x] Inyecta el System Prompt estructurado con la fecha/hora en tiempo real del servidor y las reglas estrictas de horarios.
+- [x] Retorna una promesa con un JSON tipado conteniendo `action`, `dateIso` y `reply`.
+- [x] No incluye bloques de código markdown y maneja errores de parseo de forma resiliente.
+
+**Verification:**
+- [x] Ejecutar compilación de tipos: `pnpm tsc --noEmit`
+
+**Dependencies:** Checkpoint 4
+
+**Files likely touched:**
+- `src/services/ai.ts`
+
+**Estimated scope:** Medium (1 archivo)
+
+---
+
+## Task 17: Modificar FSM para Enrutamiento y Salto Inteligente
+
+**Description:** Actualizar el flujo de la Máquina de Estados (FSM) conversacional en `src/services/whatsapp.ts`. En el estado `IDLE`, invocar al clasificador de intenciones. Responder de inmediato en `IDLE` si es `PREGUNTA`. Si es `AGENDAR`, decidir entre salto inteligente a `AWAITING_NAME` o flujo clásico `AWAITING_DATE`. Adaptar `AWAITING_DNI` para saltar a persistencia paralela si la fecha ya está en sesión.
+
+**Acceptance criteria:**
+- [x] El estado `IDLE` evalúa el intent con `analyzeInitialIntent`.
+- [x] Si es `PREGUNTA`, responde y permanece en `IDLE`.
+- [x] Si es `AGENDAR` con fecha, la guarda, pasa a `AWAITING_NAME` y pregunta por el nombre.
+- [x] Si es `AGENDAR` sin fecha, pasa a `AWAITING_DATE` y pregunta por la fecha.
+- [x] El estado `AWAITING_DNI` valida que si `session.patientDate` existe, guarda atómicamente en Sheets y Calendar en paralelo y vuelve a `IDLE`.
+
+**Verification:**
+- [x] Ejecutar compilador sin emitir: `pnpm tsc --noEmit`
+
+**Dependencies:** Task 16
+
+**Files likely touched:**
+- `src/services/whatsapp.ts`
+
+**Estimated scope:** Large (1 archivo)
+
+---
+
+## Task 18: Pruebas Unitarias del Clasificador
+
+**Description:** Añadir soporte en la suite de pruebas unitarias de IA en `tests/ai.test.ts` para evaluar el clasificador de intenciones `analyzeInitialIntent` simulando llamadas exitosas de Gemini con mocks coherentes.
+
+**Acceptance criteria:**
+- [x] `tests/ai.test.ts` añade al menos 3 casos de prueba para `analyzeInitialIntent` (pregunta general, agendamiento de cita en horario hábil y agendamiento de cita fuera de horario).
+- [x] Los mocks de Google Generative AI se adaptan para devolver objetos de respuesta JSON coherentes simulados.
+
+**Verification:**
+- [x] Ejecutar pruebas específicas de IA: `pnpm vitest run tests/ai.test.ts`
+
+**Dependencies:** Task 17
+
+**Files likely touched:**
+- `tests/ai.test.ts`
+
+**Estimated scope:** Medium (1 archivo)
+
+---
+
+## Task 19: Pruebas de Integración de FSM con Enrutamiento
+
+**Description:** Actualizar `tests/fsm.test.ts` para mockear `analyzeInitialIntent` and dar cobertura al nuevo flujo de salto inteligente de agendamiento y enrutamiento a preguntas desde el estado `IDLE`.
+
+**Acceptance criteria:**
+- [x] El mock del servicio de IA en `tests/fsm.test.ts` incorpora `analyzeInitialIntent`.
+- [x] Evalúa exitosamente el flujo corto: `IDLE` (con fecha inicial) -> `AWAITING_NAME` -> `AWAITING_DNI` -> Guardado de 5 columnas paralelo atómico -> `IDLE`.
+- [x] Evalúa que las preguntas de consulta al bot respondan y mantengan la sesión en `IDLE`.
+
+**Verification:**
+- [x] Ejecutar pruebas específicas de FSM: `pnpm vitest run tests/fsm.test.ts`
+
+**Dependencies:** Task 18
+
+**Files likely touched:**
+- `tests/fsm.test.ts`
+
+**Estimated scope:** Large (1 archivo)
+
+---
+
+## Task 20: Compilación y Verificación Final
+
+**Description:** Ejecutar la suite completa de pruebas unitarias de regresión y empaquetar el proyecto de producción final libre de cualquier error.
+
+**Acceptance criteria:**
+- [x] Todas las pruebas de Vitest superan exitosamente el 100%.
+- [x] La compilación con `tsc` no produce ningún error.
+
+**Verification:**
+- [x] Compilación de producción: `pnpm build`
+- [x] Ejecución de la suite completa de pruebas unitarias: `pnpm test`
+
+**Dependencies:** Task 19
+
+**Files likely touched:**
+- `src/index.ts`
+
+**Estimated scope:** Small (1 archivo)
+
+---
+
+## Checkpoint 5: Fase 4 Completada y Lista para Entrega
+
+- [x] Todo el sistema compila de forma limpia y transparente sin errores.
+- [x] La suite de pruebas de Vitest pasa con 100% de éxito.
+- [x] El bot de WhatsApp rutea de forma inteligente entre preguntas e inicio de agendamiento atajo o clásico en tiempo de ejecución.

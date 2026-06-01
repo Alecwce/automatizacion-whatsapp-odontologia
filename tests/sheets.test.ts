@@ -46,6 +46,7 @@ describe('Servicio de Google Sheets', () => {
       phone: '34600112233',
       name: 'Juan Pérez',
       dni: '12345678',
+      appointmentDate: '15/06/2026 15:30:00'
     };
 
     const result = await appendPatientData(mockData);
@@ -57,7 +58,7 @@ describe('Servicio de Google Sheets', () => {
     expect(sheetsInstance.spreadsheets.values.append).toHaveBeenCalledWith(
       expect.objectContaining({
         spreadsheetId: expect.any(String),
-        range: 'Sheet1!A:D',
+        range: 'Sheet1!A:E',
         valueInputOption: 'USER_ENTERED',
         requestBody: {
           values: [
@@ -66,6 +67,7 @@ describe('Servicio de Google Sheets', () => {
               mockData.phone,
               mockData.name,
               mockData.dni,
+              mockData.appointmentDate,
             ],
           ],
         },
