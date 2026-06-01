@@ -9,6 +9,39 @@ function getAIClient(): GoogleGenerativeAI {
   }
   return genAI;
 }
+/**
+ * Genera dinámicamente un string con el mapeo de los próximos 7 días a partir de una fecha base en la zona horaria de Bogotá.
+ * Retorna un string formateado como: 'Lunes: 2026-06-01, Martes: 2026-06-02...'
+ */
+function getNext7DaysReference(baseDate: Date): string {
+  const parts: string[] = [];
+  
+  for (let i = 0; i < 7; i++) {
+    const targetDate = new Date(baseDate.getTime() + i * 24 * 60 * 60 * 1000);
+    
+    const formatter = new Intl.DateTimeFormat('es-ES', {
+      timeZone: 'America/Bogota',
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      weekday: 'long'
+    });
+    
+    const formattedParts = formatter.formatToParts(targetDate);
+    const year = formattedParts.find(p => p.type === 'year')?.value;
+    const month = formattedParts.find(p => p.type === 'month')?.value;
+    const day = formattedParts.find(p => p.type === 'day')?.value;
+    let weekday = formattedParts.find(p => p.type === 'weekday')?.value || '';
+    
+    if (weekday) {
+      weekday = weekday.charAt(0).toUpperCase() + weekday.slice(1);
+    }
+    
+    parts.push(`${weekday}: ${year}-${month}-${day}`);
+  }
+  
+  return parts.join(', ');
+}
 
 /**
  * Procesa el mensaje del usuario en lenguaje natural mediante Gemini AI para extraer la fecha y hora deseadas.
@@ -31,11 +64,15 @@ export async function extractDateFromIntent(userMessage: string): Promise<string
       second: '2-digit'
     });
 
+    const daysReference = getNext7DaysReference(currentDate);
+
     const systemInstruction = `
 Eres un sistema de inteligencia artificial especializado en extraer fechas y horas de citas médicas a partir de mensajes de texto en lenguaje natural en español.
 
 Contexto temporal real de referencia en el servidor:
 - Fecha y hora actual del sistema: ${currentDateStr} (Zona horaria: America/Bogota)
+
+Utiliza la siguiente referencia de los próximos 7 días para mapear con precisión absoluta cualquier fecha relativa (como 'mañana', 'el jueves', etc.) y evitar errores de cálculo de calendario: [${daysReference}]
 
 Instrucciones estrictas de comportamiento:
 1. Analiza el mensaje del usuario e identifica la fecha y hora de la cita que desea agendar.
@@ -106,6 +143,8 @@ export async function analyzeInitialIntent(userMessage: string): Promise<IntentA
       second: '2-digit'
     });
 
+    const daysReference = getNext7DaysReference(currentDate);
+
     const systemInstruction = `
 Eres el enrutador inteligente y clasificador de intenciones iniciales del consultorio odontológico "Clínica Odontológica".
 
@@ -129,6 +168,8 @@ Tu rol es clasificar el mensaje entrante del usuario de forma nativa e inteligen
 
 Contexto temporal de referencia en el servidor:
 - Fecha y hora actual del sistema: ${currentDateStr} (America/Bogota)
+
+Utiliza la siguiente referencia de los próximos 7 días para mapear con precisión absoluta cualquier fecha relativa (como 'mañana', 'el jueves', etc.) y evitar errores de cálculo de calendario: [${daysReference}]
 
 RESTRICCIÓN ESTRICTA DE SALIDA:
 Devolver EXCLUSIVAMENTE un string JSON plano y válido con la siguiente estructura, sin saltos de línea adicionales y sin bloques de formato markdown (PROHIBIDO usar bloques de código como \`\`\`json o \`\`\`):
