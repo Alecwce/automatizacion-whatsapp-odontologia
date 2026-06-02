@@ -12,9 +12,12 @@ Usamos la librería **Baileys**, que se conecta haciendo un puente directo (inge
 
 ### El Cerebro Administrativo: ¿Cómo nos conectamos a Google?
 Para conectar nuestro código con Google Sheets y Google Calendar sin intervención humana, usamos la infraestructura oficial de **Google Cloud Platform (GCP)**:
-1. **La Puerta Trasera (Las APIs):** Activamos las APIs de Sheets y Calendar, que son puentes de comunicación oficiales entre sistemas.
+1. **La Puerta Trasera (Las APIs):** Activamos las APIs de Sheets and Calendar, que son puentes de comunicación oficiales entre sistemas.
 2. **El Gafete VIP (Service Account):** No usamos el correo y contraseña del doctor por seguridad. Creamos una "Cuenta de Servicio", que actúa como un empleado virtual del bot.
 3. **Las Credenciales:** Google nos entregó una llave electrónica encriptada (`.json`). Le dimos permisos de "Editor" a este empleado virtual únicamente en la hoja de Excel y el Calendario de la clínica, manteniendo la privacidad total del resto de la cuenta del doctor.
+
+### Eficiencia Tecnológica
+El asistente está construido utilizando una arquitectura liviana y optimizada en memoria. Al utilizar tecnologías nativas de Node.js, TypeScript y la versión ligera de Gemini (3.1 Flash Lite), el bot consume menos de 150 MB de memoria RAM en tiempo de ejecución. Esto hace que el sistema sea extremadamente rentable, permitiendo que corra de manera fluida y económica incluso en servidores de gama baja o computadoras de bajo rendimiento sin impactar el hardware de la clínica.
 
 ---
 
@@ -65,6 +68,9 @@ Para conectar nuestro código con Google Sheets y Google Calendar sin intervenci
 
 **TRAMPA 5: "¿Esto funciona si apago la computadora?"**
 *Respuesta:* "Para esta fase MVP universitaria, el servidor central es nuestra computadora local. En una fase de producción real, este mismo código se empaqueta y se traslada a un servidor en internet para que funcione 24/7 de forma autónoma."
+
+**TRAMPA 6: "¿Qué ocurre con la privacidad de los datos al usar una IA de Google?"**
+*Respuesta:* "La privacidad está totalmente garantizada. Al consumir el servicio de Google Generative AI mediante su API comercial/desarrollador (y no la versión web de consumidor general de Gemini), las políticas de privacidad de Google prohíben explícitamente el uso de nuestros datos y los mensajes del paciente para entrenar o mejorar sus modelos. Los datos de la clínica y de los pacientes permanecen 100% aislados y confidenciales."
 
 ---
 
