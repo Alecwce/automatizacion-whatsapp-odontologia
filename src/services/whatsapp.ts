@@ -26,8 +26,12 @@ export async function handleUserMessage(
   messageText: string,
   sender: { sendMessage: (jid: string, text: string) => Promise<any> }
 ): Promise<void> {
+  // Limpiar remoteJid para evitar fragmentación de sesión y conservar número limpio
+  const [user, domain] = senderJid.split('@');
+  const cleanJid = (user && domain && user.includes(':')) ? `${user.split(':')[0]}@${domain}` : senderJid;
+
   const normalizedText = messageText.trim();
-  let session = sessions.get(senderJid);
+  let session = sessions.get(cleanJid);
 
   if (!session) {
     session = {
@@ -35,7 +39,7 @@ export async function handleUserMessage(
       attempts: 0,
       lastInteraction: new Date()
     };
-    sessions.set(senderJid, session);
+    sessions.set(cleanJid, session);
   }
 
   session.lastInteraction = new Date();
@@ -57,7 +61,7 @@ export async function handleUserMessage(
           session.patientDate = new Date(analysis.dateIso);
           session.state = 'AWAITING_NAME';
           session.attempts = 0;
-          sessions.set(senderJid, session);
+          sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
             '¡Excelente! Tengo disponibilidad para esa fecha. Para registrar tu cita, ¿cuál es tu nombre completo?'
@@ -65,7 +69,7 @@ export async function handleUserMessage(
         } else {
           session.state = 'AWAITING_NAME';
           session.attempts = 0;
-          sessions.set(senderJid, session);
+          sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
             '¡Hola! Claro que sí. Para comenzar tu registro, por favor dime tu nombre completo.'
@@ -88,7 +92,7 @@ export async function handleUserMessage(
       session.patientName = parsedName;
       session.state = 'AWAITING_DNI';
       session.attempts = 0;
-      sessions.set(senderJid, session);
+      sessions.set(cleanJid, session);
 
       await sender.sendMessage(
         senderJid,
@@ -103,7 +107,7 @@ export async function handleUserMessage(
       if (!parsedDni) {
         session.attempts += 1;
         if (session.attempts >= 3) {
-          sessions.delete(senderJid);
+          sessions.delete(cleanJid);
           await sender.sendMessage(
             senderJid,
             'Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo.'
@@ -111,7 +115,7 @@ export async function handleUserMessage(
           return;
         }
 
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
           `El formato del DNI o Cédula ingresado no es válido. Inténtalo de nuevo (ej: 12345678 o V-12345678). Intentos restantes: ${3 - session.attempts}:`
@@ -124,7 +128,7 @@ export async function handleUserMessage(
       if (session.patientDate) {
         session.state = 'AWAITING_REASON';
         session.attempts = 0;
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
 
         await sender.sendMessage(
           senderJid,
@@ -133,7 +137,7 @@ export async function handleUserMessage(
       } else {
         session.state = 'AWAITING_DATE';
         session.attempts = 0;
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
 
         await sender.sendMessage(
           senderJid,
@@ -149,7 +153,7 @@ export async function handleUserMessage(
       if (!parsedDateStr) {
         session.attempts += 1;
         if (session.attempts >= 3) {
-          sessions.delete(senderJid);
+          sessions.delete(cleanJid);
           await sender.sendMessage(
             senderJid,
             'Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo.'
@@ -157,7 +161,7 @@ export async function handleUserMessage(
           return;
         }
 
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
           `No logré comprender la fecha u hora indicada. Por favor, sé más específico sobre el día y la hora de tu preferencia (ej: "mañana a las 3:30 pm" o "este viernes a las 10:00 am"). Intentos restantes: ${3 - session.attempts}:`
@@ -170,7 +174,7 @@ export async function handleUserMessage(
       session.patientDate = parsedDate;
       session.state = 'AWAITING_REASON';
       session.attempts = 0;
-      sessions.set(senderJid, session);
+      sessions.set(cleanJid, session);
 
       await sender.sendMessage(
         senderJid,
@@ -186,7 +190,7 @@ export async function handleUserMessage(
       if (!patientDate) {
         session.state = 'AWAITING_DATE';
         session.attempts = 0;
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
           'Tuvimos un inconveniente al recordar el horario. Por favor, indícame nuevamente el día y la hora de tu preferencia:'
@@ -199,7 +203,7 @@ export async function handleUserMessage(
       if (!isAvailable) {
         session.state = 'AWAITING_DATE';
         session.attempts = 0;
-        sessions.set(senderJid, session);
+        sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
           'Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora que te quede bien?'
@@ -209,7 +213,7 @@ export async function handleUserMessage(
 
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';
-      const phoneClean = senderJid.split('@')[0].split(':')[0];
+      const phoneClean = cleanJid.split('@')[0];
       const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
       const appointmentDateStr = patientDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
 
@@ -266,7 +270,7 @@ export async function handleUserMessage(
         }
       }
 
-      sessions.delete(senderJid);
+      sessions.delete(cleanJid);
       break;
     }
   }
@@ -316,8 +320,14 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     for (const msg of m.messages) {
       if (msg.key.fromMe || !msg.message) continue;
 
-      const jid = msg.key.remoteJid;
+      let jid = msg.key.remoteJid;
       if (!jid) continue;
+
+      // Normalizar remoteJid para evitar fragmentación de sesión y conservar número limpio
+      const [user, domain] = jid.split('@');
+      if (user && domain && user.includes(':')) {
+        jid = `${user.split(':')[0]}@${domain}`;
+      }
 
       // Extrae el texto del mensaje entrante
       const text =
