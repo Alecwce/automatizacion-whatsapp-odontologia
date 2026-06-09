@@ -1,0 +1,68 @@
+---
+// HomeServicesPreview: Muestra una vista previa con 3 tratamientos representativos de la clínica.
+interface SimpleService {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+const previewServices: SimpleService[] = [
+  {
+    icon: '🔍',
+    title: 'Diagnóstico',
+    description: 'Evaluación clínica completa, radiografías digitales y diseño de un plan de tratamiento personalizado.',
+  },
+  {
+    icon: '✨',
+    title: 'Estética Dental',
+    description: 'Carillas de porcelana, diseño de sonrisa y blanqueamiento avanzado para lograr una sonrisa radiante.',
+  },
+  {
+    icon: '🦷',
+    title: 'Ortodoncia',
+    description: 'Brackets tradicionales, estéticos y alineadores invisibles de última generación para mejorar tu mordida.',
+  },
+];
+---
+
+<section class="py-16 sm:py-24 bg-gray-50/50 border-t border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Encabezado de la Sección -->
+    <div class="text-center mb-16">
+      <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+        Especialidades Destacadas
+      </p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        Tratamientos Especializados
+      </h2>
+    </div>
+
+    <!-- Grid de 3 Tarjetas Compactas -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8 mb-12">
+      {previewServices.map((service) => (
+        <article class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-lg transition-all duration-300 flex flex-col gap-4">
+          <div class="w-12 h-12 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center text-xl shadow-inner select-none" aria-hidden="true">
+            {service.icon}
+          </div>
+          <div>
+            <h3 class="font-bold text-gray-900 text-lg mb-2">{service.title}</h3>
+            <p class="text-sm text-gray-650 leading-relaxed">{service.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+    <!-- Enlace Centrado a Todos los Servicios -->
+    <div class="text-center">
+      <a
+        href="/servicios"
+        class="inline-flex items-center gap-1.5 text-sm font-bold text-violet-700 hover:text-violet-900 transition-colors tracking-wide focus:outline-none group"
+      >
+        Ver todos los servicios
+        <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+      </a>
+    </div>
+
+  </div>
+</section>
