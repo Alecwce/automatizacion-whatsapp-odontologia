@@ -27,3 +27,8 @@
     }
   }
 }
+
+html {
+  scroll-behavior: smooth;
+}
+

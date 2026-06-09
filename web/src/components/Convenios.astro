@@ -1,0 +1,54 @@
+---
+// Convenios: Listado de marcas aseguradoras en un grid elegante de logotipos corporativos simulados.
+interface Insurance {
+  name: string;
+  badgeColor: string;
+  badgeTextColor: string;
+}
+
+const insurances: Insurance[] = [
+  { name: 'RIMAC Seguros', badgeColor: 'bg-red-50', badgeTextColor: 'text-red-700' },
+  { name: 'MAPFRE', badgeColor: 'bg-red-50', badgeTextColor: 'text-red-600' },
+  { name: 'Pacífico Seguros', badgeColor: 'bg-blue-50', badgeTextColor: 'text-blue-700' },
+  { name: 'SIGMA', badgeColor: 'bg-emerald-50', badgeTextColor: 'text-emerald-700' },
+  { name: 'Sanitas', badgeColor: 'bg-cyan-50', badgeTextColor: 'text-cyan-700' },
+];
+---
+
+<section class="py-16 sm:py-24 bg-gray-50/30 border-t border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Encabezado de la sección -->
+    <div class="text-center mb-12">
+      <h2 class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-3">
+        Alianzas Estratégicas
+      </h2>
+      <p class="text-2xl sm:text-3xl font-extrabold text-gray-900 tracking-tight">
+        Nuestros Convenios
+      </p>
+      <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+        Atiéndete con la cobertura de tu seguro privado de salud en cualquiera de nuestras sedes.
+      </p>
+    </div>
+
+    <!-- Grid de Aseguradoras -->
+    <div class="grid grid-cols-2 md:grid-cols-5 gap-6 items-center justify-center">
+      {insurances.map((ins) => (
+        <div class="group bg-white border border-gray-100/80 rounded-2xl p-6 h-24 flex items-center justify-center shadow-sm hover:shadow-md hover:border-violet-100 transition-all duration-300 hover:-translate-y-1 select-none">
+          <div class="flex flex-col items-center justify-center text-center">
+            <!-- Simulación de Logo corporativo -->
+            <span class="text-sm font-extrabold text-gray-400 group-hover:text-gray-800 transition-colors duration-300">
+              {ins.name.split(' ')[0]}
+            </span>
+            {ins.name.split(' ')[1] && (
+              <span class="text-[10px] font-bold text-gray-300 group-hover:text-violet-600 transition-colors duration-300 uppercase tracking-widest mt-0.5">
+                {ins.name.split(' ')[1]}
+              </span>
+            )}
+          </div>
+        </div>
+      ))}
+    </div>
+
+  </div>
+</section>

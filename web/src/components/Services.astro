@@ -1,5 +1,5 @@
 ---
-// Services: Grid responsive de 4 tarjetas de servicios odontológicos.
+// Services: Grid responsive de 6 tarjetas de servicios odontológicos reales.
 interface Service {
   icon: string;
   title: string;
@@ -8,62 +8,82 @@ interface Service {
 
 const services: Service[] = [
   {
-    icon: '🦷',
-    title: 'Limpieza Dental',
-    description: 'Profilaxis profesional y eliminación del sarro. Deja tus dientes radiantes con una limpieza profunda a cargo de nuestros especialistas.',
+    icon: '🔍',
+    title: 'Diagnóstico',
+    description: 'Evaluación integral, radiografías de alta precisión y diseño de un plan de tratamiento personalizado a tu medida.',
   },
   {
-    icon: '🪥',
-    title: 'Restauraciones',
-    description: 'Reparamos caries y fracturas con resinas de alta estética que imitan el color natural de tu diente. Resultados naturales e imperceptibles.',
+    icon: '✨',
+    title: 'Estética Dental',
+    description: 'Diseño de sonrisa, carillas de porcelana y técnicas avanzadas de blanqueamiento para lograr una sonrisa radiante y natural.',
+  },
+  {
+    icon: '👶',
+    title: 'Odontopediatría',
+    description: 'Cuidado dental especializado para los más pequeños, en un ambiente divertido, cálido y completamente libre de estrés.',
+  },
+  {
+    icon: '🦷',
+    title: 'Ortodoncia',
+    description: 'Brackets metálicos, estéticos y alineadores invisibles de última generación para alinear tus dientes y mejorar tu mordida.',
+  },
+  {
+    icon: '🔬',
+    title: 'Cirugía e Implantes',
+    description: 'Restauración de piezas faltantes con implantes de titanio y cirugías reconstructivas mediante técnicas mínimamente invasivas.',
   },
   {
     icon: '🩺',
-    title: 'Endodoncia',
-    description: 'Tratamiento de conducto sin dolor con tecnología rotacional de última generación. Salvamos tu diente y eliminamos la infección por completo.',
-  },
-  {
-    icon: '😁',
-    title: 'Ortodoncia',
-    description: 'Brackets metálicos, cerámicos y alineadores invisibles. Corregimos la posición de tus dientes con el plan más adecuado para tu caso.',
+    title: 'Odontología Integral',
+    description: 'Profilaxis profunda, curación de caries, endodoncias y prótesis para devolver la funcionalidad y salud completa a tu boca.',
   },
 ];
 ---
 
-<section id="servicios" class="py-20 sm:py-28 bg-gray-50">
+<section class="py-20 sm:py-28 bg-gray-50/55">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
     <!-- Encabezado de sección -->
-    <div class="text-center mb-14">
-      <p class="text-sm font-semibold text-[#0066cc] uppercase tracking-widest mb-3">
-        Nuestros Servicios
+    <div class="text-center mb-16">
+      <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+        Especialidades Médicas
       </p>
-      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
-        Cuidamos tu salud bucal <br class="hidden sm:block" />de principio a fin
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+        Cuidamos tu salud bucal <br class="hidden sm:block" />con tratamientos especializados
       </h2>
     </div>
 
-    <!-- Grid de tarjetas -->
-    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+    <!-- Grid de tarjetas (3 columnas en pantallas grandes) -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {services.map((service) => (
-        <article class="group bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-[#0066cc] shadow-sm hover:shadow-lg hover:border-t-4 hover:border-t-[#0055bb] transition-all duration-300 hover:-translate-y-1.5">
-          <!-- Ícono -->
-          <div
-            class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-2xl mb-4 group-hover:bg-[#0066cc] group-hover:scale-110 transition-all duration-300"
-            aria-hidden="true"
-          >
-            {service.icon}
+        <article class="group bg-white rounded-2xl p-8 border border-gray-100 border-t-4 border-violet-600 shadow-sm hover:shadow-xl hover:border-t-violet-800 transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between">
+          <div>
+            <!-- Ícono en contenedor circular -->
+            <div
+              class="w-14 h-14 rounded-full bg-violet-50 flex items-center justify-center text-2xl mb-6 group-hover:bg-violet-700 group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-inner"
+              aria-hidden="true"
+            >
+              {service.icon}
+            </div>
+
+            <!-- Título -->
+            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-violet-700 transition-colors duration-200">
+              {service.title}
+            </h3>
+
+            <!-- Descripción -->
+            <p class="text-sm text-gray-600 leading-relaxed">
+              {service.description}
+            </p>
           </div>
 
-          <!-- Título -->
-          <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#0066cc] transition-colors duration-200">
-            {service.title}
-          </h3>
-
-          <!-- Descripción -->
-          <p class="text-sm text-gray-600 leading-relaxed">
-            {service.description}
-          </p>
+          <!-- Link sutil de llamada a la acción -->
+          <div class="mt-6 pt-4 border-t border-gray-50 flex items-center gap-1 text-xs font-bold text-violet-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+            Consultar especialidad 
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.97H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+            </svg>
+          </div>
         </article>
       ))}
     </div>

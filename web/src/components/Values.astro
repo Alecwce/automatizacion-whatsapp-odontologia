@@ -1,0 +1,92 @@
+---
+// Values: Grid de 8 tarjetas minimalistas de valores corporativos.
+interface Value {
+  number: string;
+  title: string;
+  description: string;
+}
+
+const values: Value[] = [
+  {
+    number: '01',
+    title: 'Calidad',
+    description: 'Búsqueda constante de la excelencia clínica y uso de materiales odontológicos certificados.',
+  },
+  {
+    number: '02',
+    title: 'Ética',
+    description: 'Diagnósticos honestos, presupuestos justos y total confidencialidad médica en cada caso.',
+  },
+  {
+    number: '03',
+    title: 'Responsabilidad Social',
+    description: 'Aporte activo a la mejora de la salud bucal comunitaria mediante charlas y campañas.',
+  },
+  {
+    number: '04',
+    title: 'Respeto a la Dignidad Humana',
+    description: 'Trato empático, humanizado y sin distinciones, priorizando el bienestar e integridad física del paciente.',
+  },
+  {
+    number: '05',
+    title: 'Vocación de Servicio',
+    description: 'Pasión genuina por el cuidado de las personas y el arte de devolver sonrisas saludables.',
+  },
+  {
+    number: '06',
+    title: 'Mejora Continua',
+    description: 'Capacitación profesional constante del staff para estar siempre a la vanguardia médica.',
+  },
+  {
+    number: '07',
+    title: 'Complementariedad',
+    description: 'Trabajo coordinado e interdisciplinar entre nuestras especialidades para tratamientos complejos.',
+  },
+  {
+    number: '08',
+    title: 'Confianza',
+    description: 'Seguridad y solidez en nuestras relaciones paciente-doctor basadas en resultados comprobables.',
+  },
+];
+---
+
+<section class="py-20 sm:py-28 bg-white border-t border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Encabezado de la sección -->
+    <div class="text-center mb-16">
+      <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+        Nuestra Identidad
+      </p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        Valores que definen <br class="hidden sm:block" />nuestro compromiso clínico
+      </h2>
+    </div>
+
+    <!-- Grid de Valores (4 columnas en pantallas grandes, 2 en tablets) -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
+      {values.map((val) => (
+        <article class="bg-gray-50/40 border border-gray-100 rounded-2xl p-6 transition-all duration-300 hover:bg-white hover:shadow-lg hover:shadow-gray-100/50 hover:border-violet-100 flex flex-col items-start gap-4">
+          <!-- Círculo morado suave con el número de orden -->
+          <div 
+            class="w-12 h-12 rounded-full bg-violet-50 text-violet-700 font-extrabold text-sm flex items-center justify-center select-none shadow-sm"
+            aria-hidden="true"
+          >
+            {val.number}
+          </div>
+
+          <!-- Título del valor -->
+          <div>
+            <h3 class="font-bold text-gray-900 text-lg mb-2">
+              {val.title}
+            </h3>
+            <p class="text-sm text-gray-600 leading-relaxed">
+              {val.description}
+            </p>
+          </div>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>

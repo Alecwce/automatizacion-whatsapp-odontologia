@@ -5,8 +5,10 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Hero from '../components/Hero.astro';
 import Services from '../components/Services.astro';
+import Values from '../components/Values.astro';
 import TechSection from '../components/TechSection.astro';
 import Testimonials from '../components/Testimonials.astro';
+import Convenios from '../components/Convenios.astro';
 import Footer from '../components/Footer.astro';
 ---
 
@@ -16,11 +18,35 @@ import Footer from '../components/Footer.astro';
 >
   <Nav />
   <main>
-    <Hero />
-    <Services />
-    <TechSection />
-    <Testimonials />
+    <!-- Contenedor de Inicio y Horarios -->
+    <div id="top">
+      <Hero />
+    </div>
+
+    <!-- Contenedor Quiénes Somos / Identidad y Valores -->
+    <div id="nosotros">
+      <Values />
+    </div>
+
+    <!-- Contenedor Catálogo de Servicios Especializados -->
+    <div id="servicios">
+      <Services />
+    </div>
+
+    <!-- Contenedor Tecnología -->
+    <div id="tecnologia">
+      <TechSection />
+    </div>
+
+    <!-- Contenedor Staff y Testimonios -->
+    <div id="staff">
+      <Testimonials />
+    </div>
+
+    <!-- Contenedor Alianzas y Convenios -->
+    <div id="convenios">
+      <Convenios />
+    </div>
   </main>
   <Footer />
 </Layout>
-
