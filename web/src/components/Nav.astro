@@ -1,5 +1,5 @@
 ---
-// Nav: Barra superior fija con logo JOMOVAK, menú corporativo premium y botón de cita.
+// Nav: Barra superior fija con logo JOMOVAK, menú corporativo premium multi-página y botón de cita.
 const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola JOMOVAK, quiero agendar una cita odontológica.')}`;
 ---
 
@@ -7,7 +7,7 @@ const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola J
   <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between" aria-label="Navegación principal">
 
     <!-- Logo Clínica JOMOVAK -->
-    <a href="#top" class="flex items-center focus:outline-none" aria-label="Ir al inicio - Clínica JOMOVAK">
+    <a href="/" class="flex items-center focus:outline-none" aria-label="Ir al inicio - Clínica JOMOVAK">
       <img
         src="/jomovak.png"
         alt="Clínica Odontológica JOMOVAK"
@@ -17,11 +17,12 @@ const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola J
 
     <!-- Menú de Escritorio (md en adelante) -->
     <div class="hidden md:flex items-center gap-8">
-      <a href="#top" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">INICIO</a>
+      <a href="/" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">INICIO</a>
       
       <!-- Dropdown Nosotros (Hover) -->
       <div class="relative group py-2">
-        <button 
+        <a 
+          href="/nosotros"
           class="flex items-center gap-1.5 text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200 focus:outline-none cursor-pointer"
           aria-expanded="false"
           aria-haspopup="true"
@@ -30,18 +31,18 @@ const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola J
           <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-4 h-4 text-gray-400 group-hover:text-violet-700 group-hover:rotate-180 transition-transform duration-200" aria-hidden="true">
             <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
           </svg>
-        </button>
+        </a>
         <!-- Panel Dropdown -->
         <div class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2 pointer-events-none group-hover:pointer-events-auto">
-          <a href="#nosotros" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Quiénes Somos</a>
-          <a href="#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Staff Profesional</a>
-          <a href="#tecnologia" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Nuestra Tecnología</a>
+          <a href="/nosotros#nosotros" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Quiénes Somos</a>
+          <a href="/nosotros#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Staff Profesional</a>
+          <a href="/#tecnologia" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Nuestra Tecnología</a>
         </div>
       </div>
 
-      <a href="#servicios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">NUESTROS SERVICIOS</a>
-      <a href="#convenios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONVENIOS</a>
-      <a href="#footer" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONTACTO</a>
+      <a href="/servicios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">NUESTROS SERVICIOS</a>
+      <a href="/convenios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONVENIOS</a>
+      <a href="/contacto" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONTACTO</a>
     </div>
 
     <!-- Botón Reservar Cita (Escritorio) -->
@@ -79,21 +80,21 @@ const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola J
     class="hidden md:hidden border-t border-gray-100 bg-white/95 backdrop-blur-md transition-all duration-300 shadow-inner"
   >
     <div class="px-4 pt-2 pb-6 space-y-3">
-      <a href="#top" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">INICIO</a>
+      <a href="/" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">INICIO</a>
       
       <!-- Subsección Nosotros en Móvil -->
       <div class="px-3 py-1.5">
         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">NOSOTROS</p>
         <div class="pl-4 border-l border-violet-100 space-y-2.5">
-          <a href="#nosotros" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Quiénes Somos</a>
-          <a href="#staff" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Staff Profesional</a>
-          <a href="#tecnologia" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Nuestra Tecnología</a>
+          <a href="/nosotros#nosotros" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Quiénes Somos</a>
+          <a href="/nosotros#staff" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Staff Profesional</a>
+          <a href="/#tecnologia" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Nuestra Tecnología</a>
         </div>
       </div>
 
-      <a href="#servicios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">NUESTROS SERVICIOS</a>
-      <a href="#convenios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONVENIOS</a>
-      <a href="#footer" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONTACTO</a>
+      <a href="/servicios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">NUESTROS SERVICIOS</a>
+      <a href="/convenios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONVENIOS</a>
+      <a href="/contacto" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONTACTO</a>
       
       <!-- Botón Reservar Cita (Móvil) -->
       <div class="pt-4 px-3">
