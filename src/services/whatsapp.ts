@@ -84,7 +84,7 @@ export async function handleUserMessage(
       if (!parsedName) {
         await sender.sendMessage(
           senderJid,
-          'Por favor, ingresa un nombre válido (ej: Carlos Pérez):'
+          'Por favor, ingresa un nombre y apellido válidos (ej: Carlos Pérez):'
         );
         return;
       }
@@ -118,7 +118,7 @@ export async function handleUserMessage(
         sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
-          `El formato del DNI o Cédula ingresado no es válido. Inténtalo de nuevo (ej: 12345678 o V-12345678). Intentos restantes: ${3 - session.attempts}:`
+          `Por favor, ingresa un DNI válido de 8 números. Intentos restantes: ${3 - session.attempts}:`
         );
         return;
       }

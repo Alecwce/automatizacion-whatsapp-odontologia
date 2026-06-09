@@ -1,5 +1,3 @@
-const DNI_REGEX = /(?:[VEve]-?[0-9]{7,9}|[0-9]{7,10})/i;
-
 const NAME_PREFIXES = [
   'me llamo',
   'mi nombre es',
@@ -9,28 +7,20 @@ const NAME_PREFIXES = [
 ];
 
 /**
- * Valida y extrae el DNI o Cédula a partir del texto ingresado por el paciente.
- * Soporta números de 7 a 10 dígitos y formatos tradicionales como V-12345678 o E-1234567.
+ * Valida y extrae el DNI a partir del texto ingresado por el paciente.
+ * Exige exactamente 8 dígitos numéricos, sin letras ni espacios.
  */
 export function parsePatientDni(text: string): string | null {
-  const match = text.match(DNI_REGEX);
-  if (!match) {
-    return null;
+  const cleaned = text.trim();
+  if (/^\d{8}$/.test(cleaned)) {
+    return cleaned;
   }
-  
-  const extracted = match[0].trim();
-  if (/^[VEve]/i.test(extracted)) {
-    const letter = extracted[0].toUpperCase();
-    const rest = extracted.slice(1).replace(/^-/, '');
-    return `${letter}-${rest}`;
-  }
-  
-  return extracted;
+  return null;
 }
 
 /**
  * Limpia y valida el nombre proporcionado por el paciente.
- * Remueve frases introductorias comunes y valida longitud mínima.
+ * Exige al menos dos palabras formadas únicamente por letras y separadas por espacio.
  */
 export function parsePatientName(text: string): string | null {
   let cleaned = text.trim();
@@ -43,7 +33,9 @@ export function parsePatientName(text: string): string | null {
     }
   }
 
-  if (cleaned.length < 2 || /^\d/.test(cleaned)) {
+  // Regex para exigir al menos dos palabras separadas por espacios, conteniendo solo letras.
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)+$/;
+  if (!nameRegex.test(cleaned)) {
     return null;
   }
 

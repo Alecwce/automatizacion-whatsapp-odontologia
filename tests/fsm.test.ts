@@ -413,6 +413,58 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(sessionDni?.attempts).toBe(0);
   });
 
+  it('debe rechazar un nombre de una sola palabra o invalido y mantenerse en AWAITING_NAME', async () => {
+    sessions.set(testJid, {
+      state: 'AWAITING_NAME',
+      attempts: 0,
+      lastInteraction: new Date()
+    });
+
+    // Enviar nombre de una sola palabra
+    await handleUserMessage(testJid, 'Carlos', mockSender);
+
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('Por favor, ingresa un nombre y apellido válidos')
+    );
+
+    const session = sessions.get(testJid);
+    expect(session?.state).toBe('AWAITING_NAME');
+    expect(session?.patientName).toBeUndefined();
+
+    // Enviar nombre con caracteres especiales
+    await handleUserMessage(testJid, 'Juan P3rez', mockSender);
+    expect(session?.state).toBe('AWAITING_NAME');
+    expect(session?.patientName).toBeUndefined();
+  });
+
+  it('debe rechazar un DNI que no sea exactamente de 8 digitos y mantenerse en AWAITING_DNI', async () => {
+    sessions.set(testJid, {
+      state: 'AWAITING_DNI',
+      patientName: 'Carlos Pérez',
+      attempts: 0,
+      lastInteraction: new Date()
+    });
+
+    // Enviar DNI con prefijo (antes válido, ahora inválido)
+    await handleUserMessage(testJid, 'V-12345678', mockSender);
+
+    expect(mockSender.sendMessage).toHaveBeenCalledWith(
+      testJid,
+      expect.stringContaining('Por favor, ingresa un DNI válido de 8 números')
+    );
+
+    const session = sessions.get(testJid);
+    expect(session?.state).toBe('AWAITING_DNI');
+    expect(session?.patientDni).toBeUndefined();
+    expect(session?.attempts).toBe(1);
+
+    // Enviar texto arbitrario
+    await handleUserMessage(testJid, 'mrd', mockSender);
+    expect(session?.state).toBe('AWAITING_DNI');
+    expect(session?.attempts).toBe(2);
+  });
+
   it('debe responder amablemente a un mensaje de cortesia o despedida clasificado como PREGUNTA y mantenerse en IDLE', async () => {
     await handleUserMessage(testJid, 'muchas gracias por la informacion', mockSender);
 
