@@ -1,5 +1,5 @@
 ---
-// Hero Section: Eslogan de impacto + CTA de WhatsApp + Bloque de información y horarios.
+// Hero Section: Eslogan de impacto + CTA de WhatsApp con URLSearchParams.
 const phone = '51900000000';
 const message = 'Hola JOMOVAK, quiero agendar una cita odontológica.';
 const params = new URLSearchParams({ text: message });
@@ -15,7 +15,6 @@ const whatsappUrl = `https://wa.me/${phone}?${params.toString()}`;
   </div>
 
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-    <!-- Grid Principal: Hero e Imagen -->
     <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
       
       <!-- Contenido de texto -->
@@ -35,7 +34,7 @@ const whatsappUrl = `https://wa.me/${phone}?${params.toString()}`;
           <span class="text-violet-700">manos de especialistas</span>.
         </h1>
 
-        <!-- Subtítulo / Descripción -->
+        <!-- Subtítulo -->
         <p class="text-lg sm:text-xl text-gray-600 leading-relaxed mb-10 max-w-2xl">
           En la Clínica JOMOVAK cuidamos tu sonrisa con profesionales calificados y tecnología de vanguardia. Agenda tu cita directamente por WhatsApp con nuestro asistente virtual disponible 24/7.
         </p>
@@ -95,75 +94,5 @@ const whatsappUrl = `https://wa.me/${phone}?${params.toString()}`;
         </div>
       </div>
     </div>
-
-    <!-- Divisor e Información Clínica Real (Horarios y Sedes) -->
-    <div class="mt-20 pt-12 border-t border-gray-100">
-      <!-- Descripción Clínica -->
-      <div class="max-w-3xl mb-12">
-        <h2 class="text-xs font-bold text-violet-700 uppercase tracking-widest mb-3">Compromiso Profesional</h2>
-        <p class="text-base sm:text-lg text-gray-700 leading-relaxed font-medium">
-          En la <span class="text-violet-700 font-bold">Clínica Odontológica JOMOVAK</span> asumimos un firme compromiso con tu salud y estética bucal. Contamos con una infraestructura moderna equipada con tecnología de última generación y un selecto staff de especialistas dedicados a brindarte un diagnóstico preciso y un tratamiento de la más alta calidad.
-        </p>
-      </div>
-
-      <!-- Sedes y Horarios Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-        
-        <!-- Bloque Sedes -->
-        <div class="bg-gray-50/50 border border-gray-100 p-6 sm:p-8 rounded-2xl flex flex-col gap-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl shadow-sm" aria-hidden="true">
-              📍
-            </div>
-            <div>
-              <h3 class="font-bold text-gray-900 text-base">Nuestras Sedes</h3>
-              <p class="text-xs text-gray-500">Ubicaciones estratégicas para tu comodidad</p>
-            </div>
-          </div>
-          <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-              <span class="text-xs font-bold text-violet-700 uppercase tracking-wider block mb-1">Huancayo</span>
-              <p class="text-sm font-semibold text-gray-800">El Tambo</p>
-              <p class="text-sm font-semibold text-gray-800">Real Mayor</p>
-            </div>
-            <div class="bg-white p-4 rounded-xl border border-gray-100 shadow-sm">
-              <span class="text-xs font-bold text-violet-700 uppercase tracking-wider block mb-1">Lima</span>
-              <p class="text-sm font-semibold text-gray-800">Santiago de Surco</p>
-            </div>
-          </div>
-        </div>
-
-        <!-- Bloque Horarios -->
-        <div class="bg-gray-50/50 border border-gray-100 p-6 sm:p-8 rounded-2xl flex flex-col gap-6">
-          <div class="flex items-center gap-3">
-            <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl shadow-sm" aria-hidden="true">
-              🕒
-            </div>
-            <div>
-              <h3 class="font-bold text-gray-900 text-base">Horarios de Atención</h3>
-              <p class="text-xs text-gray-500">Organiza tu visita de acuerdo a tu disponibilidad</p>
-            </div>
-          </div>
-          <div class="bg-white p-5 rounded-xl border border-gray-100 shadow-sm flex flex-col gap-3">
-            <div class="flex justify-between items-center pb-2 border-b border-gray-50">
-              <span class="text-sm font-bold text-gray-800">Lunes a Sábado</span>
-              <span class="text-xs font-extrabold text-violet-700 bg-violet-50 px-2.5 py-1 rounded-full uppercase">Activo</span>
-            </div>
-            <div class="grid grid-cols-2 gap-4 text-center">
-              <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Turno Mañana</span>
-                <p class="text-sm font-semibold text-gray-800">9:00 AM - 1:00 PM</p>
-              </div>
-              <div>
-                <span class="text-[10px] font-bold text-gray-400 uppercase tracking-wider block mb-0.5">Turno Tarde</span>
-                <p class="text-sm font-semibold text-gray-800">3:00 PM - 8:00 PM</p>
-              </div>
-            </div>
-          </div>
-        </div>
-
-      </div>
-    </div>
-
   </div>
 </section>
