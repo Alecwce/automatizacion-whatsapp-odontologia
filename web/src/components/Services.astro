@@ -46,10 +46,10 @@ const services: Service[] = [
     <!-- Grid de tarjetas -->
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
       {services.map((service) => (
-        <article class="group bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md hover:border-[#0066cc]/20 transition-all duration-300 hover:-translate-y-1">
+        <article class="group bg-white rounded-2xl p-7 border border-gray-100 border-t-4 border-[#0066cc] shadow-sm hover:shadow-lg hover:border-t-4 hover:border-t-[#0055bb] transition-all duration-300 hover:-translate-y-1.5">
           <!-- Ícono -->
           <div
-            class="text-4xl mb-5 w-14 h-14 flex items-center justify-center bg-[#e8f2ff] rounded-xl group-hover:bg-[#0066cc] group-hover:scale-110 transition-all duration-300"
+            class="w-12 h-12 rounded-full bg-blue-50 flex items-center justify-center text-2xl mb-4 group-hover:bg-[#0066cc] group-hover:scale-110 transition-all duration-300"
             aria-hidden="true"
           >
             {service.icon}

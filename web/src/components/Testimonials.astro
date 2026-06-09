@@ -1,0 +1,81 @@
+---
+// Testimonials: Sección de testimonios de pacientes locales (Prueba Social)
+interface Testimonial {
+  stars: number;
+  text: string;
+  author: string;
+  location: string;
+  initials: string;
+}
+
+const testimonials: Testimonial[] = [
+  {
+    stars: 5,
+    text: "Excelente atención. La doctora me explicó todo el tratamiento de ortodoncia con mucha paciencia. Recomendados.",
+    author: "María F.",
+    location: "El Tambo",
+    initials: "MF",
+  },
+  {
+    stars: 5,
+    text: "Vine desde Chupaca por una emergencia dental en la madrugada. El bot de WhatsApp me confirmó la cita al instante. Muy eficientes.",
+    author: "Carlos R.",
+    location: "Chupaca",
+    initials: "CR",
+  },
+  {
+    stars: 5,
+    text: "Instalaciones modernas y no sentí nada de dolor en la endodoncia. La mejor clínica de la ciudad.",
+    author: "Ana L.",
+    location: "Huancayo",
+    initials: "AL",
+  },
+];
+---
+
+<section id="testimonios" class="py-20 sm:py-24 bg-gray-50 border-t border-b border-gray-100">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    
+    <!-- Encabezado de la sección -->
+    <div class="text-center mb-14">
+      <p class="text-sm font-semibold text-[#0066cc] uppercase tracking-widest mb-3">
+        Opiniones reales
+      </p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        Lo que dicen nuestros pacientes
+      </h2>
+    </div>
+
+    <!-- Grid de testimonios -->
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {testimonials.map((t) => (
+        <article class="bg-white rounded-2xl p-8 border border-gray-100 shadow-sm hover:shadow-md hover:-translate-y-1 transition-all duration-300 flex flex-col justify-between">
+          <div>
+            <!-- Estrellas de Calificación -->
+            <div class="flex items-center gap-1 mb-4" aria-label="Calificación de 5 estrellas">
+              {Array.from({ length: t.stars }).map(() => (
+                <span class="text-yellow-400 text-lg">★</span>
+              ))}
+            </div>
+            
+            <!-- Texto del testimonio -->
+            <blockquote class="text-gray-600 text-sm leading-relaxed italic">
+              "{t.text}"
+            </blockquote>
+          </div>
+
+          <!-- Perfil del Paciente -->
+          <div class="flex items-center gap-3 mt-6 border-t border-gray-100 pt-4">
+            <div class="w-10 h-10 rounded-full bg-blue-50 flex items-center justify-center text-[#0066cc] font-bold text-sm" aria-hidden="true">
+              {t.initials}
+            </div>
+            <div>
+              <cite class="not-italic text-sm font-bold text-gray-900 block">{t.author}</cite>
+              <span class="text-xs text-gray-500 block">{t.location}</span>
+            </div>
+          </div>
+        </article>
+      ))}
+    </div>
+  </div>
+</section>

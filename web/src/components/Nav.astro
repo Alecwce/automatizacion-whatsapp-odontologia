@@ -6,21 +6,13 @@ const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola J
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-sm border-b border-gray-100 shadow-sm">
   <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
 
-    <!-- Logo -->
-    <a href="/" class="flex items-center gap-2" aria-label="Ir al inicio - Clínica JOMOVAK">
-      <!-- Ícono de diente SVG inline (no requiere dependencias externas) -->
-      <svg
-        xmlns="http://www.w3.org/2000/svg"
-        viewBox="0 0 24 24"
-        fill="currentColor"
-        class="w-7 h-7 text-[#0066cc]"
-        aria-hidden="true"
-      >
-        <path d="M12 2C9.5 2 7.5 3.5 6.5 5.5C5.5 4.5 4.5 4 3 4C3 8 5 10 7 10.5C7 15 8.5 22 12 22C15.5 22 17 15 17 10.5C19 10 21 8 21 4C19.5 4 18.5 4.5 17.5 5.5C16.5 3.5 14.5 2 12 2Z"/>
-      </svg>
-      <span class="text-xl font-bold tracking-tight text-gray-900">
-        JOMOVAK
-      </span>
+    <!-- Logo (el PNG ya incluye el nombre de la marca) -->
+    <a href="/" aria-label="Ir al inicio - Clínica JOMOVAK">
+      <img
+        src="/jomovak.png"
+        alt="Clínica Odontológica JOMOVAK"
+        class="h-[60px] w-auto object-contain"
+      />
     </a>
 
     <!-- CTA de contacto -->

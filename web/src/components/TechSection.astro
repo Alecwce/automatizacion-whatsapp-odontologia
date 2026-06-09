@@ -68,26 +68,20 @@ const features: Feature[] = [
           <!-- Simulación de chat del bot -->
           <div class="mb-6">
             <p class="text-xs text-blue-200 font-medium mb-3 uppercase tracking-wider">Vista previa del Bot</p>
-            <!-- Mensaje usuario -->
-            <div class="flex justify-end mb-3">
+            <!-- Mensaje usuario (aparece de inmediato) -->
+            <div class="flex justify-end mb-3 opacity-0 animate-message-1">
               <div class="bg-white/20 backdrop-blur-sm rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[70%]">
                 <p class="text-sm text-white">Hola, quiero una cita para el jueves 🦷</p>
               </div>
             </div>
-            <!-- Respuesta del bot -->
-            <div class="flex justify-start mb-3">
+            <!-- Respuesta del bot (aparece a 1.5s) -->
+            <div class="flex justify-start mb-3 opacity-0 animate-message-2">
               <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[80%]">
                 <p class="text-sm text-gray-800">¡Hola! Para registrar tu cita, ¿cuál es tu nombre completo?</p>
               </div>
             </div>
-            <!-- Mensaje usuario -->
-            <div class="flex justify-end mb-3">
-              <div class="bg-white/20 backdrop-blur-sm rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[70%]">
-                <p class="text-sm text-white">Carlos Pérez</p>
-              </div>
-            </div>
-            <!-- Respuesta final -->
-            <div class="flex justify-start">
+            <!-- Confirmación final (aparece a 3s) -->
+            <div class="flex justify-start opacity-0 animate-message-3">
               <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[80%]">
                 <p class="text-sm text-gray-800">✅ ¡Tu cita del <strong>jueves a las 10:00 AM</strong> ha sido confirmada, Carlos. ¡Te esperamos!</p>
               </div>
