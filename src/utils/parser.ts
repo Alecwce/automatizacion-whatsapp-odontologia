@@ -33,8 +33,8 @@ export function parsePatientName(text: string): string | null {
     }
   }
 
-  // Regex para exigir al menos dos palabras separadas por espacios, conteniendo solo letras.
-  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]+)+$/;
+  // Regex para exigir al menos dos palabras separadas por espacios, conteniendo solo letras y con mínimo 3 caracteres cada una.
+  const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]{3,}(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]{3,})+$/;
   if (!nameRegex.test(cleaned)) {
     return null;
   }

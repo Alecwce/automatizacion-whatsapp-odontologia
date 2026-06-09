@@ -20,8 +20,7 @@ export const sessions = new Map<string, UserSession>();
 
 /**
  * Procesa la FSM conversacional para un usuario específico ante la llegada de un mensaje de texto.
- */
-export async function handleUserMessage(
+ */export async function handleUserMessage(
   senderJid: string,
   messageText: string,
   sender: { sendMessage: (jid: string, text: string) => Promise<any> }
@@ -51,7 +50,7 @@ export async function handleUserMessage(
       if (analysis.action === 'PREGUNTA') {
         await sender.sendMessage(
           senderJid,
-          analysis.reply || '¡Hola! Bienvenido al consultorio odontológico. ¿En qué podemos ayudarte hoy?'
+          analysis.reply || '🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido al consultorio odontológico. ¿En qué podemos ayudarte hoy? 🦷'
         );
         return;
       }
@@ -64,7 +63,7 @@ export async function handleUserMessage(
           sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
-            '¡Excelente! Tengo disponibilidad para esa fecha. Para registrar tu cita, ¿cuál es tu nombre completo?'
+            `🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Tengo disponibilidad para registrar tu cita.\n\nPara comenzar, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
           );
         } else {
           session.state = 'AWAITING_NAME';
@@ -72,7 +71,7 @@ export async function handleUserMessage(
           sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
-            '¡Hola! Claro que sí. Para comenzar tu registro, por favor dime tu nombre completo.'
+            `🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Para ayudarte a agendar una cita rápidamente, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
           );
         }
       }
@@ -84,7 +83,7 @@ export async function handleUserMessage(
       if (!parsedName) {
         await sender.sendMessage(
           senderJid,
-          'Por favor, ingresa un nombre y apellido válidos (ej: Carlos Pérez):'
+          '❌ *Nombre no válido.* Por favor, ingresa tu Nombre y Apellido completos (ej: Carlos Pérez). Ambos deben tener al menos 3 letras cada uno: 🦷'
         );
         return;
       }
@@ -96,7 +95,7 @@ export async function handleUserMessage(
 
       await sender.sendMessage(
         senderJid,
-        `Gracias, *${parsedName}*. Ahora, por favor ingresa tu número de *DNI o Cédula* (ej: 12345678 o V-12345678) para finalizar el registro.`
+        `✨ *¡Excelente!* \n\nMuchas gracias, *${parsedName}*. Ahora, para poder registrar tu ficha de atención de forma correcta en nuestro sistema, por favor bríndame tu número de *DNI* (debe contener exactamente 8 dígitos numéricos):`
       );
       break;
     }
@@ -110,7 +109,7 @@ export async function handleUserMessage(
           sessions.delete(cleanJid);
           await sender.sendMessage(
             senderJid,
-            'Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo.'
+            '❌ Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo: 🦷'
           );
           return;
         }
@@ -118,7 +117,7 @@ export async function handleUserMessage(
         sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
-          `Por favor, ingresa un DNI válido de 8 números. Intentos restantes: ${3 - session.attempts}:`
+          `⚠️ *DNI inválido.* Por favor, ingresa tu número de DNI que contenga exactamente 8 dígitos numéricos (ej. 12345678). Intentos restantes: ${3 - session.attempts}:`
         );
         return;
       }
@@ -132,7 +131,7 @@ export async function handleUserMessage(
 
         await sender.sendMessage(
           senderJid,
-          '¡Perfecto! Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+          '🦷 *¡Perfecto!* Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
         );
       } else {
         session.state = 'AWAITING_DATE';
@@ -141,7 +140,7 @@ export async function handleUserMessage(
 
         await sender.sendMessage(
           senderJid,
-          '¡DNI verificado con éxito! Ahora, para finalizar: *¿Qué día y a qué hora te gustaría agendar tu cita?* (ej: "mañana a las 3:30 pm", "el próximo lunes a las 10am"):'
+          '📅 *¡DNI verificado con éxito!* Ahora, para finalizar: *¿Qué día y a qué hora te gustaría agendar tu cita?* (ej: "mañana a las 3:30 pm", "el próximo lunes a las 10am"): 🦷'
         );
       }
       break;
@@ -156,7 +155,7 @@ export async function handleUserMessage(
           sessions.delete(cleanJid);
           await sender.sendMessage(
             senderJid,
-            'Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo.'
+            '❌ Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo: 🦷'
           );
           return;
         }
@@ -164,7 +163,7 @@ export async function handleUserMessage(
         sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
-          `No logré comprender la fecha u hora indicada. Por favor, sé más específico sobre el día y la hora de tu preferencia (ej: "mañana a las 3:30 pm" o "este viernes a las 10:00 am"). Intentos restantes: ${3 - session.attempts}:`
+          `🤔 No logré comprender la fecha u hora indicada. Por favor, sé más específico sobre el día y la hora de tu preferencia (ej: "mañana a las 3:30 pm" o "este viernes a las 10:00 am"). Intentos restantes: ${3 - session.attempts}:`
         );
         return;
       }
@@ -178,7 +177,7 @@ export async function handleUserMessage(
 
       await sender.sendMessage(
         senderJid,
-        '¡Perfecto! Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+        '🦷 *¡Perfecto!* Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
       );
       break;
     }
@@ -193,7 +192,7 @@ export async function handleUserMessage(
         sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
-          'Tuvimos un inconveniente al recordar el horario. Por favor, indícame nuevamente el día y la hora de tu preferencia:'
+          '⚠️ Tuvimos un inconveniente al recordar el horario. Por favor, indícame nuevamente el día y la hora de tu preferencia: 🦷'
         );
         return;
       }
@@ -206,7 +205,7 @@ export async function handleUserMessage(
         sessions.set(cleanJid, session);
         await sender.sendMessage(
           senderJid,
-          'Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora que te quede bien?'
+          '🗓️ Lo siento mucho, pero ese horario ya se encuentra reservado. ¿Podrías indicarme otro día u hora de tu preferencia? 🦷'
         );
         return;
       }
@@ -214,8 +213,8 @@ export async function handleUserMessage(
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';
       const phoneClean = cleanJid.split('@')[0];
-      const timestamp = new Date().toLocaleString('es-ES', { timeZone: 'America/Bogota' });
-      const appointmentDateStr = patientDate.toLocaleString('es-ES', { timeZone: 'America/Bogota' });
+      const timestamp = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
+      const appointmentDateStr = patientDate.toLocaleString('es-PE', { timeZone: 'America/Lima' });
 
       const sheetsPromise = appendPatientData({
         timestamp,
@@ -233,8 +232,8 @@ export async function handleUserMessage(
         calendarPromise
       ]);
 
-      const dateReadable = patientDate.toLocaleString('es-ES', {
-        timeZone: 'America/Bogota',
+      const dateReadable = patientDate.toLocaleString('es-PE', {
+        timeZone: 'America/Lima',
         weekday: 'long',
         year: 'numeric',
         month: 'long',
@@ -246,25 +245,25 @@ export async function handleUserMessage(
       if (sheetsSuccess && calendarSuccess) {
         await sender.sendMessage(
           senderJid,
-          `¡Excelente! Tu registro y cita para el día *${dateReadable}* han sido agendados de forma exitosa en nuestro consultorio. ¡Te esperamos!`
+          `✅ *¡CITA AGENDADA CON ÉXITO!* 📄\n\nTu espacio clínico ha sido reservado de forma correcta en nuestra Sede Principal de Huancayo.\n\n📅 *Fecha y Hora:* ${dateReadable}\n🪥 *Especialidad / Motivo:* ${session.patientReason}\n\n¡Muchas gracias por tu confianza! Por favor, recuerda asistir 10 minutos antes de tu turno. ¡Te esperamos! 🦷✨`
         );
       } else {
         if (sheetsSuccess && !calendarSuccess) {
           await sender.sendMessage(
             senderJid,
-            `¡Perfecto! Hemos registrado tus datos exitosamente en la base de datos, pero tuvimos un inconveniente técnico temporal al agendar el espacio en el calendario. Sin embargo, no te preocupes, un asesor se contactará contigo para confirmar el horario. ¡Te esperamos!`
+            `🦷 *¡Excelente!* Hemos registrado tus datos de forma correcta, pero tuvimos un retraso técnico temporal al reservar el espacio en nuestro calendario digital.\n\nNo te preocupes, tu solicitud está recibida y un asesor humano se contactará contigo de inmediato para confirmar tu horario. ¡Te esperamos! ✨`
           );
           console.warn(`[WARN] Cita de Google Calendar falló pero Sheets tuvo éxito: Nombre: ${patientName}, Fecha: ${dateReadable}`);
         } else if (!sheetsSuccess && calendarSuccess) {
           await sender.sendMessage(
             senderJid,
-            `¡Perfecto! Tu cita para el *${dateReadable}* ha sido agendada con éxito en nuestro calendario, pero tuvimos una demora al escribir tus datos. Tu cita está reservada. ¡Te esperamos!`
+            `📅 *¡Perfecto!* Tu cita para el *${dateReadable}* ha sido agendada con éxito en nuestro calendario, pero tuvimos una demora al guardar tu ficha técnica. Tu cita está asegurada. ¡Te esperamos! 🦷✨`
           );
           console.warn(`[WARN] Registro en Sheets falló pero Google Calendar tuvo éxito: Nombre: ${patientName}, Fecha: ${dateReadable}`);
         } else {
           await sender.sendMessage(
             senderJid,
-            `Disculpa, tuvimos un inconveniente técnico al guardar tu cita. Sin embargo, hemos capturado tus datos localmente en la terminal para agendarte manualmente. ¡Un asesor se contactará contigo en breve!`
+            `⚠️ Disculpa el inconveniente, tuvimos un problema técnico al procesar tu agenda. Sin embargo, hemos capturado tu información para asignarte tu cita de forma manual. ¡Un asesor te contactará en breve! 🦷`
           );
           console.error(`[FALTO CRÍTICO] Falló Sheets y Calendar: Teléfono: ${phoneClean}, Nombre: ${patientName}, DNI: ${patientDni}, Fecha: ${dateReadable}`);
         }
