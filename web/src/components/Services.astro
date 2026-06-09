@@ -1,49 +1,58 @@
 ---
-// Services: Grid responsive de 6 tarjetas de servicios odontológicos reales.
+// Services: Grid de 6 tarjetas tridimensionales con imágenes de stock premium y enlaces a WhatsApp.
 interface Service {
   icon: string;
   title: string;
   description: string;
+  image: string;
 }
+
+const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola JOMOVAK, quiero más información sobre sus servicios odontológicos.')}`;
 
 const services: Service[] = [
   {
     icon: '🔍',
     title: 'Diagnóstico',
-    description: 'Evaluación integral, radiografías de alta precisión y diseño de un plan de tratamiento personalizado a tu medida.',
+    description: 'Evaluación clínica completa, radiografías digitales de alta precisión y diseño de un plan de tratamiento preventivo y correctivo personalizado.',
+    image: 'https://images.unsplash.com/photo-1579684389782-64d84b5e901f?auto=format&fit=crop&w=600&h=400&q=80',
   },
   {
     icon: '✨',
     title: 'Estética Dental',
-    description: 'Diseño de sonrisa, carillas de porcelana y técnicas avanzadas de blanqueamiento para lograr una sonrisa radiante y natural.',
+    description: 'Carillas de porcelana de alta gama, diseño digital de sonrisa y blanqueamiento avanzado para devolver el brillo y naturalidad a tus dientes.',
+    image: 'https://images.unsplash.com/photo-1581594693702-fbdc51b2763b?auto=format&fit=crop&w=600&h=400&q=80',
   },
   {
     icon: '👶',
     title: 'Odontopediatría',
-    description: 'Cuidado dental especializado para los más pequeños, en un ambiente divertido, cálido y completamente libre de estrés.',
+    description: 'Atención dental infantil especializada, preventiva y lúdica. Cuidamos el crecimiento bucal de tus hijos en un espacio seguro y sin dolor.',
+    image: 'https://images.unsplash.com/photo-1472152083436-a6eede6efad9?auto=format&fit=crop&w=600&h=400&q=80',
   },
   {
     icon: '🦷',
     title: 'Ortodoncia',
-    description: 'Brackets metálicos, estéticos y alineadores invisibles de última generación para alinear tus dientes y mejorar tu mordida.',
+    description: 'Alineación dental mediante brackets metálicos tradicionales, cerámicos estéticos y alineadores invisibles termoplásticos de última generación.',
+    image: 'https://images.unsplash.com/photo-1598256989800-fe5f95da9787?auto=format&fit=crop&w=600&h=400&q=80',
   },
   {
     icon: '🔬',
     title: 'Cirugía e Implantes',
-    description: 'Restauración de piezas faltantes con implantes de titanio y cirugías reconstructivas mediante técnicas mínimamente invasivas.',
+    description: 'Restauración funcional y estética mediante implantes de titanio oseointegrados y cirugías bucales guiadas por especialistas calificados.',
+    image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=600&h=400&q=80',
   },
   {
     icon: '🩺',
     title: 'Odontología Integral',
-    description: 'Profilaxis profunda, curación de caries, endodoncias y prótesis para devolver la funcionalidad y salud completa a tu boca.',
+    description: 'Profilaxis dental ultrasónica, curación estética de caries, tratamientos de conducto (endodoncia) y prótesis fijas o removibles de alta duración.',
+    image: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=600&h=400&q=80',
   },
 ];
 ---
 
-<section class="py-20 sm:py-28 bg-gray-50/55">
+<section class="py-20 sm:py-28 bg-gray-50/50">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
 
-    <!-- Encabezado de sección -->
+    <!-- Encabezado de la sección -->
     <div class="text-center mb-16">
       <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
         Especialidades Médicas
@@ -53,37 +62,54 @@ const services: Service[] = [
       </h2>
     </div>
 
-    <!-- Grid de tarjetas (3 columnas en pantallas grandes) -->
+    <!-- Grid de Tarjetas Tridimensionales (3 columnas en desktop, 2 en tablet) -->
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
       {services.map((service) => (
-        <article class="group bg-white rounded-2xl p-8 border border-gray-100 border-t-4 border-violet-600 shadow-sm hover:shadow-xl hover:border-t-violet-800 transition-all duration-300 hover:-translate-y-2 flex flex-col justify-between">
-          <div>
-            <!-- Ícono en contenedor circular -->
-            <div
-              class="w-14 h-14 rounded-full bg-violet-50 flex items-center justify-center text-2xl mb-6 group-hover:bg-violet-700 group-hover:text-white group-hover:scale-110 transition-all duration-300 shadow-inner"
-              aria-hidden="true"
-            >
-              {service.icon}
+        <article class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+          
+          <!-- Imagen de Stock (Top) con Zoom en Hover -->
+          <div class="relative aspect-[4/3] overflow-hidden bg-gray-100">
+            <div class="absolute inset-0 bg-violet-950/5 z-10 group-hover:opacity-0 transition-opacity duration-300"></div>
+            <img
+              src={service.image}
+              alt={`Servicio de ${service.title} - Clínica JOMOVAK`}
+              class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+              loading="lazy"
+              decoding="async"
+            />
+          </div>
+
+          <!-- Cuerpo de Texto (Middle) y Acción (Bottom) -->
+          <div class="p-8 flex-grow flex flex-col justify-between">
+            <div>
+              <!-- Título en Bold y en mayúscula -->
+              <h3 class="text-sm font-extrabold text-violet-700 tracking-wider uppercase mb-3">
+                {service.title}
+              </h3>
+              <!-- Descripción corta -->
+              <p class="text-sm text-gray-600 leading-relaxed">
+                {service.description}
+              </p>
             </div>
 
-            <!-- Título -->
-            <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-violet-700 transition-colors duration-200">
-              {service.title}
-            </h3>
-
-            <!-- Descripción -->
-            <p class="text-sm text-gray-600 leading-relaxed">
-              {service.description}
-            </p>
+            <!-- Botón de Acción (Bottom) -->
+            <div class="mt-8 pt-5 border-t border-gray-50 flex items-center justify-between">
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center gap-1.5 text-xs font-bold text-violet-700 hover:text-violet-900 transition-colors tracking-wider uppercase font-sans focus:outline-none"
+              >
+                VER MÁS
+                <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
+              </a>
+              <!-- Icono flotante sutil -->
+              <span class="text-xl opacity-80 select-none" aria-hidden="true">
+                {service.icon}
+              </span>
+            </div>
           </div>
 
-          <!-- Link sutil de llamada a la acción -->
-          <div class="mt-6 pt-4 border-t border-gray-50 flex items-center gap-1 text-xs font-bold text-violet-700 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-            Consultar especialidad 
-            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
-              <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.97H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
-            </svg>
-          </div>
         </article>
       ))}
     </div>
