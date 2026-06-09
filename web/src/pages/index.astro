@@ -1,0 +1,24 @@
+---
+// Landing Page — Clínica Odontológica JOMOVAK
+// Source: https://docs.astro.build/en/basics/astro-pages/
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Hero from '../components/Hero.astro';
+import Services from '../components/Services.astro';
+import TechSection from '../components/TechSection.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Clínica Odontológica JOMOVAK — Agenda tu cita por WhatsApp"
+  description="Clínica odontológica moderna con bot de IA 24/7. Agenda tu cita por WhatsApp en segundos. Limpieza, ortodoncia, endodoncia y restauraciones en Lima, Perú."
+>
+  <Nav />
+  <main>
+    <Hero />
+    <Services />
+    <TechSection />
+  </main>
+  <Footer />
+</Layout>
+

@@ -1,0 +1,113 @@
+---
+// TechSection: Bloque que destaca la automatización IA del consultorio.
+interface Feature {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+const features: Feature[] = [
+  {
+    icon: '🤖',
+    title: 'Bot con IA 24/7',
+    description: 'Nuestro asistente virtual procesa tu mensaje en WhatsApp, valida la disponibilidad en tiempo real y confirma tu cita al instante — sin intervención humana.',
+  },
+  {
+    icon: '📋',
+    title: 'Historial Electrónico',
+    description: 'Cada paciente cuenta con un expediente digital seguro en la nube. El doctor accede a radiografías, diagnósticos y tratamientos anteriores antes de cada consulta.',
+  },
+];
+---
+
+<section id="tecnologia" class="py-20 sm:py-28 bg-white">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+
+      <!-- Texto descriptivo -->
+      <div>
+        <p class="text-sm font-semibold text-[#0066cc] uppercase tracking-widest mb-3">
+          Tecnología de Vanguardia
+        </p>
+        <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight mb-5">
+          Un consultorio que trabaja por ti, incluso de madrugada.
+        </h2>
+        <p class="text-lg text-gray-600 leading-relaxed mb-10">
+          Integramos inteligencia artificial con los procesos clínicos para que la experiencia del paciente sea fluida, rápida y sin fricciones desde el primer contacto.
+        </p>
+
+        <!-- Features -->
+        <div class="flex flex-col gap-7">
+          {features.map((feature) => (
+            <div class="flex items-start gap-5">
+              <div
+                class="text-2xl w-12 h-12 flex-shrink-0 flex items-center justify-center bg-[#e8f2ff] rounded-xl"
+                aria-hidden="true"
+              >
+                {feature.icon}
+              </div>
+              <div>
+                <h3 class="font-bold text-gray-900 text-base mb-1">{feature.title}</h3>
+                <p class="text-sm text-gray-600 leading-relaxed">{feature.description}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <!-- Panel visual decorativo -->
+      <div
+        class="relative bg-[#0066cc] rounded-3xl p-8 sm:p-10 text-white overflow-hidden"
+        aria-hidden="true"
+      >
+        <!-- Círculos decorativos de fondo -->
+        <div class="absolute top-0 right-0 w-40 h-40 bg-white/10 rounded-full -translate-y-1/2 translate-x-1/3"></div>
+        <div class="absolute bottom-0 left-0 w-28 h-28 bg-white/10 rounded-full translate-y-1/2 -translate-x-1/3"></div>
+
+        <div class="relative z-10">
+          <!-- Simulación de chat del bot -->
+          <div class="mb-6">
+            <p class="text-xs text-blue-200 font-medium mb-3 uppercase tracking-wider">Vista previa del Bot</p>
+            <!-- Mensaje usuario -->
+            <div class="flex justify-end mb-3">
+              <div class="bg-white/20 backdrop-blur-sm rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[70%]">
+                <p class="text-sm text-white">Hola, quiero una cita para el jueves 🦷</p>
+              </div>
+            </div>
+            <!-- Respuesta del bot -->
+            <div class="flex justify-start mb-3">
+              <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[80%]">
+                <p class="text-sm text-gray-800">¡Hola! Para registrar tu cita, ¿cuál es tu nombre completo?</p>
+              </div>
+            </div>
+            <!-- Mensaje usuario -->
+            <div class="flex justify-end mb-3">
+              <div class="bg-white/20 backdrop-blur-sm rounded-2xl rounded-tr-sm px-4 py-2.5 max-w-[70%]">
+                <p class="text-sm text-white">Carlos Pérez</p>
+              </div>
+            </div>
+            <!-- Respuesta final -->
+            <div class="flex justify-start">
+              <div class="bg-white rounded-2xl rounded-tl-sm px-4 py-2.5 max-w-[80%]">
+                <p class="text-sm text-gray-800">✅ ¡Tu cita del <strong>jueves a las 10:00 AM</strong> ha sido confirmada, Carlos. ¡Te esperamos!</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Estadísticas -->
+          <div class="grid grid-cols-2 gap-4 pt-6 border-t border-white/20">
+            <div>
+              <p class="text-3xl font-extrabold text-white">24/7</p>
+              <p class="text-sm text-blue-200">Disponibilidad</p>
+            </div>
+            <div>
+              <p class="text-3xl font-extrabold text-white">&lt; 30s</p>
+              <p class="text-sm text-blue-200">Para confirmar</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>

@@ -1,0 +1,10 @@
+/* Source: https://tailwindcss.com/docs/installation/framework-guides/astro
+   Tailwind v4: no tailwind.config.js needed. Config is CSS-native. */
+@import "tailwindcss";
+
+@theme {
+  --color-brand: #0066cc;
+  --color-brand-dark: #004fa3;
+  --color-brand-light: #e8f2ff;
+  --font-sans: 'Inter', system-ui, sans-serif;
+}

@@ -1,0 +1,72 @@
+---
+// Services: Grid responsive de 4 tarjetas de servicios odontológicos.
+interface Service {
+  icon: string;
+  title: string;
+  description: string;
+}
+
+const services: Service[] = [
+  {
+    icon: '🦷',
+    title: 'Limpieza Dental',
+    description: 'Profilaxis profesional y eliminación del sarro. Deja tus dientes radiantes con una limpieza profunda a cargo de nuestros especialistas.',
+  },
+  {
+    icon: '🪥',
+    title: 'Restauraciones',
+    description: 'Reparamos caries y fracturas con resinas de alta estética que imitan el color natural de tu diente. Resultados naturales e imperceptibles.',
+  },
+  {
+    icon: '🩺',
+    title: 'Endodoncia',
+    description: 'Tratamiento de conducto sin dolor con tecnología rotacional de última generación. Salvamos tu diente y eliminamos la infección por completo.',
+  },
+  {
+    icon: '😁',
+    title: 'Ortodoncia',
+    description: 'Brackets metálicos, cerámicos y alineadores invisibles. Corregimos la posición de tus dientes con el plan más adecuado para tu caso.',
+  },
+];
+---
+
+<section id="servicios" class="py-20 sm:py-28 bg-gray-50">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+
+    <!-- Encabezado de sección -->
+    <div class="text-center mb-14">
+      <p class="text-sm font-semibold text-[#0066cc] uppercase tracking-widest mb-3">
+        Nuestros Servicios
+      </p>
+      <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight">
+        Cuidamos tu salud bucal <br class="hidden sm:block" />de principio a fin
+      </h2>
+    </div>
+
+    <!-- Grid de tarjetas -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+      {services.map((service) => (
+        <article class="group bg-white rounded-2xl p-7 border border-gray-100 shadow-sm hover:shadow-md hover:border-[#0066cc]/20 transition-all duration-300 hover:-translate-y-1">
+          <!-- Ícono -->
+          <div
+            class="text-4xl mb-5 w-14 h-14 flex items-center justify-center bg-[#e8f2ff] rounded-xl group-hover:bg-[#0066cc] group-hover:scale-110 transition-all duration-300"
+            aria-hidden="true"
+          >
+            {service.icon}
+          </div>
+
+          <!-- Título -->
+          <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-[#0066cc] transition-colors duration-200">
+            {service.title}
+          </h3>
+
+          <!-- Descripción -->
+          <p class="text-sm text-gray-600 leading-relaxed">
+            {service.description}
+          </p>
+        </article>
+      ))}
+    </div>
+
+  </div>
+</section>
