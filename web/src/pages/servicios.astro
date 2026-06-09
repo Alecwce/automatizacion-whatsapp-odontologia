@@ -1,0 +1,21 @@
+---
+// Página de Especialidades y Servicios Odontológicos
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Services from '../components/Services.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Nuestros Servicios Especializados — Clínica Odontológica JOMOVAK"
+  description="Explora nuestras especialidades: Diagnóstico, Estética Dental, Odontopediatría, Ortodoncia, Cirugía e Implantes, y Odontología Integral en Huancayo y Lima."
+>
+  <Nav />
+  <main>
+    <!-- Catálogo de Especialidades Médicas -->
+    <div id="servicios">
+      <Services />
+    </div>
+  </main>
+  <Footer />
+</Layout>
