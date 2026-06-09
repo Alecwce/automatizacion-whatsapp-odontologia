@@ -103,7 +103,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('por favor dime tu nombre completo')
+      expect.stringContaining('por favor confírmame tu *Nombre y Apellido*')
     );
 
     const session = sessions.get(testJid);
@@ -117,7 +117,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
 
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('¿cuál es tu nombre completo?')
+      expect.stringContaining('por favor confírmame tu *Nombre y Apellido*')
     );
 
     const sessionAfterInit = sessions.get(testJid);
@@ -129,7 +129,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
 
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('ingresa tu número de *DNI o Cédula*')
+      expect.stringContaining('por favor bríndame tu número de *DNI*')
     );
 
     const sessionAfterName = sessions.get(testJid);
@@ -172,7 +172,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('agendados de forma exitosa')
+      expect.stringContaining('CITA AGENDADA CON ÉXITO!')
     );
 
     expect(sessions.has(testJid)).toBe(false);
@@ -194,7 +194,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     );
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('ingresa tu número de *DNI o Cédula*')
+      expect.stringContaining('por favor bríndame tu número de *DNI*')
     );
 
     const session = sessions.get(testJid);
@@ -302,7 +302,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
     expect(mockSender.sendMessage).toHaveBeenCalledTimes(1);
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('agendados de forma exitosa')
+      expect.stringContaining('CITA AGENDADA CON ÉXITO!')
     );
 
     expect(sessions.has(testJid)).toBe(false);
@@ -425,7 +425,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
 
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('Por favor, ingresa un nombre y apellido válidos')
+      expect.stringContaining('Nombre no válido.')
     );
 
     const session = sessions.get(testJid);
@@ -451,7 +451,7 @@ describe('Máquina de Estados Finita (FSM) del Bot Conversacional', () => {
 
     expect(mockSender.sendMessage).toHaveBeenCalledWith(
       testJid,
-      expect.stringContaining('Por favor, ingresa un DNI válido de 8 números')
+      expect.stringContaining('DNI inválido.')
     );
 
     const session = sessions.get(testJid);

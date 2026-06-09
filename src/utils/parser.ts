@@ -33,6 +33,11 @@ export function parsePatientName(text: string): string | null {
     }
   }
 
+  // Filtro militar: no debe contener ningún número ni carácter especial (solo letras y espacios)
+  if (/[^a-zA-ZáéíóúÁÉÍÓÚñÑüÜ\s]/.test(cleaned)) {
+    return null;
+  }
+
   // Regex para exigir al menos dos palabras separadas por espacios, conteniendo solo letras y con mínimo 3 caracteres cada una.
   const nameRegex = /^[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]{3,}(?:\s+[a-zA-ZáéíóúÁÉÍÓÚñÑüÜ]{3,})+$/;
   if (!nameRegex.test(cleaned)) {
