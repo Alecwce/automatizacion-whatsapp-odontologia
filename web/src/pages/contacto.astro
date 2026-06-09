@@ -1,0 +1,180 @@
+---
+// Página de Contacto: Horarios de Atención y Sedes Geográficas
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Footer from '../components/Footer.astro';
+
+const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola JOMOVAK, tengo una consulta respecto a sus horarios y ubicaciones.')}`;
+
+const branches = [
+  {
+    city: 'Huancayo',
+    name: 'Sede El Tambo',
+    address: 'Av. Julio C. Tello 456, El Tambo, Huancayo (Frente al Parque de la Identidad)',
+    phone: '+51 (064) 245678',
+    mapsUrl: 'https://maps.google.com/?q=Av.+Julio+C.+Tello+El+Tambo+Huancayo',
+  },
+  {
+    city: 'Huancayo',
+    name: 'Sede Real Mayor',
+    address: 'Jr. Real 789, Huancayo Centro (A media cuadra de la Plaza Constitución)',
+    phone: '+51 (064) 238910',
+    mapsUrl: 'https://maps.google.com/?q=Jr.+Real+Plaza+Constitucion+Huancayo',
+  },
+  {
+    city: 'Lima',
+    name: 'Sede Santiago de Surco',
+    address: 'Av. Caminos del Inca 123, Of. 402, Santiago de Surco, Lima',
+    phone: '+51 (01) 3456789',
+    mapsUrl: 'https://maps.google.com/?q=Av.+Caminos+del+Inca+Santiago+de+Surco+Lima',
+  },
+];
+---
+
+<Layout
+  title="Contacto y Ubicaciones — Clínica Odontológica JOMOVAK"
+  description="Contacta con JOMOVAK. Horarios de atención en Huancayo y Lima, direcciones detalladas y acceso directo para agendar citas por WhatsApp."
+>
+  <Nav />
+  <main>
+    <section id="contacto" class="py-20 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Encabezado de la página -->
+        <div class="text-center mb-16">
+          <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+            Atención al Paciente
+          </p>
+          <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            Contacto y Ubicaciones
+          </h1>
+          <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+            Estamos listos para atenderte en cualquiera de nuestras sedes. Agenda tu cita en segundos.
+          </p>
+        </div>
+
+        <!-- Grid de dos columnas -->
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+          
+          <!-- Columna Izquierda: Horarios y Contacto Rápido (lg:col-span-5) -->
+          <div class="lg:col-span-5 flex flex-col gap-8">
+            
+            <!-- Tarjeta de Horarios -->
+            <div class="bg-gray-50/50 border border-gray-100 p-8 rounded-3xl flex flex-col gap-6 shadow-sm">
+              <div class="flex items-center gap-3">
+                <div class="w-10 h-10 rounded-xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl shadow-sm" aria-hidden="true">
+                  🕒
+                </div>
+                <div>
+                  <h2 class="font-extrabold text-gray-900 text-lg">Horarios de Atención</h2>
+                  <p class="text-xs text-gray-500">Consulta nuestras horas disponibles</p>
+                </div>
+              </div>
+
+              <!-- Bloque horarios detallado -->
+              <div class="bg-white p-5 rounded-2xl border border-gray-100 shadow-sm flex flex-col gap-4">
+                <div class="flex justify-between items-center pb-3 border-b border-gray-100">
+                  <span class="text-sm font-bold text-gray-800">Lunes a Sábado</span>
+                  <span class="text-xs font-extrabold text-violet-700 bg-violet-50 px-2.5 py-1 rounded-full uppercase tracking-wider">Oficial</span>
+                </div>
+                
+                <div class="space-y-4">
+                  <div>
+                    <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider block mb-1">Turno Mañana</span>
+                    <p class="text-base font-bold text-gray-800">9:00 AM - 1:00 PM</p>
+                  </div>
+                  <div class="pt-3 border-t border-gray-50">
+                    <span class="text-[10px] font-extrabold text-gray-400 uppercase tracking-wider block mb-1">Turno Tarde</span>
+                    <p class="text-base font-bold text-gray-800">3:00 PM - 8:00 PM</p>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Nota de disponibilidad IA -->
+              <div class="bg-violet-50/50 border border-violet-100/50 rounded-2xl p-5 flex items-start gap-3">
+                <span class="text-xl" aria-hidden="true">🤖</span>
+                <div>
+                  <h3 class="text-sm font-bold text-violet-800 mb-1">Citas automatizadas 24/7</h3>
+                  <p class="text-xs text-gray-600 leading-relaxed">
+                    Nuestro asistente virtual de WhatsApp procesa tu solicitud incluso fuera del horario de atención clínica.
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <!-- Información General de Soporte -->
+            <div class="bg-gray-50/50 border border-gray-100 p-8 rounded-3xl flex flex-col gap-6 shadow-sm">
+              <h3 class="font-extrabold text-gray-900 text-base">¿Tienes alguna duda adicional?</h3>
+              <p class="text-sm text-gray-600 leading-relaxed">
+                Escríbenos directamente y nuestro equipo administrativo se pondrá en contacto contigo para resolver cualquier duda sobre seguros, convenios o tarifas.
+              </p>
+              <a
+                href={whatsappUrl}
+                target="_blank"
+                rel="noopener noreferrer"
+                class="inline-flex items-center justify-center bg-violet-700 hover:bg-violet-800 text-white text-sm font-bold py-3.5 px-6 rounded-full transition-all duration-200 hover:shadow-lg hover:shadow-violet-200 tracking-wide"
+              >
+                Conversar por WhatsApp
+              </a>
+            </div>
+
+          </div>
+
+          <!-- Columna Derecha: Sedes Clínicas (lg:col-span-7) -->
+          <div class="lg:col-span-7 flex flex-col gap-6">
+            
+            <h2 class="font-extrabold text-gray-900 text-xl mb-2 flex items-center gap-2">
+              📍 Sedes Disponibles
+            </h2>
+
+            <!-- Renderizado de las Sedes -->
+            {branches.map((b) => (
+              <article class="group bg-white border border-gray-100 rounded-3xl p-6 sm:p-8 shadow-sm hover:shadow-lg hover:border-violet-100 transition-all duration-300 flex flex-col sm:flex-row items-start justify-between gap-6">
+                <div class="flex-grow flex items-start gap-4">
+                  <!-- Indicador de Sede -->
+                  <div class="w-10 h-10 rounded-xl bg-violet-50 text-violet-700 flex items-center justify-center font-bold text-sm shadow-inner flex-shrink-0" aria-hidden="true">
+                    🏥
+                  </div>
+                  <div>
+                    <span class="text-[10px] font-extrabold text-violet-700 uppercase tracking-widest block mb-1">
+                      {b.city}
+                    </span>
+                    <h3 class="text-lg font-bold text-gray-900 mb-2 group-hover:text-violet-700 transition-colors">
+                      {b.name}
+                    </h3>
+                    <p class="text-sm text-gray-600 leading-relaxed mb-3">
+                      {b.address}
+                    </p>
+                    <p class="text-xs text-gray-500 font-semibold flex items-center gap-1.5">
+                      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5 text-gray-400">
+                        <path fill-rule="evenodd" d="M2 3.5A1.5 1.5 0 013.5 2h1.148a1.5 1.5 0 011.465 1.175l.716 3.223a1.5 1.5 0 01-1.052 1.767l-.933.267c-.41.117-.643.555-.48 1.05a9.039 9.039 0 005.008 5.007c.495.163.933-.07.1.05l.267-.933a1.5 1.5 0 011.767-1.052l3.223.716A1.5 1.5 0 0118 15.352V16.5a1.5 1.5 0 01-1.5 1.5h-1.15a14.923 14.923 0 01-10.759-4.43A14.923 14.923 0 012 3.5z" clip-rule="evenodd" />
+                      </svg>
+                      {b.phone}
+                    </p>
+                  </div>
+                </div>
+
+                <!-- Botón Mapa -->
+                <a
+                  href={b.mapsUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 border border-violet-100 text-violet-700 bg-violet-50/50 hover:bg-violet-100 hover:text-violet-900 text-xs font-bold px-4 py-3 rounded-2xl transition-all duration-200 flex-shrink-0"
+                >
+                  Ver ubicación
+                  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" class="w-3.5 h-3.5">
+                    <path fill-rule="evenodd" d="M3 10a.75.75 0 01.75-.75h10.638L10.23 5.29a.75.75 0 111.04-1.08l5.5 5.25a.75.75 0 010 1.08l-5.5 5.25a.75.75 0 11-1.04-1.08l4.158-3.97H3.75A.75.75 0 013 10z" clip-rule="evenodd" />
+                  </svg>
+                </a>
+              </article>
+            ))}
+
+          </div>
+
+        </div>
+
+      </div>
+    </section>
+  </main>
+  <Footer />
+</Layout>
