@@ -1,0 +1,77 @@
+---
+// Página Corporativa: Quiénes Somos y Staff Clínico
+import Layout from '../layouts/Layout.astro';
+import Nav from '../components/Nav.astro';
+import Values from '../components/Values.astro';
+import Testimonials from '../components/Testimonials.astro';
+import Footer from '../components/Footer.astro';
+---
+
+<Layout
+  title="Quiénes Somos — Clínica Odontológica JOMOVAK"
+  description="Conoce la Clínica JOMOVAK. Infraestructura moderna, staff de especialistas comprometidos con la salud y estética bucal. Atiéndete en Huancayo y Lima."
+>
+  <Nav />
+  <main>
+    <!-- Cabecera y Descripción Corporativa -->
+    <section id="nosotros" class="bg-gray-50/30 py-20 border-b border-gray-100">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
+          
+          <!-- Columna Texto -->
+          <div>
+            <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+              Nuestra Clínica
+            </p>
+            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
+              Compromiso absoluto con tu salud y estética bucal
+            </h1>
+            <p class="text-base text-gray-600 leading-relaxed mb-6">
+              En la <strong>Clínica Odontológica JOMOVAK</strong> nos dedicamos a transformar vidas cuidando de tu salud y estética bucal. Nacimos con la visión de acercar la odontología especializada de primer nivel a más familias, combinando una infraestructura moderna con el trato humano, ético y empático que mereces.
+            </p>
+            <p class="text-base text-gray-600 leading-relaxed">
+              Nuestro staff médico está integrado por profesionales altamente calificados en diversas ramas odontológicas. Desde diagnósticos digitales avanzados hasta tratamientos complejos de cirugía y rehabilitación estética, cada procedimiento se realiza bajo estrictos estándares internacionales de bioseguridad, utilizando insumos certificados y tecnología de vanguardia.
+            </p>
+          </div>
+
+          <!-- Columna Panel Decorativo Visual (Estilo Premium) -->
+          <div class="relative bg-gradient-to-tr from-violet-700 to-indigo-700 rounded-3xl p-8 sm:p-10 text-white overflow-hidden shadow-xl shadow-violet-200/50">
+            <!-- Círculos decorativos de fondo -->
+            <div class="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/3"></div>
+            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
+            
+            <div class="relative z-10 flex flex-col gap-6">
+              <span class="text-xs font-bold text-violet-200 uppercase tracking-wider block">Estándar JOMOVAK</span>
+              <h2 class="text-2xl font-bold leading-tight">Infraestructura y Tecnología de Vanguardia</h2>
+              <p class="text-sm text-violet-100 leading-relaxed">
+                Nuestros consultorios están completamente equipados con radiología digital, unidades ergonómicas de última generación y sistemas rotatorios para endodoncia sin dolor.
+              </p>
+              <div class="grid grid-cols-2 gap-4 mt-4 pt-6 border-t border-white/20">
+                <div>
+                  <p class="text-3xl font-extrabold">100%</p>
+                  <p class="text-xs text-violet-200">Material Certificado</p>
+                </div>
+                <div>
+                  <p class="text-3xl font-extrabold">10+</p>
+                  <p class="text-xs text-violet-200">Especialistas Médicos</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Componente de Valores Corporativos -->
+    <div>
+      <Values />
+    </div>
+
+    <!-- Componente de Testimonios y Reseñas de Google (Staff) -->
+    <div id="staff">
+      <Testimonials />
+    </div>
+  </main>
+  <Footer />
+</Layout>
