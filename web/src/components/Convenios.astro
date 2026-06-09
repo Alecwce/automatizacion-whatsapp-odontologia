@@ -2,16 +2,17 @@
 // Convenios: Listado de marcas aseguradoras en un grid elegante de logotipos corporativos simulados.
 interface Insurance {
   name: string;
-  badgeColor: string;
-  badgeTextColor: string;
+  brandName: string;
+  brandSubName?: string;
+  textColorClass: string;
 }
 
 const insurances: Insurance[] = [
-  { name: 'RIMAC Seguros', badgeColor: 'bg-red-50', badgeTextColor: 'text-red-700' },
-  { name: 'MAPFRE', badgeColor: 'bg-red-50', badgeTextColor: 'text-red-600' },
-  { name: 'Pacífico Seguros', badgeColor: 'bg-blue-50', badgeTextColor: 'text-blue-700' },
-  { name: 'SIGMA', badgeColor: 'bg-emerald-50', badgeTextColor: 'text-emerald-700' },
-  { name: 'Sanitas', badgeColor: 'bg-cyan-50', badgeTextColor: 'text-cyan-700' },
+  { name: 'RIMAC Seguros', brandName: 'RIMAC', brandSubName: 'SEGUROS', textColorClass: 'text-red-600' },
+  { name: 'MAPFRE', brandName: 'MAPFRE', textColorClass: 'text-red-700' },
+  { name: 'Pacífico Seguros', brandName: 'Pacífico', brandSubName: 'SEGUROS', textColorClass: 'text-blue-500' },
+  { name: 'SIGMA', brandName: 'SIGMA', textColorClass: 'text-emerald-600' },
+  { name: 'Sanitas', brandName: 'Sanitas', textColorClass: 'text-blue-800' },
 ];
 ---
 
@@ -34,15 +35,15 @@ const insurances: Insurance[] = [
     <!-- Grid de Aseguradoras -->
     <div class="grid grid-cols-2 md:grid-cols-5 gap-6 items-center justify-center">
       {insurances.map((ins) => (
-        <div class="group bg-white border border-gray-100/80 rounded-2xl p-6 h-24 flex items-center justify-center shadow-sm hover:shadow-md hover:border-violet-100 transition-all duration-300 hover:-translate-y-1 select-none">
+        <div class="group bg-white rounded-2xl p-6 h-24 flex items-center justify-center shadow-md hover:-translate-y-1 hover:shadow-xl transition-all duration-300 select-none">
           <div class="flex flex-col items-center justify-center text-center">
             <!-- Simulación de Logo corporativo -->
-            <span class="text-sm font-extrabold text-gray-400 group-hover:text-gray-800 transition-colors duration-300">
-              {ins.name.split(' ')[0]}
+            <span class={`font-black text-2xl tracking-tight transition-colors duration-300 ${ins.textColorClass}`}>
+              {ins.brandName}
             </span>
-            {ins.name.split(' ')[1] && (
-              <span class="text-[10px] font-bold text-gray-300 group-hover:text-violet-600 transition-colors duration-300 uppercase tracking-widest mt-0.5">
-                {ins.name.split(' ')[1]}
+            {ins.brandSubName && (
+              <span class="text-[9px] font-bold text-gray-400 uppercase tracking-widest mt-0.5 transition-colors duration-300">
+                {ins.brandSubName}
               </span>
             )}
           </div>
