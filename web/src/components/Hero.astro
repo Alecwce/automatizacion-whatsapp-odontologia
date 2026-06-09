@@ -76,14 +76,22 @@ const whatsappUrl = `https://wa.me/${phone}?${params.toString()}`;
           <!-- Resplandor decorativo de fondo -->
           <div class="absolute -inset-1.5 bg-gradient-to-r from-blue-600 to-cyan-500 rounded-3xl blur-2xl opacity-15 group-hover:opacity-25 transition duration-1000"></div>
           
-          <div class="relative bg-white/80 backdrop-blur-md p-6 sm:p-8 rounded-3xl border border-blue-50/50 shadow-2xl shadow-blue-100/50 max-w-sm overflow-hidden flex items-center justify-center">
-            <img
-              src="/jomovak.png"
-              alt="Clínica Odontológica JOMOVAK Logo"
-              class="w-full h-auto max-h-[320px] object-contain transition-transform duration-500 hover:scale-102"
-              loading="eager"
-              decoding="async"
-            />
+          <!-- Contenedor con gradiente de fondo sutil y sombra 2xl -->
+          <div class="relative p-1.5 rounded-[32px] bg-gradient-to-tr from-blue-100 via-white to-blue-50 shadow-2xl shadow-blue-200/50">
+            <div class="relative bg-white/90 backdrop-blur-md p-6 sm:p-8 rounded-[26px] border border-blue-50/50 max-w-sm overflow-hidden flex items-center justify-center">
+              <img
+                src="/jomovak.png"
+                alt="Clínica Odontológica JOMOVAK Logo"
+                class="w-full h-auto max-h-[320px] object-contain transition-transform duration-500 hover:scale-102"
+                loading="eager"
+                decoding="async"
+              />
+            </div>
+
+            <!-- Badge o etiqueta flotante de Atención Rápida -->
+            <div class="absolute -top-2.5 -right-2.5 z-10 bg-white text-[#0066cc] font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md border border-blue-100/80 animate-pulse flex items-center gap-1 select-none">
+              Atención Rápida ⚡
+            </div>
           </div>
         </div>
       </div>
