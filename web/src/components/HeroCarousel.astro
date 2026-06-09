@@ -1,64 +1,85 @@
 ---
 // HeroCarousel: Banner principal interactivo de la portada con slider de 3 imágenes clínicas y acceso a WhatsApp.
-const phone = '51900000000';
-const message = 'Hola JOMOVAK, quiero agendar una cita odontológica.';
+const phone = "51900000000";
+const message = "Hola JOMOVAK, quiero agendar una cita odontológica.";
 const params = new URLSearchParams({ text: message });
 const whatsappUrl = `https://wa.me/${phone}?${params.toString()}`;
 
 const slides = [
   {
-    image: 'https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Instalaciones clínicas odontológicas avanzadas - JOMOVAK',
+    image:
+      "https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&fit=crop&w=1920&q=80",
+    alt: "Instalaciones clínicas odontológicas avanzadas - JOMOVAK",
   },
   {
-    image: 'https://images.unsplash.com/photo-1579684389782-64d84b5e901f?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Especialistas dentales trabajando con tecnología digital - JOMOVAK',
+    image:
+      "https://images.unsplash.com/photo-1579684389782-64d84b5e901f?auto=format&fit=crop&w=1920&q=80",
+    alt: "Especialistas dentales trabajando con tecnología digital - JOMOVAK",
   },
   {
-    image: 'https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1920&q=80',
-    alt: 'Paciente feliz sonriendo en el consultorio - JOMOVAK',
+    image:
+      "https://images.unsplash.com/photo-1606811971618-4486d14f3f99?auto=format&fit=crop&w=1920&q=80",
+    alt: "Paciente feliz sonriendo en el consultorio - JOMOVAK",
   },
 ];
 ---
 
-<section class="relative overflow-hidden w-full h-[450px] sm:h-[550px] lg:h-[600px] bg-gray-950 flex items-center justify-center">
-
+<section
+  class="relative overflow-hidden w-full h-[450px] sm:h-[550px] lg:h-[600px] bg-gray-950 flex items-center justify-center"
+>
   <!-- Slider de Imágenes de Fondo -->
   <div class="absolute inset-0 w-full h-full select-none pointer-events-none">
-    {slides.map((slide, idx) => (
-      <img
-        src={slide.image}
-        alt={slide.alt}
-        class={`carousel-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === 0 ? 'opacity-100' : 'opacity-0'}`}
-        loading={idx === 0 ? 'eager' : 'lazy'}
-        decoding="async"
-      />
-    ))}
+    {
+      slides.map((slide, idx) => (
+        <img
+          src={slide.image}
+          alt={slide.alt}
+          class={`carousel-slide absolute inset-0 w-full h-full object-cover transition-opacity duration-700 ease-in-out ${idx === 0 ? "opacity-100" : "opacity-0"}`}
+          loading={idx === 0 ? "eager" : "lazy"}
+          decoding="async"
+        />
+      ))
+    }
   </div>
 
   <!-- Overlay Oscuro Sutil de Contraste -->
   <div class="absolute inset-0 bg-black/45 z-10" aria-hidden="true"></div>
 
   <!-- Contenido Flotante y Centrado -->
-  <div class="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white flex flex-col items-center justify-center h-full">
+  <div
+    class="relative z-20 max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center text-white flex flex-col items-center justify-center h-full"
+  >
     <!-- Badge Premium -->
-    <div class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-violet-300 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-white/5 shadow-inner select-none">
+    <div
+      class="inline-flex items-center gap-2 bg-white/10 backdrop-blur-md text-violet-300 text-xs sm:text-sm font-semibold px-4 py-1.5 rounded-full mb-6 border border-white/5 shadow-inner select-none"
+    >
       <span class="relative flex h-2 w-2" aria-hidden="true">
-        <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"></span>
-        <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-400"></span>
+        <span
+          class="animate-ping absolute inline-flex h-full w-full rounded-full bg-violet-400 opacity-75"
+        ></span>
+        <span class="relative inline-flex rounded-full h-2 w-2 bg-violet-400"
+        ></span>
       </span>
       Clínica Dental Avanzada
     </div>
 
     <!-- Título de Impacto -->
-    <h1 class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 drop-shadow-md select-text">
+    <h1
+      class="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight leading-tight mb-6 drop-shadow-md select-text"
+    >
       Tu salud bucal en<br />
-      <span class="text-violet-400 bg-gradient-to-r from-violet-400 to-indigo-300 bg-clip-text text-transparent">manos de especialistas</span>.
+      <span
+        class="text-violet-400 bg-gradient-to-r from-violet-400 to-indigo-300 bg-clip-text text-transparent"
+        >manos de especialistas</span
+      >.
     </h1>
 
     <!-- Subtítulo Descriptivo -->
-    <p class="text-sm sm:text-lg text-gray-200 mb-8 max-w-xl sm:max-w-2xl leading-relaxed drop-shadow-sm font-medium select-text">
-      Cuidamos tu sonrisa con profesionales calificados, tecnología digital avanzada y atención personalizada en nuestras sedes de Huancayo y Lima.
+    <p
+      class="text-sm sm:text-lg text-gray-200 mb-8 max-w-xl sm:max-w-2xl leading-relaxed drop-shadow-sm font-medium select-text"
+    >
+      Cuidamos tu sonrisa con profesionales calificados, tecnología digital
+      avanzada y atención personalizada en nuestra sede de Huancayo.
     </p>
 
     <!-- Botón CTA Premium -->
@@ -72,29 +93,28 @@ const slides = [
       RESERVE SU CITA
     </a>
   </div>
-
 </section>
 
 <!-- Script Vainilla JS de Rotación del Carrusel -->
 <script>
   // Inicialización de la rotación automática al cargarse la página
-  const slides = document.querySelectorAll('.carousel-slide');
+  const slides = document.querySelectorAll(".carousel-slide");
   let currentIdx = 0;
 
   if (slides.length > 1) {
     setInterval(() => {
       // Ocultar la diapositiva actual
       const activeSlide = slides[currentIdx];
-      activeSlide.classList.remove('opacity-100');
-      activeSlide.classList.add('opacity-0');
+      activeSlide.classList.remove("opacity-100");
+      activeSlide.classList.add("opacity-0");
 
       // Calcular el índice de la siguiente diapositiva
       currentIdx = (currentIdx + 1) % slides.length;
 
       // Mostrar la siguiente diapositiva
       const nextSlide = slides[currentIdx];
-      nextSlide.classList.remove('opacity-0');
-      nextSlide.classList.add('opacity-100');
+      nextSlide.classList.remove("opacity-0");
+      nextSlide.classList.add("opacity-100");
     }, 4000);
   }
 </script>

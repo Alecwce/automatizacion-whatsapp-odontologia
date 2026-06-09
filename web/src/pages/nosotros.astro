@@ -1,77 +1,262 @@
 ---
-// Página Corporativa: Quiénes Somos y Staff Clínico
+// Página Corporativa: Quiénes Somos, Misión, Visión, Staff Profesional y Tecnología de Punta
 import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Values from '../components/Values.astro';
-import Testimonials from '../components/Testimonials.astro';
 import Footer from '../components/Footer.astro';
+
+const whatsappUrl = `https://wa.me/51900000000?text=${encodeURIComponent('Hola JOMOVAK, me gustaría agendar una cita con un especialista de su staff.')}`;
+
+const doctors = [
+  {
+    name: 'Dr. Jonathan M.',
+    specialty: 'Ortodoncia y Ortopedia Maxilar',
+    image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&h=400&q=80',
+    alt: 'Retrato del Dr. Jonathan M. - Especialista en Ortodoncia',
+  },
+  {
+    name: 'Dra. Mónica V.',
+    specialty: 'Estética y Rehabilitación Oral',
+    image: 'https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&w=400&h=400&q=80',
+    alt: 'Retrato de la Dra. Mónica V. - Especialista en Estética y Rehabilitación',
+  },
+  {
+    name: 'Dra. Valeria K.',
+    specialty: 'Cirugía Oral e Implantología',
+    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&h=400&q=80',
+    alt: 'Retrato de la Dra. Valeria K. - Especialista en Cirugía e Implantes',
+  },
+];
+
+const technologies = [
+  {
+    name: 'Sistema CAD/CAM InLab MC X5',
+    desc: 'Unidad robótica de tallado dental asistido por computadora. Diseña y confecciona carillas, coronas e incrustaciones de porcelana en minutos con precisión microscópica, reduciendo visitas clínicas.',
+    icon: '🤖',
+  },
+  {
+    name: 'Escáner Intraoral 3D',
+    desc: 'Captura digital en 3D de la dentadura del paciente en tiempo real. Elimina las molestas cubetas de pasta tradicionales, aportando un diagnóstico exacto, limpio y sumamente rápido.',
+    icon: '✨',
+  },
+  {
+    name: 'Radiología Digital Avanzada',
+    desc: 'Diagnóstico inmediato por imagen de alta resolución que reduce hasta en un 90% la radiación comparado con placas tradicionales, permitiendo detectar caries ocultas sin dolor.',
+    icon: '🔬',
+  },
+];
 ---
 
 <Layout
-  title="Quiénes Somos — Clínica Odontológica JOMOVAK"
-  description="Conoce la Clínica JOMOVAK. Infraestructura moderna, staff de especialistas comprometidos con la salud y estética bucal. Atiéndete en Huancayo y Lima."
+  title="Quiénes Somos y Nuestro Equipo — Clínica Odontológica JOMOVAK"
+  description="Conoce la Clínica JOMOVAK. Misión, Visión, nuestro Staff Profesional de especialistas y la tecnología avanzada al servicio de tu sonrisa en Huancayo."
 >
   <Nav />
-  <main>
-    <!-- Cabecera y Descripción Corporativa -->
-    <section id="nosotros" class="bg-gray-50/30 py-20 border-b border-gray-100">
-      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
-          
-          <!-- Columna Texto -->
-          <div>
-            <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
-              Nuestra Clínica
-            </p>
-            <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
-              Compromiso absoluto con tu salud y estética bucal
-            </h1>
-            <p class="text-base text-gray-600 leading-relaxed mb-6">
-              En la <strong>Clínica Odontológica JOMOVAK</strong> nos dedicamos a transformar vidas cuidando de tu salud y estética bucal. Nacimos con la visión de acercar la odontología especializada de primer nivel a más familias, combinando una infraestructura moderna con el trato humano, ético y empático que mereces.
-            </p>
-            <p class="text-base text-gray-600 leading-relaxed">
-              Nuestro staff médico está integrado por profesionales altamente calificados en diversas ramas odontológicas. Desde diagnósticos digitales avanzados hasta tratamientos complejos de cirugía y rehabilitación estética, cada procedimiento se realiza bajo estrictos estándares internacionales de bioseguridad, utilizando insumos certificados y tecnología de vanguardia.
-            </p>
-          </div>
+  <main class="bg-white">
 
-          <!-- Columna Panel Decorativo Visual (Estilo Premium) -->
-          <div class="relative bg-gradient-to-tr from-violet-700 to-indigo-700 rounded-3xl p-8 sm:p-10 text-white overflow-hidden shadow-xl shadow-violet-200/50">
-            <!-- Círculos decorativos de fondo -->
-            <div class="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/3"></div>
-            <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
+    <!-- BLOQUE A: Quiénes Somos (Identidad y Valores) -->
+    <div id="quienes-somos">
+      
+      <!-- Presentación de la Clínica -->
+      <section class="py-20 bg-gray-50/30 border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center">
             
-            <div class="relative z-10 flex flex-col gap-6">
-              <span class="text-xs font-bold text-violet-200 uppercase tracking-wider block">Estándar JOMOVAK</span>
-              <h2 class="text-2xl font-bold leading-tight">Infraestructura y Tecnología de Vanguardia</h2>
-              <p class="text-sm text-violet-100 leading-relaxed">
-                Nuestros consultorios están completamente equipados con radiología digital, unidades ergonómicas de última generación y sistemas rotatorios para endodoncia sin dolor.
+            <!-- Texto Corporativo -->
+            <div>
+              <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+                Nuestra Clínica
               </p>
-              <div class="grid grid-cols-2 gap-4 mt-4 pt-6 border-t border-white/20">
-                <div>
-                  <p class="text-3xl font-extrabold">100%</p>
-                  <p class="text-xs text-violet-200">Material Certificado</p>
-                </div>
-                <div>
-                  <p class="text-3xl font-extrabold">10+</p>
-                  <p class="text-xs text-violet-200">Especialistas Médicos</p>
+              <h1 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight leading-tight mb-6">
+                Compromiso absoluto con tu salud y estética bucal
+              </h1>
+              <p class="text-base text-gray-600 leading-relaxed mb-6">
+                En la <strong>Clínica Odontológica JOMOVAK</strong> nos dedicamos a transformar vidas cuidando de tu salud y estética bucal. Nacimos con la visión de acercar la odontología especializada de primer nivel a más familias, combinando una infraestructura moderna con el trato humano, ético y empático que mereces.
+              </p>
+              <p class="text-base text-gray-600 leading-relaxed">
+                Nuestro staff médico está integrado por profesionales altamente calificados en diversas ramas odontológicas. Desde diagnósticos digitales avanzados hasta tratamientos complejos de cirugía y rehabilitación estética, cada procedimiento se realiza bajo estrictos estándares internacionales de bioseguridad.
+              </p>
+            </div>
+
+            <!-- Panel Visual Destacado -->
+            <div class="relative bg-gradient-to-tr from-violet-700 to-indigo-700 rounded-3xl p-8 sm:p-10 text-white overflow-hidden shadow-xl shadow-violet-200/50">
+              <div class="absolute top-0 right-0 w-36 h-36 bg-white/10 rounded-full -translate-y-1/3 translate-x-1/3 animate-pulse"></div>
+              <div class="absolute bottom-0 left-0 w-24 h-24 bg-white/10 rounded-full translate-y-1/3 -translate-x-1/4"></div>
+              
+              <div class="relative z-10 flex flex-col gap-6">
+                <span class="text-xs font-bold text-violet-200 uppercase tracking-wider block">Estándar de Excelencia</span>
+                <h2 class="text-2xl font-bold leading-tight">Garantía Clínica JOMOVAK</h2>
+                <p class="text-sm text-violet-100 leading-relaxed">
+                  Ofrecemos planes de tratamiento a medida respaldados por especialistas de primer nivel, materiales certificados internacionalmente y seguimiento digital personalizado de cada paciente.
+                </p>
+                <div class="grid grid-cols-2 gap-4 mt-4 pt-6 border-t border-white/20 text-center">
+                  <div>
+                    <p class="text-3xl font-extrabold text-white">100%</p>
+                    <p class="text-xs text-violet-200">Garantizado</p>
+                  </div>
+                  <div>
+                    <p class="text-3xl font-extrabold text-white">Huancayo</p>
+                    <p class="text-xs text-violet-200">Ubicación Local</p>
+                  </div>
                 </div>
               </div>
             </div>
-          </div>
 
+          </div>
         </div>
+      </section>
+
+      <!-- Sección Misión y Visión a Dos Columnas -->
+      <section class="py-16 bg-white border-b border-gray-100">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
+            <!-- Misión -->
+            <div class="bg-gray-50/50 p-8 rounded-3xl border border-gray-100/80 shadow-sm flex flex-col gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl font-bold shadow-sm" aria-hidden="true">
+                🎯
+              </div>
+              <h2 class="text-2xl font-bold text-gray-900">Misión Institucional</h2>
+              <p class="text-sm text-gray-650 leading-relaxed">
+                Brindar servicios odontológicos especializados con altos estándares de calidad, tecnología avanzada y un trato humanizado que priorice el bienestar y la salud bucal integral de nuestros pacientes, garantizando tratamientos seguros y eficientes.
+              </p>
+            </div>
+            <!-- Visión -->
+            <div class="bg-gray-50/50 p-8 rounded-3xl border border-gray-100/80 shadow-sm flex flex-col gap-4">
+              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl font-bold shadow-sm" aria-hidden="true">
+                👁️
+              </div>
+              <h2 class="text-2xl font-bold text-gray-900">Visión Institucional</h2>
+              <p class="text-sm text-gray-655 leading-relaxed">
+                Ser la clínica odontológica líder y referente en Junín y el país, reconocida por su excelencia médica, innovación tecnológica constante y por devolver la confianza y felicidad a las familias a través de sonrisas saludables y estéticas.
+              </p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- Componente de los 8 Valores Corporativos -->
+      <div>
+        <Values />
+      </div>
+
+    </div>
+
+    <!-- BLOQUE B: Staff Profesional -->
+    <section id="staff" class="py-20 sm:py-28 bg-gray-50/50 border-t border-b border-gray-100">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Cabecera -->
+        <div class="text-center mb-16">
+          <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+            Equipo Médico
+          </p>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            Nuestro Staff de Especialistas
+          </h2>
+          <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+            Doctores altamente capacitados dedicados en exclusiva al cuidado de tu salud y estética dental.
+          </p>
+        </div>
+
+        <!-- Grid de Especialistas -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {doctors.map((doc) => (
+            <article class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
+              
+              <!-- Imagen de Perfil -->
+              <div class="relative aspect-square overflow-hidden bg-gray-100">
+                <img
+                  src={doc.image}
+                  alt={doc.alt}
+                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                  loading="lazy"
+                  decoding="async"
+                />
+                <div class="absolute inset-0 bg-gradient-to-t from-violet-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+              </div>
+
+              <!-- Detalles y Botón -->
+              <div class="p-8 flex-grow flex flex-col justify-between text-center items-center">
+                <div>
+                  <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-violet-700 transition-colors">
+                    {doc.name}
+                  </h3>
+                  <span class="text-xs font-bold text-violet-700 bg-violet-50 px-3 py-1 rounded-full uppercase tracking-wide">
+                    {doc.specialty}
+                  </span>
+                </div>
+
+                <!-- Botón de Agendar -->
+                <div class="mt-8 pt-5 border-t border-gray-50 w-full">
+                  <a
+                    href={whatsappUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex items-center justify-center w-full bg-white border border-violet-100 hover:bg-violet-750 hover:text-white hover:border-violet-700 text-violet-700 text-xs font-bold py-3.5 rounded-2xl transition-all duration-200 tracking-wider uppercase"
+                  >
+                    Agendar con especialista
+                  </a>
+                </div>
+              </div>
+
+            </article>
+          ))}
+        </div>
+
       </div>
     </section>
 
-    <!-- Componente de Valores Corporativos -->
-    <div>
-      <Values />
-    </div>
+    <!-- BLOQUE C: Nuestra Tecnología (Inspirado en estética 1480.jpg) -->
+    <section id="tecnologia" class="py-20 sm:py-28 bg-white">
+      <div class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+        
+        <!-- Cabecera -->
+        <div class="text-center mb-16">
+          <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
+            Innovación Clínica
+          </p>
+          <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
+            Tecnología de Punta al Servicio de tu Belleza
+          </h2>
+          <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
+            Equipamiento digital avanzado diseñado para reducir molestias, acortar tiempos y lograr resultados perfectos.
+          </p>
+        </div>
 
-    <!-- Componente de Testimonios y Reseñas de Google (Staff) -->
-    <div id="staff">
-      <Testimonials />
-    </div>
+        <!-- Grid de Tecnología -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+          {technologies.map((tech) => (
+            <article class="group bg-gray-50/50 rounded-3xl p-8 border border-gray-100 shadow-sm hover:shadow-xl hover:bg-white hover:border-violet-100 transition-all duration-300 flex flex-col justify-between h-full">
+              <div>
+                <!-- Icono circular animado -->
+                <div
+                  class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:bg-violet-700 group-hover:text-white group-hover:scale-110 transition-all duration-300"
+                  aria-hidden="true"
+                >
+                  {tech.icon}
+                </div>
+
+                <!-- Título -->
+                <h3 class="text-xl font-bold text-gray-900 mb-3 group-hover:text-violet-700 transition-colors">
+                  {tech.name}
+                </h3>
+
+                <!-- Descripción -->
+                <p class="text-sm text-gray-600 leading-relaxed">
+                  {tech.desc}
+                </p>
+              </div>
+
+              <div class="mt-6 pt-4 border-t border-gray-100/50 flex items-center gap-1.5 text-xs font-bold text-violet-700 group-hover:translate-x-1.5 transition-transform duration-300">
+                Tecnología de última generación ⚡
+              </div>
+            </article>
+          ))}
+        </div>
+
+      </div>
+    </section>
+
   </main>
   <Footer />
 </Layout>
