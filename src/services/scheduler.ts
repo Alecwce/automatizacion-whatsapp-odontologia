@@ -34,8 +34,9 @@ function parseLocaleDateString(dateStr: string): Date | null {
 
 /**
  * Ejecuta el ciclo de revisión de recordatorios.
+ * Exportada para permitir su ejecución manual desde comandos de prueba.
  */
-async function checkAndSendReminders(socket: any): Promise<void> {
+export async function checkAndSendReminders(socket: any): Promise<void> {
   try {
     console.log('[Scheduler] Iniciando ciclo de recordatorios...');
     const appointments = await getUnnotifiedAppointments();
