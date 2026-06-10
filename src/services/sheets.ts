@@ -41,7 +41,7 @@ function getSheetsClient() {
 export async function appendPatientData(data: PatientData): Promise<boolean> {
   try {
     const sheets = getSheetsClient();
-    const range = 'Sheet1!A:F';
+    const range = 'Sheet1!A:H';
 
     const values = [
       [
@@ -50,7 +50,9 @@ export async function appendPatientData(data: PatientData): Promise<boolean> {
         data.name,
         data.dni,
         data.appointmentDate || '',
-        data.patientReason || ''
+        data.patientReason || '',
+        '', // Columna G: Notificado (inicialmente vacío)
+        data.whatsappId || '' // Columna H: WhatsApp ID
       ]
     ];
 
@@ -79,6 +81,7 @@ export interface AppointmentRow {
   appointmentDate: string;
   patientReason: string;
   notified: string;
+  whatsappId: string;
 }
 
 /**
@@ -89,7 +92,7 @@ export async function getUnnotifiedAppointments(): Promise<AppointmentRow[]> {
     const sheets = getSheetsClient();
     const response = await sheets.spreadsheets.values.get({
       spreadsheetId: env.spreadsheetId,
-      range: 'Sheet1!A2:G',
+      range: 'Sheet1!A2:H',
     });
 
     const rows = response.data.values;
@@ -112,7 +115,8 @@ export async function getUnnotifiedAppointments(): Promise<AppointmentRow[]> {
           dni: row[3] || '',
           appointmentDate: row[4] || '',
           patientReason: row[5] || '',
-          notified
+          notified,
+          whatsappId: row[7] || ''
         });
       }
     });

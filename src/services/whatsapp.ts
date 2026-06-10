@@ -19,13 +19,15 @@ import { checkAndSendReminders } from './scheduler.js';
 const makeWASocket = (pkg as any).default || pkg;
 
 export const sessions = new Map<string, UserSession>();
+export const lidToJidMap = new Map<string, string>();
 
 /**
  * Procesa la FSM conversacional para un usuario específico ante la llegada de un mensaje de texto.
  */export async function handleUserMessage(
   senderJid: string,
   messageText: string,
-  sender: { sendMessage: (jid: string, text: string) => Promise<any> }
+  sender: { sendMessage: (jid: string, text: string) => Promise<any> },
+  resolvedPhone?: string
 ): Promise<void> {
   // Limpiar remoteJid para evitar fragmentación de sesión y conservar número limpio
   const [user, domain] = senderJid.split('@');
@@ -52,6 +54,10 @@ export const sessions = new Map<string, UserSession>();
       lastInteraction: new Date()
     };
     sessions.set(cleanJid, session);
+  }
+
+  if (resolvedPhone) {
+    session.phone = resolvedPhone;
   }
 
   session.lastInteraction = new Date();
@@ -136,16 +142,46 @@ export const sessions = new Map<string, UserSession>();
       }
 
       session.patientDni = parsedDni;
+      session.state = 'AWAITING_PHONE';
+      session.attempts = 0;
+      sessions.set(cleanJid, session);
+
+      await sender.sendMessage(
+        senderJid,
+        "Por favor, ingresa tu número de teléfono celular de contacto (9 dígitos) para que la doctora pueda comunicarse contigo si es necesario. 📱"
+      );
+      break;
+    }
+
+    case 'AWAITING_PHONE': {
+      const phoneRegex = /^9\d{8}$/;
+      const parsedPhone = normalizedText.replace(/\s+/g, '');
+
+      if (!phoneRegex.test(parsedPhone)) {
+        session.attempts += 1;
+        if (session.attempts >= 3) {
+          sessions.delete(cleanJid);
+          await sender.sendMessage(
+            senderJid,
+            '❌ Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo: 🦷'
+          );
+          return;
+        }
+
+        sessions.set(cleanJid, session);
+        await sender.sendMessage(
+          senderJid,
+          `El número ingresado no es válido. ⚠️ Por favor, asegúrate de escribir los 9 dígitos de tu celular (ej: 987654321). Intentos restantes: ${3 - session.attempts}:`
+        );
+        return;
+      }
+
+      session.userPhone = parsedPhone;
 
       if (session.patientDate) {
         session.state = 'AWAITING_REASON';
         session.attempts = 0;
         sessions.set(cleanJid, session);
-
-        await sender.sendMessage(
-          senderJid,
-          '🦷 *Por favor, selecciona el número del tratamiento que deseas realizarte:*\n\n1️⃣ Diagnóstico General\n2️⃣ Estética Dental\n3️⃣ Odontopediatría\n4️⃣ Ortodoncia Avanzada\n5️⃣ Cirugía e Implantes\n6️⃣ Odontología Integral'
-        );
       } else {
         session.state = 'AWAITING_DATE';
         session.attempts = 0;
@@ -153,7 +189,7 @@ export const sessions = new Map<string, UserSession>();
 
         await sender.sendMessage(
           senderJid,
-          '📅 *¡DNI verificado con éxito!* Ahora, para finalizar: *¿Qué día y a qué hora te gustaría agendar tu cita?* (ej: "mañana a las 3:30 pm", "el próximo lunes a las 10am"): 🦷'
+          '📅 *¡Teléfono celular verificado con éxito!* Ahora, para finalizar: *¿Qué día y a qué hora te gustaría agendar tu cita?* (ej: "mañana a las 3:30 pm", "el próximo lunes a las 10am"): 🦷'
         );
       }
       break;
@@ -264,7 +300,7 @@ export const sessions = new Map<string, UserSession>();
 
       const patientName = session.patientName || 'Paciente';
       const patientDni = session.patientDni || '';
-      const phoneClean = cleanJid.split('@')[0];
+      const phoneClean = session.userPhone || '';
       const timestamp = new Date().toLocaleString('es-PE', { timeZone: 'America/Lima' });
       const appointmentDateStr = patientDate.toLocaleString('es-PE', { timeZone: 'America/Lima' });
 
@@ -274,7 +310,8 @@ export const sessions = new Map<string, UserSession>();
         name: patientName,
         dni: patientDni,
         appointmentDate: appointmentDateStr,
-        patientReason: session.patientReason
+        patientReason: session.patientReason,
+        whatsappId: cleanJid
       });
 
       const calendarPromise = createAppointment(patientName, patientDate, session.patientReason);
@@ -341,9 +378,47 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     version,
     printQRInTerminal: true,
     browser: ['Clínica Bot', 'Chrome', '1.0.0'],
+    syncFullHistory: true,
   });
 
   sock.ev.on('creds.update', saveCreds);
+
+  // Registrar mapeos de LID a Phone JID
+  sock.ev.on('contacts.upsert', (contacts: any[]) => {
+    for (const contact of contacts) {
+      if (contact.id && contact.lid) {
+        lidToJidMap.set(contact.lid, contact.id);
+        console.log(`[LID_MAP] Mapeo guardado (contacts.upsert): ${contact.lid} -> ${contact.id}`);
+      }
+    }
+  });
+
+  sock.ev.on('contacts.update', (updates: any[]) => {
+    for (const update of updates) {
+      if (update.id && update.lid) {
+        lidToJidMap.set(update.lid, update.id);
+        console.log(`[LID_MAP] Mapeo guardado (contacts.update): ${update.lid} -> ${update.id}`);
+      }
+    }
+  });
+
+  sock.ev.on('chats.phoneNumberShare', (share: any) => {
+    if (share.lid && share.jid) {
+      lidToJidMap.set(share.lid, share.jid);
+      console.log(`[LID_MAP] Mapeo guardado (chats.phoneNumberShare): ${share.lid} -> ${share.jid}`);
+    }
+  });
+
+  sock.ev.on('messaging-history.set', ({ contacts }: any) => {
+    if (contacts) {
+      for (const contact of contacts) {
+        if (contact.id && contact.lid) {
+          lidToJidMap.set(contact.lid, contact.id);
+          console.log(`[LID_MAP] Mapeo guardado (messaging-history.set): ${contact.lid} -> ${contact.id}`);
+        }
+      }
+    }
+  });
 
   sock.ev.on('connection.update', (update: Partial<ConnectionState>) => {
     const { connection, lastDisconnect } = update;
@@ -371,6 +446,8 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     for (const msg of m.messages) {
       if (msg.key.fromMe || !msg.message) continue;
 
+      console.log("[DEBUG_MSG]", JSON.stringify(msg, null, 2));
+
       // Desofuscar el JID usando la utilidad oficial de Baileys.
       // jidNormalizedUser convierte cualquier @lid (LID interno de dispositivos vinculados)
       // al MSISDN real en formato @s.whatsapp.net. En mensajes de grupo, extrae el
@@ -384,7 +461,32 @@ export async function startWhatsAppBot(): Promise<WASocket> {
       if (!rawForNormalization) continue;
 
       // jidNormalizedUser elimina la máscara @lid y devuelve el número real @s.whatsapp.net
-      const jid = jidNormalizedUser(rawForNormalization);
+      let jid = jidNormalizedUser(rawForNormalization);
+      console.log("[DEBUG_JID] Inicial normalized:", jid);
+      let resolvedPhone: string | undefined = undefined;
+
+      if (jid.endsWith('@lid')) {
+        console.log("[DEBUG_LID] Detectado JID de tipo @lid. Intentando resolver...");
+        
+        // 1. Intentar resolver desde el mapa en memoria lidToJidMap
+        const mappedJid = lidToJidMap.get(jid);
+        if (mappedJid) {
+          jid = mappedJid;
+          console.log("[DEBUG_LID] JID resuelto desde mapa en memoria:", jid);
+        } else {
+          // 2. Intentar buscar en propiedades alternativas del mensaje
+          const altJid = (msg.key as any).senderPn || (msg as any).senderPn || (msg.key as any).remoteJidAlt || (msg as any).participantAlt;
+          if (altJid) {
+            jid = jidNormalizedUser(altJid);
+            console.log("[DEBUG_LID] JID resuelto de propiedades alternativas del msg:", jid);
+          }
+        }
+      }
+
+      // Si se resolvió a un JID de WhatsApp normal, extraer el número telefónico real purificado
+      if (jid.endsWith('@s.whatsapp.net')) {
+        resolvedPhone = jid.split('@')[0].replace(/\D/g, '');
+      }
 
       // Extrae el texto del mensaje entrante
       const text =
@@ -402,7 +504,7 @@ export async function startWhatsAppBot(): Promise<WASocket> {
       };
 
       try {
-        await handleUserMessage(jid, text, senderAdapter);
+        await handleUserMessage(jid, text, senderAdapter, resolvedPhone);
       } catch (err) {
         console.error(`Error procesando mensaje de usuario (${jid}):`, err);
       }

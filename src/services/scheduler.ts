@@ -119,8 +119,9 @@ export async function checkAndSendReminders(socket: any): Promise<void> {
       if (diffMinutes >= 15 && diffMinutes <= 35) {
         console.log(`[Scheduler] Cita de ${appt.name} califica para notificación (diferencia: ${diffMinutes.toFixed(1)} min). Enviando WhatsApp...`);
 
-        const phoneClean = appt.phone.trim();
-        const phoneJid = phoneClean.includes('@') ? phoneClean : `${phoneClean}@s.whatsapp.net`;
+        const idClean = appt.whatsappId ? appt.whatsappId.trim() : '';
+        const phoneClean = appt.phone ? appt.phone.trim() : '';
+        const phoneJid = idClean || (phoneClean.includes('@') ? phoneClean : `${phoneClean}@s.whatsapp.net`);
 
         const horaCita = apptDate.toLocaleTimeString('es-PE', {
           hour: '2-digit',
