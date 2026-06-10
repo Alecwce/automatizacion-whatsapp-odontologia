@@ -85,7 +85,7 @@ function parseLocaleDateString(dateStr: string): Date | null {
  * Ejecuta el ciclo de revisión de recordatorios.
  * Exportada para permitir su ejecución manual desde comandos de prueba.
  */
-export async function checkAndSendReminders(socket: any): Promise<void> {
+export async function checkAndSendReminders(socket: any, isForceTest?: boolean): Promise<void> {
   try {
     console.log('[Scheduler] Iniciando ciclo de recordatorios...');
     const appointments = await getUnnotifiedAppointments();
@@ -115,13 +115,25 @@ export async function checkAndSendReminders(socket: any): Promise<void> {
 
       console.log(`[Scheduler] Cita de ${appt.name} para ${appt.appointmentDate} está a ${diffMinutes.toFixed(1)} minutos de distancia.`);
 
-      // Ventana de 15 a 35 minutos antes de la cita (captura ideal de los 30 minutos)
-      if (diffMinutes >= 15 && diffMinutes <= 35) {
-        console.log(`[Scheduler] Cita de ${appt.name} califica para notificación (diferencia: ${diffMinutes.toFixed(1)} min). Enviando WhatsApp...`);
+      // Calificar cita si isForceTest es true (bypass del reloj) o si se encuentra dentro de la ventana de 15 a 35 minutos
+      const qualifies = isForceTest || (diffMinutes >= 15 && diffMinutes <= 35);
+
+      if (qualifies) {
+        if (isForceTest) {
+          console.log(`[Scheduler] [TEST FORZADO] Cita de ${appt.name} califica por TEST_NOTIFICACION. Enviando WhatsApp...`);
+        } else {
+          console.log(`[Scheduler] Cita de ${appt.name} califica para notificación (diferencia: ${diffMinutes.toFixed(1)} min). Enviando WhatsApp...`);
+        }
 
         const idClean = appt.whatsappId ? appt.whatsappId.trim() : '';
         const phoneClean = appt.phone ? appt.phone.trim() : '';
-        const phoneJid = idClean || (phoneClean.includes('@') ? phoneClean : `${phoneClean}@s.whatsapp.net`);
+        
+        let phoneJid = '';
+        if (idClean) {
+          phoneJid = idClean.includes('@') ? idClean : `${idClean}@s.whatsapp.net`;
+        } else {
+          phoneJid = phoneClean.includes('@') ? phoneClean : `${phoneClean}@s.whatsapp.net`;
+        }
 
         const horaCita = apptDate.toLocaleTimeString('es-PE', {
           hour: '2-digit',
@@ -136,7 +148,7 @@ Hola *${appt.name}*, te saludamos del *Consultorio Sánchez*.
 Te recordamos que tu cita odontológica está programada para dentro de *30 minutos*.
 
 📅 *Horario:* ${horaCita}
-👩⚕️ *Especialista:* Dra. Luisa Sánchez
+👩‍⚕️ *Especialista:* Dra. Luisa Sánchez
 📍 *Sede Principal:* Av. Julio C. Tello 456, El Tambo (Huancayo)
 
 Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cuidar tu sonrisa! ✨`;

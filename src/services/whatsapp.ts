@@ -39,7 +39,7 @@ export const lidToJidMap = new Map<string, string>();
   if (normalizedText === 'TEST_NOTIFICACION') {
     console.log(`[TEST] Comando TEST_NOTIFICACION recibido de ${cleanJid}. Ejecutando ciclo de notificaciones manualmente...`);
     await sender.sendMessage(senderJid, '🛠️ Ejecutando rutina de notificaciones manualmente...');
-    await checkAndSendReminders(sender).catch((err: unknown) =>
+    await checkAndSendReminders(sender, true).catch((err: unknown) =>
       console.error('[TEST] Error al ejecutar ciclo de notificaciones manual:', err)
     );
     return;
