@@ -7,26 +7,6 @@ import Footer from '../components/Footer.astro';
 
 const whatsappUrl = 'https://wa.me/51981314450?text=Hola%20quiero%20agendar';
 
-const doctors = [
-  {
-    name: 'Dr. Jonathan M.',
-    specialty: 'Ortodoncia y Ortopedia Maxilar',
-    image: 'https://images.unsplash.com/photo-1622253692010-333f2da6031d?auto=format&fit=crop&w=400&h=400&q=80',
-    alt: 'Retrato del Dr. Jonathan M. - Especialista en Ortodoncia',
-  },
-  {
-    name: 'Dra. Mónica V.',
-    specialty: 'Estética y Rehabilitación Oral',
-    image: 'https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&w=400&h=400&q=80',
-    alt: 'Retrato de la Dra. Mónica V. - Especialista en Estética y Rehabilitación',
-  },
-  {
-    name: 'Dra. Valeria K.',
-    specialty: 'Cirugía Oral e Implantología',
-    image: 'https://images.unsplash.com/photo-1559839734-2b71ea197ec2?auto=format&fit=crop&w=400&h=400&q=80',
-    alt: 'Retrato de la Dra. Valeria K. - Especialista en Cirugía e Implantes',
-  },
-];
 
 const technologies = [
   {
@@ -48,8 +28,8 @@ const technologies = [
 ---
 
 <Layout
-  title="Quiénes Somos y Nuestro Equipo — Clínica Odontológica JOMOVAK"
-  description="Conoce la Clínica JOMOVAK. Misión, Visión, nuestro Staff Profesional de especialistas y la tecnología avanzada al servicio de tu sonrisa en Huancayo."
+  title="Quiénes Somos y Nuestro Equipo — Consultorio Sánchez"
+  description="Conoce el Consultorio Sánchez. Misión, Visión, nuestra Directora Médica y la tecnología avanzada al servicio de tu sonrisa en Huancayo."
 >
   <Nav />
   <main class="flex-grow bg-white">
@@ -71,10 +51,10 @@ const technologies = [
                 Compromiso absoluto con tu salud y estética bucal
               </h1>
               <p class="text-base text-gray-600 leading-relaxed mb-6">
-                En la <strong>Clínica Odontológica JOMOVAK</strong> nos dedicamos a transformar vidas cuidando de tu salud y estética bucal. Nacimos con la visión de acercar la odontología especializada de primer nivel a más familias, combinando una infraestructura moderna con el trato humano, ético y empático que mereces.
+                En el <strong>Consultorio Sánchez</strong> nos dedicamos a transformar vidas cuidando de tu salud y estética bucal. Nacimos con la visión de acercar la odontología especializada de primer nivel a más familias, combinando una infraestructura moderna con el trato humano, ético y empático que mereces.
               </p>
               <p class="text-base text-gray-600 leading-relaxed">
-                Nuestro staff médico está integrado por profesionales altamente calificados en diversas ramas odontológicas. Desde diagnósticos digitales avanzados hasta tratamientos complejos de cirugía y rehabilitación estética, cada procedimiento se realiza bajo estrictos estándares internacionales de bioseguridad.
+                Nuestra dirección médica está a cargo de una profesional altamente calificada en diversas ramas odontológicas. Desde diagnósticos digitales avanzados hasta tratamientos complejos de cirugía y rehabilitación estética, cada procedimiento se realiza bajo estrictos estándares internacionales de bioseguridad.
               </p>
             </div>
 
@@ -85,9 +65,9 @@ const technologies = [
               
               <div class="relative z-10 flex flex-col gap-6">
                 <span class="text-xs font-bold text-violet-200 uppercase tracking-wider block">Estándar de Excelencia</span>
-                <h2 class="text-2xl font-bold leading-tight">Garantía Clínica JOMOVAK</h2>
+                <h2 class="text-2xl font-bold leading-tight">Garantía Consultorio Sánchez</h2>
                 <p class="text-sm text-violet-100 leading-relaxed">
-                  Ofrecemos planes de tratamiento a medida respaldados por especialistas de primer nivel, materiales certificados internacionalmente y seguimiento digital personalizado de cada paciente.
+                  Ofrecemos planes de tratamiento a medida respaldados por nuestra especialista de primer nivel, materiales certificados internacionalmente y seguimiento digital personalizado de cada paciente.
                 </p>
                 <div class="grid grid-cols-2 gap-4 mt-4 pt-6 border-t border-white/20 text-center">
                   <div>
@@ -148,59 +128,85 @@ const technologies = [
         <!-- Cabecera -->
         <div class="text-center mb-16">
           <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
-            Equipo Médico
+            Dirección Médica
           </p>
           <h2 class="text-3xl sm:text-4xl font-extrabold text-gray-900 tracking-tight leading-tight">
-            Nuestro Staff de Especialistas
+            Nuestra Especialista Líder
           </h2>
           <p class="text-sm text-gray-500 mt-2 max-w-xl mx-auto">
-            Doctores altamente capacitados dedicados en exclusiva al cuidado de tu salud y estética dental.
+            Conoce a la profesional que dirige nuestro consultorio y cuida de tu salud bucal con la máxima calidez y dedicación.
           </p>
         </div>
 
-        <!-- Grid de Especialistas -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-          {doctors.map((doc) => (
-            <article class="group bg-white rounded-3xl overflow-hidden border border-gray-100 shadow-md hover:shadow-2xl hover:-translate-y-2 transition-all duration-300 flex flex-col justify-between h-full">
-              
-              <!-- Imagen de Perfil -->
-              <div class="relative aspect-square overflow-hidden bg-gray-100">
-                <img
-                  src={doc.image}
-                  alt={doc.alt}
-                  class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
-                  loading="lazy"
-                  decoding="async"
-                />
-                <div class="absolute inset-0 bg-gradient-to-t from-violet-950/20 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+        <!-- Tarjeta Premium Horizontal para la Dra. Luisa Sánchez -->
+        <div class="max-w-4xl mx-auto bg-white rounded-3xl border border-gray-100 shadow-xl overflow-hidden hover:shadow-2xl transition-shadow duration-300">
+          <div class="grid grid-cols-1 md:grid-cols-12 gap-0">
+            
+            <!-- Imagen de la Doctora (md:col-span-5) -->
+            <div class="md:col-span-5 relative min-h-[350px] md:min-h-full bg-gray-100">
+              <img
+                src="https://images.unsplash.com/photo-1594824813573-246434de83fb?auto=format&fit=crop&w=600&h=800&q=80"
+                alt="Retrato de la Dra. Luisa Sánchez - Especialista en Odontología Integral"
+                class="absolute inset-0 w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
+              />
+              <div class="absolute inset-0 bg-gradient-to-t from-violet-950/20 via-transparent to-transparent"></div>
+            </div>
+
+            <!-- Información y Trayectoria (md:col-span-7) -->
+            <div class="md:col-span-7 p-8 sm:p-10 flex flex-col justify-between">
+              <div>
+                <span class="text-xs font-bold text-violet-700 bg-violet-50 px-3.5 py-1.5 rounded-full uppercase tracking-wide inline-block mb-4">
+                  Líder y Especialista en Odontología Integral
+                </span>
+                
+                <h3 class="text-2xl sm:text-3xl font-extrabold text-gray-900 mb-4">
+                  Dra. Luisa Sánchez
+                </h3>
+                
+                <p class="text-sm sm:text-base text-gray-600 leading-relaxed mb-6">
+                  Con una destacada trayectoria en la <strong>Región Junín</strong>, la Dra. Luisa Sánchez se caracteriza por su enfoque humano, ético y de máxima calidez en la atención odontológica integral. Su compromiso con la actualización constante y la incorporación de tecnologías avanzadas garantiza tratamientos indoloros y altamente efectivos para cada miembro de la familia.
+                </p>
+
+                <!-- Características destacadas -->
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                  <div class="flex items-center gap-2">
+                    <span class="text-violet-700 text-lg">🎓</span>
+                    <span class="text-xs font-semibold text-gray-705">Especialista Registrada</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-violet-700 text-lg">❤️</span>
+                    <span class="text-xs font-semibold text-gray-705">Calidez y Empatía</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-violet-700 text-lg">📍</span>
+                    <span class="text-xs font-semibold text-gray-705">Huancayo, Junín</span>
+                  </div>
+                  <div class="flex items-center gap-2">
+                    <span class="text-violet-700 text-lg">⭐</span>
+                    <span class="text-xs font-semibold text-gray-705">Atención Premium</span>
+                  </div>
+                </div>
               </div>
 
-              <!-- Detalles y Botón -->
-              <div class="p-8 flex-grow flex flex-col justify-between text-center items-center">
-                <div>
-                  <h3 class="text-lg font-bold text-gray-900 mb-1 group-hover:text-violet-700 transition-colors">
-                    {doc.name}
-                  </h3>
-                  <span class="text-xs font-bold text-violet-700 bg-violet-50 px-3 py-1 rounded-full uppercase tracking-wide">
-                    {doc.specialty}
-                  </span>
-                </div>
-
-                <!-- Botón de Agendar -->
-                <div class="mt-8 pt-5 border-t border-gray-50 w-full">
-                  <a
-                    href={whatsappUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    class="inline-flex items-center justify-center w-full bg-white border border-violet-100 hover:bg-violet-750 hover:text-white hover:border-violet-700 text-violet-700 text-xs font-bold py-3.5 rounded-2xl transition-all duration-200 tracking-wider uppercase"
-                  >
-                    Agendar con especialista
-                  </a>
-                </div>
+              <!-- Botón de WhatsApp -->
+              <div class="pt-6 border-t border-gray-50">
+                <a
+                  href={whatsappUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  class="inline-flex items-center justify-center gap-2 bg-violet-700 hover:bg-violet-800 text-white text-sm font-bold px-8 py-4 rounded-2xl shadow-lg shadow-violet-200 transition-all duration-200 hover:-translate-y-0.5 w-full sm:w-auto"
+                >
+                  <span>Reservar Cita con la Dra. Sánchez</span>
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2.5" stroke="currentColor" class="w-4 h-4">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                  </svg>
+                </a>
               </div>
-
-            </article>
-          ))}
+            </div>
+            
+          </div>
         </div>
 
       </div>

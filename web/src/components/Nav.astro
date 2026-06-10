@@ -1,18 +1,14 @@
 ---
-// Nav: Barra superior fija con logo JOMOVAK, menú corporativo premium multi-página y botón de cita.
+// Nav: Barra superior fija con logo de Consultorio Sánchez, menú corporativo premium y botón de cita.
 const whatsappUrl = 'https://wa.me/51981314450?text=Hola%20quiero%20agendar';
 ---
 
 <header class="sticky top-0 z-50 bg-white/95 backdrop-blur-md border-b border-gray-100 shadow-sm transition-all duration-300">
   <nav class="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 h-20 flex items-center justify-between" aria-label="Navegación principal">
 
-    <!-- Logo Clínica JOMOVAK -->
-    <a href="/" class="flex items-center focus:outline-none" aria-label="Ir al inicio - Clínica JOMOVAK">
-      <img
-        src="/jomovak.png"
-        alt="Clínica Odontológica JOMOVAK"
-        class="h-14 w-auto object-contain transition-transform duration-300 hover:scale-105"
-      />
+    <!-- Logo Consultorio Sánchez -->
+    <a href="/" class="flex items-center focus:outline-none" aria-label="Ir al inicio - Consultorio Sánchez">
+      <span class="text-violet-700 font-extrabold text-xl sm:text-2xl tracking-wider select-none hover:text-violet-900 transition-colors">CONSULTORIO SÁNCHEZ</span>
     </a>
 
     <!-- Menú de Escritorio (md en adelante) -->
@@ -35,13 +31,12 @@ const whatsappUrl = 'https://wa.me/51981314450?text=Hola%20quiero%20agendar';
         <!-- Panel Dropdown -->
         <div class="absolute left-1/2 -translate-x-1/2 mt-2 w-48 bg-white rounded-xl shadow-xl border border-gray-100 opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 z-50 py-2 pointer-events-none group-hover:pointer-events-auto">
           <a href="/nosotros#quienes-somos" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Quiénes Somos</a>
-          <a href="/nosotros#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Staff Profesional</a>
+          <a href="/nosotros#staff" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Dra. Luisa Sánchez</a>
           <a href="/nosotros#tecnologia" class="block px-4 py-2 text-sm text-gray-700 hover:bg-violet-50 hover:text-violet-700 font-medium transition-colors duration-150">Nuestra Tecnología</a>
         </div>
       </div>
 
       <a href="/servicios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">NUESTROS SERVICIOS</a>
-      <a href="/convenios" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONVENIOS</a>
       <a href="/contacto" class="text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors duration-200">CONTACTO</a>
     </div>
 
@@ -87,13 +82,12 @@ const whatsappUrl = 'https://wa.me/51981314450?text=Hola%20quiero%20agendar';
         <p class="text-xs font-bold text-gray-400 uppercase tracking-wider mb-2">NOSOTROS</p>
         <div class="pl-4 border-l border-violet-100 space-y-2.5">
           <a href="/nosotros#quienes-somos" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Quiénes Somos</a>
-          <a href="/nosotros#staff" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Staff Profesional</a>
+          <a href="/nosotros#staff" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Dra. Luisa Sánchez</a>
           <a href="/nosotros#tecnologia" class="mobile-nav-link block text-sm font-semibold text-gray-600 hover:text-violet-700 transition-colors">Nuestra Tecnología</a>
         </div>
       </div>
 
       <a href="/servicios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">NUESTROS SERVICIOS</a>
-      <a href="/convenios" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONVENIOS</a>
       <a href="/contacto" class="mobile-nav-link block px-3 py-2.5 rounded-lg text-base font-semibold text-gray-700 hover:bg-violet-50 hover:text-violet-700 transition-colors">CONTACTO</a>
       
       <!-- Botón Reservar Cita (Móvil) -->

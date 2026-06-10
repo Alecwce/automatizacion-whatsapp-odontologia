@@ -50,7 +50,7 @@ export const sessions = new Map<string, UserSession>();
       if (analysis.action === 'PREGUNTA') {
         await sender.sendMessage(
           senderJid,
-          analysis.reply || '🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido al consultorio odontológico. ¿En qué podemos ayudarte hoy? 🦷'
+          analysis.reply || '🏥 *Consultorio Sánchez*\n\n¡Hola! Bienvenido al consultorio odontológico. ¿En qué podemos ayudarte hoy? 🦷'
         );
         return;
       }
@@ -63,7 +63,7 @@ export const sessions = new Map<string, UserSession>();
           sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
-            `🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Tengo disponibilidad para registrar tu cita.\n\nPara comenzar, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
+            `🏥 *Consultorio Sánchez*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Tengo disponibilidad para registrar tu cita.\n\nPara comenzar, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
           );
         } else {
           session.state = 'AWAITING_NAME';
@@ -71,7 +71,7 @@ export const sessions = new Map<string, UserSession>();
           sessions.set(cleanJid, session);
           await sender.sendMessage(
             senderJid,
-            `🏥 *Clínica Dental JOMOVAK*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Para ayudarte a agendar una cita rápidamente, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
+            `🏥 *Consultorio Sánchez*\n\n¡Hola! Bienvenido a nuestra recepción virtual. Soy tu asistente automatizado disponible 24/7. Para ayudarte a agendar una cita rápidamente, por favor confírmame tu *Nombre y Apellido* por este medio: 🦷`
           );
         }
       }
@@ -131,7 +131,7 @@ export const sessions = new Map<string, UserSession>();
 
         await sender.sendMessage(
           senderJid,
-          '🦷 *¡Perfecto!* Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+          '🦷 *Por favor, selecciona el número del tratamiento que deseas realizarte:*\n\n1️⃣ Diagnóstico General\n2️⃣ Estética Dental\n3️⃣ Odontopediatría\n4️⃣ Ortodoncia Avanzada\n5️⃣ Cirugía e Implantes\n6️⃣ Odontología Integral'
         );
       } else {
         session.state = 'AWAITING_DATE';
@@ -177,13 +177,31 @@ export const sessions = new Map<string, UserSession>();
 
       await sender.sendMessage(
         senderJid,
-        '🦷 *¡Perfecto!* Ya casi terminamos. ¿Cuál es el motivo principal de tu consulta (ej. limpieza, dolor, control)?'
+        '🦷 *Por favor, selecciona el número del tratamiento que deseas realizarte:*\n\n1️⃣ Diagnóstico General\n2️⃣ Estética Dental\n3️⃣ Odontopediatría\n4️⃣ Ortodoncia Avanzada\n5️⃣ Cirugía e Implantes\n6️⃣ Odontología Integral'
       );
       break;
     }
 
     case 'AWAITING_REASON': {
-      session.patientReason = normalizedText;
+      const selection = normalizedText.trim();
+      const optionMap: Record<string, string> = {
+        '1': 'Diagnóstico General',
+        '2': 'Estética Dental',
+        '3': 'Odontopediatría',
+        '4': 'Ortodoncia Avanzada',
+        '5': 'Cirugía e Implantes',
+        '6': 'Odontología Integral'
+      };
+
+      if (!optionMap[selection]) {
+        await sender.sendMessage(
+          senderJid,
+          '⚠️ *Opción no válida.* Por favor, selecciona el número del tratamiento que deseas realizarte (responde únicamente con un número del 1 al 6):\n\n1️⃣ Diagnóstico General\n2️⃣ Estética Dental\n3️⃣ Odontopediatría\n4️⃣ Ortodoncia Avanzada\n5️⃣ Cirugía e Implantes\n6️⃣ Odontología Integral'
+        );
+        return;
+      }
+
+      session.patientReason = optionMap[selection];
 
       const patientDate = session.patientDate;
       if (!patientDate) {
