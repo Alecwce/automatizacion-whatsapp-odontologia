@@ -9,32 +9,31 @@ interface Testimonial {
   avatarBg: string;
   date: string;
 }
-
 const testimonials: Testimonial[] = [
   {
     stars: 5,
-    text: "Excelente atención y explicación detallada. La doctora me guio en todo mi tratamiento de ortodoncia invisible con mucha paciencia. ¡Las instalaciones en El Tambo son de primer nivel!",
-    author: "María Fernández",
+    text: "Me daba pánico ir al dentista por malas experiencias pasadas, pero la Dra. Luisa me atendió con una paciencia increíble en la sede de El Tambo. Explicó cada paso de mi curación y no sentí absolutamente nada de dolor. Muy profesional.",
+    author: "Marisol Almonacid",
     location: "El Tambo, Huancayo",
-    initials: "MF",
+    initials: "M.A.",
     avatarBg: "bg-violet-700",
     date: "Hace una semana",
   },
   {
     stars: 5,
-    text: "Excelente servicio de emergencia un sábado por la noche. La atención del personal médico fue sumamente rápida, amable y profesional. Sus instalaciones son modernas y la limpieza es impecable. Vine desde Chupaca y valió totalmente la pena.",
-    author: "Carlos Rojas",
+    text: "Fui por una emergencia de dolor de muela terrible un sábado por la tarde. La atención fue inmediata y el Consultorio Sánchez cuenta con equipos muy modernos. Solucionaron mi problema en una sola cita. Totalmente recomendados.",
+    author: "Ricardo Carhuamaca",
     location: "Chupaca, Junín",
-    initials: "CR",
+    initials: "R.C.",
     avatarBg: "bg-violet-600",
     date: "Hace un mes",
   },
   {
     stars: 5,
-    text: "Instalaciones impecables y modernas. Me realizaron una endodoncia rotatoria y no sentí absolutamente nada de dolor. Es sin duda la mejor clínica dental de Huancayo por su tecnología.",
-    author: "Ana Luz",
+    text: "Llevé a mi hijo para su control de odontopediatría. Excelente trato con los niños, las instalaciones son impecables y los costos son súper justos para la calidad de atención que brindan. Da gusto encontrar un lugar honesto.",
+    author: "Karen Vásquez",
     location: "Huancayo Centro",
-    initials: "AL",
+    initials: "K.V.",
     avatarBg: "bg-violet-800",
     date: "Hace 2 semanas",
   },
@@ -46,28 +45,18 @@ const testimonials: Testimonial[] = [
     
     <!-- Encabezado de la sección -->
     <div class="text-center mb-16 flex flex-col items-center">
-      <p class="text-sm font-bold text-violet-700 uppercase tracking-widest mb-3">
-        Opiniones Reales
-      </p>
-      <h2 class="text-4xl sm:text-5xl font-extrabold text-gray-900 tracking-tight mb-4 flex items-center gap-2">
-        Excelente <span class="text-violet-700">4.9/5</span>
+      <span class="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-bold text-violet-700 bg-violet-50 uppercase tracking-wider mb-4">
+        Pacientes Felices 💜
+      </span>
+      <h2 class="text-3xl sm:text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight text-center max-w-2xl">
+        Experiencias reales en nuestro consultorio
       </h2>
-      <div class="flex items-center gap-1.5 mb-3" aria-label="Calificación de 5 estrellas de Google Reviews">
-        <span class="text-yellow-400 text-2xl">★</span>
-        <span class="text-yellow-400 text-2xl">★</span>
-        <span class="text-yellow-400 text-2xl">★</span>
-        <span class="text-yellow-400 text-2xl">★</span>
-        <span class="text-yellow-400 text-2xl">★</span>
-      </div>
-      <p class="text-sm text-gray-500 font-medium">
-        Basado en opiniones reales registradas en Google Reviews
-      </p>
     </div>
 
     <!-- Grid de testimonios -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
       {testimonials.map((t) => (
-        <article class="relative bg-white rounded-3xl p-8 border border-gray-100/80 shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between">
+        <article class="relative bg-white rounded-3xl p-8 border border-gray-100/80 shadow-md hover:shadow-xl hover:-translate-y-1.5 transition-all duration-300 flex flex-col justify-between h-full">
           
           <!-- Logo de Google en la esquina superior derecha -->
           <svg class="w-5 h-5 absolute top-6 right-6 select-none opacity-85" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
@@ -86,7 +75,7 @@ const testimonials: Testimonial[] = [
             </div>
             
             <!-- Texto del testimonio -->
-            <blockquote class="text-gray-600 text-sm leading-relaxed italic pr-4">
+            <blockquote class="text-gray-650 text-sm leading-relaxed italic pr-4">
               "{t.text}"
             </blockquote>
           </div>
