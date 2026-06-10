@@ -8,7 +8,7 @@ import pkg, {
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import { UserSession } from '../types.js';
-import { parsePatientName, parsePatientDni } from '../utils/parser.js';
+import { parsePatientName, parsePatientDni, isWithinBusinessHours } from '../utils/parser.js';
 import { appendPatientData } from './sheets.js';
 import { createAppointment, checkAvailability } from './calendar.js';
 import { extractDateFromIntent, analyzeInitialIntent } from './ai.js';
@@ -169,6 +169,27 @@ export const sessions = new Map<string, UserSession>();
       }
 
       const parsedDate = new Date(parsedDateStr);
+
+      // Validación militar de horario comercial: L-S, 09:00-13:00 y 15:00-20:00
+      if (!isWithinBusinessHours(parsedDate)) {
+        session.attempts += 1;
+        if (session.attempts >= 3) {
+          sessions.delete(cleanJid);
+          await sender.sendMessage(
+            senderJid,
+            '❌ Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo: 🦷'
+          );
+          return;
+        }
+
+        sessions.set(cleanJid, session);
+        console.warn(`[WARN] Hora fuera de horario comercial rechazada para ${cleanJid}: ${parsedDate.toISOString()}`);
+        await sender.sendMessage(
+          senderJid,
+          `Lo siento, nuestro horario de atención es de Lunes a Sábado, de 9:00 AM a 1:00 PM y de 3:00 PM a 8:00 PM. 🕒 Por favor, indícame una hora dentro de este rango. Intentos restantes: ${3 - session.attempts}:`
+        );
+        return;
+      }
 
       session.patientDate = parsedDate;
       session.state = 'AWAITING_REASON';

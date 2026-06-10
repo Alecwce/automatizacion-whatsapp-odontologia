@@ -98,3 +98,48 @@ export function parseAppointmentDate(text: string): Date | null {
 
   return parsedDate;
 }
+
+/**
+ * Valida que una fecha cumpla con el horario comercial estricto del Consultorio Sánchez:
+ * - Días válidos: Lunes (1) a Sábado (6). Domingo (0) está CERRADO.
+ * - Turno Mañana: 09:00 a 13:00 (hora de inicio 09, fin antes de 13:00).
+ * - Turno Tarde: 15:00 a 20:00 (hora de inicio 15, fin antes de 20:00).
+ * Usa la zona horaria de Perú (America/Lima) para la comparación.
+ */
+export function isWithinBusinessHours(date: Date): boolean {
+  // Obtener día de la semana y hora en la zona horaria de Lima, Perú
+  const formatter = new Intl.DateTimeFormat('es-PE', {
+    timeZone: 'America/Lima',
+    weekday: 'short',
+    hour: 'numeric',
+    minute: 'numeric',
+    hour12: false,
+  });
+
+  const parts = formatter.formatToParts(date);
+  const weekday = parts.find(p => p.type === 'weekday')?.value?.toLowerCase() ?? '';
+
+  // Reconstruir hora y minutos desde las partes
+  const hourPart = parts.find(p => p.type === 'hour')?.value ?? '0';
+  const minutePart = parts.find(p => p.type === 'minute')?.value ?? '0';
+  const totalMinutes = parseInt(hourPart, 10) * 60 + parseInt(minutePart, 10);
+
+  // Domingo no se atiende en ningún caso
+  const CLOSED_DAYS = ['dom', 'sun'];
+  if (CLOSED_DAYS.some(d => weekday.startsWith(d))) {
+    return false;
+  }
+
+  // Turno Mañana: 09:00 (540 min) a 13:00 (780 min), exclusivo del límite superior
+  const MORNING_START = 9 * 60;   // 540
+  const MORNING_END   = 13 * 60;  // 780
+
+  // Turno Tarde: 15:00 (900 min) a 20:00 (1200 min), exclusivo del límite superior
+  const AFTERNOON_START = 15 * 60; // 900
+  const AFTERNOON_END   = 20 * 60; // 1200
+
+  const inMorning   = totalMinutes >= MORNING_START && totalMinutes < MORNING_END;
+  const inAfternoon = totalMinutes >= AFTERNOON_START && totalMinutes < AFTERNOON_END;
+
+  return inMorning || inAfternoon;
+}

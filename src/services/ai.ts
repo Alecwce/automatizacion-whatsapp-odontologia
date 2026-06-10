@@ -54,7 +54,7 @@ export async function extractDateFromIntent(userMessage: string): Promise<string
     
     // Formatear la fecha local de Bogotá/Colombia como contexto temporal de referencia
     const currentDateStr = currentDate.toLocaleString('es-ES', { 
-      timeZone: 'America/Bogota',
+      timeZone: 'America/Lima',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -70,7 +70,7 @@ export async function extractDateFromIntent(userMessage: string): Promise<string
 Eres un sistema de inteligencia artificial especializado en extraer fechas y horas de citas médicas a partir de mensajes de texto en lenguaje natural en español.
 
 Contexto temporal real de referencia en el servidor:
-- Fecha y hora actual del sistema: ${currentDateStr} (Zona horaria: America/Bogota)
+- Fecha y hora actual del sistema: ${currentDateStr} (Zona horaria: America/Lima, Perú)
 
 Utiliza la siguiente referencia de los próximos 7 días para mapear con precisión absoluta cualquier fecha relativa (como 'mañana', 'el jueves', etc.) y evitar errores de cálculo de calendario: [${daysReference}]
 
@@ -133,7 +133,7 @@ export async function analyzeInitialIntent(userMessage: string): Promise<IntentA
     
     // Formatear la fecha local de Bogotá/Colombia como contexto temporal de referencia
     const currentDateStr = currentDate.toLocaleString('es-ES', { 
-      timeZone: 'America/Bogota',
+      timeZone: 'America/Lima',
       weekday: 'long',
       year: 'numeric',
       month: 'long',
@@ -154,10 +154,9 @@ Tu rol es clasificar el mensaje entrante del usuario de forma nativa e inteligen
    - Si el usuario expresa clara intención de programar, agendar, pedir, reservar, o solicitar una cita o consulta con el dentista/odontólogo.
    - Si el mensaje incluye alguna referencia de fecha y hora (ej: "quiero cita para mañana a las diez de la mañana"), debes calcular la fecha exacta en formato ISO 8601 local basándote en el contexto temporal de referencia actual provisto abajo.
    - REGLAS ESTRICTAS DE HORARIOS DE ATENCIÓN COMERCIAL:
-     * Lunes a Viernes: 9:00 AM a 1:00 PM y de 3:00 PM a 7:00 PM.
-     * Sábados: 9:00 AM a 1:00 PM.
-     * Domingos: CERRADO (No se atiende, domingos es cerrado).
-     * Si la fecha/hora calculada cae en domingo o fuera de estos rangos de horario hábiles comerciales, el mensaje DEBE clasificarse obligatoriamente con la acción "PREGUNTA" (ver reglas de PREGUNTA a continuación) y redactar en "reply" una respuesta sumamente amable y profesional en español explicando nuestro horario de atención comercial e invitándole a elegir otra fecha y hora hábil. (PROHIBIDO retornar action: AGENDAR en este caso).
+     * Lunes a Sábado: Turno Mañana de 9:00 AM a 1:00 PM y Turno Tarde de 3:00 PM a 8:00 PM.
+     * Domingos: CERRADO (No se atiende bajo ninguna circunstancia).
+     * Si la fecha/hora calculada cae en domingo o fuera de estos rangos de horario hábiles comerciales, el mensaje DEBE clasificarse obligatoriamente con la acción "PREGUNTA" (ver reglas de PREGUNTA a continuación) y redactar en "reply" una respuesta sumamente amable y profesional en español explicando nuestro horario de atención e invitándole a elegir otra fecha y hora hábil. (PROHIBIDO retornar action: AGENDAR en este caso).
      * Si el usuario no menciona ninguna fecha/hora en su mensaje pero desea agendar, retornar action: "AGENDAR" con "dateIso" en null. El campo "reply" debe ser null en este caso.
 
 2. "action": "PREGUNTA"
@@ -167,7 +166,7 @@ Tu rol es clasificar el mensaje entrante del usuario de forma nativa e inteligen
    - En todos los casos de PREGUNTA, debes redactar en el campo "reply" la respuesta correspondiente y el campo "dateIso" DEBE ser estrictamente null.
 
 Contexto temporal de referencia en el servidor:
-- Fecha y hora actual del sistema: ${currentDateStr} (America/Bogota)
+- Fecha y hora actual del sistema: ${currentDateStr} (America/Lima, Perú)
 
 Utiliza la siguiente referencia de los próximos 7 días para mapear con precisión absoluta cualquier fecha relativa (como 'mañana', 'el jueves', etc.) y evitar errores de cálculo de calendario: [${daysReference}]
 
