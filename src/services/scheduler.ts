@@ -35,8 +35,8 @@ export async function checkAndSendReminders(socket: any, isForceTest?: boolean):
 
       console.log(`[Scheduler] Cita de ${appt.name} para ${appt.appointmentDate} está a ${diffMinutes.toFixed(1)} minutos de distancia.`);
 
-      // Calificar cita si isForceTest es true (bypass del reloj) o si se encuentra dentro de la ventana de 15 a 35 minutos
-      const qualifies = isForceTest || (diffMinutes >= 15 && diffMinutes <= 35);
+      // Calificar cita si isForceTest es true (bypass del reloj) o si se encuentra dentro de la ventana de 15 a 60 minutos
+      const qualifies = isForceTest || (diffMinutes >= 15 && diffMinutes <= 60);
 
       if (qualifies) {
         if (isForceTest) {
