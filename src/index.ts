@@ -1,5 +1,6 @@
 import { env } from './config/env.js';
 import { startWhatsAppBot } from './services/whatsapp.js';
+import { startReminderScheduler } from './services/scheduler.js';
 
 console.log('Iniciando sistema de Automatización WhatsApp Odontología...');
 console.log('Configuración cargada correctamente. ID de Spreadsheet:', env.spreadsheetId);
@@ -10,6 +11,9 @@ async function bootstrap() {
   try {
     socketInstance = await startWhatsAppBot();
     console.log('El bot de WhatsApp está en marcha y escuchando eventos...');
+    
+    // Iniciar el planificador de recordatorios automáticos
+    startReminderScheduler(socketInstance);
   } catch (error) {
     console.error('Fallo crítico al iniciar el bot de WhatsApp:', error);
     process.exit(1);
