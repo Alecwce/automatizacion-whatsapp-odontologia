@@ -129,6 +129,48 @@ export async function getUnnotifiedAppointments(): Promise<AppointmentRow[]> {
 }
 
 /**
+ * Lee todas las citas de Sheets sin importar el estado de notificación.
+ */
+export async function getAllAppointments(): Promise<AppointmentRow[]> {
+  try {
+    const sheets = getSheetsClient();
+    const response = await sheets.spreadsheets.values.get({
+      spreadsheetId: env.spreadsheetId,
+      range: 'Sheet1!A2:H',
+    });
+
+    const rows = response.data.values;
+    if (!rows || rows.length === 0) {
+      return [];
+    }
+
+    const appointments: AppointmentRow[] = [];
+    rows.forEach((row: any[], index: number) => {
+      const rowNumber = index + 2;
+      // Solo consideramos si cuenta con una fecha de cita
+      if (row[4]) {
+        appointments.push({
+          rowNumber,
+          timestamp: row[0] || '',
+          phone: row[1] || '',
+          name: row[2] || '',
+          dni: row[3] || '',
+          appointmentDate: row[4] || '',
+          patientReason: row[5] || '',
+          notified: row[6] ? String(row[6]).trim().toUpperCase() : '',
+          whatsappId: row[7] || ''
+        });
+      }
+    });
+
+    return appointments;
+  } catch (error) {
+    console.error('Error al obtener todas las citas de Google Sheets:', error instanceof Error ? error.message : error);
+    return [];
+  }
+}
+
+/**
  * Escribe "SI" en la columna G (Notificado) de la fila correspondiente.
  */
 export async function markAsNotified(rowNumber: number): Promise<boolean> {

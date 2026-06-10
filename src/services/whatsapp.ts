@@ -9,8 +9,8 @@ import pkg, {
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import { UserSession } from '../types.js';
-import { parsePatientName, parsePatientDni, isWithinBusinessHours } from '../utils/parser.js';
-import { appendPatientData } from './sheets.js';
+import { parsePatientName, parsePatientDni, isWithinBusinessHours, parseLocaleDateString } from '../utils/parser.js';
+import { appendPatientData, getAllAppointments } from './sheets.js';
 import { createAppointment, checkAvailability } from './calendar.js';
 import { extractDateFromIntent, analyzeInitialIntent } from './ai.js';
 import { checkAndSendReminders } from './scheduler.js';
@@ -34,16 +34,6 @@ export const lidToJidMap = new Map<string, string>();
   const cleanJid = (user && domain) ? `${user.split(':')[0].split(':')[0]}@${domain}` : senderJid;
 
   const normalizedText = messageText.trim();
-
-  // Interceptor de comando secreto de prueba (antes de la FSM, no altera la sesión)
-  if (normalizedText === 'TEST_NOTIFICACION') {
-    console.log(`[TEST] Comando TEST_NOTIFICACION recibido de ${cleanJid}. Ejecutando ciclo de notificaciones manualmente...`);
-    await sender.sendMessage(senderJid, '🛠️ Ejecutando rutina de notificaciones manualmente...');
-    await checkAndSendReminders(sender, true).catch((err: unknown) =>
-      console.error('[TEST] Error al ejecutar ciclo de notificaciones manual:', err)
-    );
-    return;
-  }
 
   let session = sessions.get(cleanJid);
 
@@ -236,6 +226,43 @@ export const lidToJidMap = new Map<string, string>();
         await sender.sendMessage(
           senderJid,
           `Lo siento, nuestro horario de atención es de Lunes a Sábado, de 9:00 AM a 1:00 PM y de 3:00 PM a 8:00 PM. 🕒 Por favor, indícame una hora dentro de este rango. Intentos restantes: ${3 - session.attempts}:`
+        );
+        return;
+      }
+
+      // Validación estricta de colisiones de horarios contra Google Sheets (rango de 60 minutos)
+      const allAppts = await getAllAppointments();
+      const proposedTime = parsedDate.getTime();
+      let hasCollision = false;
+
+      for (const appt of allAppts) {
+        if (!appt.appointmentDate) continue;
+        const apptDate = parseLocaleDateString(appt.appointmentDate);
+        if (!apptDate) continue;
+
+        // Comprobación de colisión: diferencia absoluta de menos de 1 hora (3,600,000 milisegundos)
+        if (Math.abs(proposedTime - apptDate.getTime()) < 3600000) {
+          hasCollision = true;
+          break;
+        }
+      }
+
+      if (hasCollision) {
+        session.attempts += 1;
+        if (session.attempts >= 3) {
+          sessions.delete(cleanJid);
+          await sender.sendMessage(
+            senderJid,
+            '❌ Se ha superado el número máximo de intentos. El registro se ha cancelado. Puedes volver a escribir "Hola" para iniciar de nuevo: 🦷'
+          );
+          return;
+        }
+
+        sessions.set(cleanJid, session);
+        console.warn(`[WARN] Colisión de horario detectada para ${cleanJid}: ${parsedDate.toLocaleString('es-PE')}`);
+        await sender.sendMessage(
+          senderJid,
+          `Ese horario ya se encuentra reservado para esa fecha. ⚠️ Por favor, intenta con otra hora o selecciona un día diferente. Intentos restantes: ${3 - session.attempts}:`
         );
         return;
       }
@@ -446,8 +473,6 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     for (const msg of m.messages) {
       if (msg.key.fromMe || !msg.message) continue;
 
-      console.log("[DEBUG_MSG]", JSON.stringify(msg, null, 2));
-
       // Desofuscar el JID usando la utilidad oficial de Baileys.
       // jidNormalizedUser convierte cualquier @lid (LID interno de dispositivos vinculados)
       // al MSISDN real en formato @s.whatsapp.net. En mensajes de grupo, extrae el
@@ -462,23 +487,18 @@ export async function startWhatsAppBot(): Promise<WASocket> {
 
       // jidNormalizedUser elimina la máscara @lid y devuelve el número real @s.whatsapp.net
       let jid = jidNormalizedUser(rawForNormalization);
-      console.log("[DEBUG_JID] Inicial normalized:", jid);
       let resolvedPhone: string | undefined = undefined;
 
       if (jid.endsWith('@lid')) {
-        console.log("[DEBUG_LID] Detectado JID de tipo @lid. Intentando resolver...");
-        
         // 1. Intentar resolver desde el mapa en memoria lidToJidMap
         const mappedJid = lidToJidMap.get(jid);
         if (mappedJid) {
           jid = mappedJid;
-          console.log("[DEBUG_LID] JID resuelto desde mapa en memoria:", jid);
         } else {
           // 2. Intentar buscar en propiedades alternativas del mensaje
           const altJid = (msg.key as any).senderPn || (msg as any).senderPn || (msg.key as any).remoteJidAlt || (msg as any).participantAlt;
           if (altJid) {
             jid = jidNormalizedUser(altJid);
-            console.log("[DEBUG_LID] JID resuelto de propiedades alternativas del msg:", jid);
           }
         }
       }

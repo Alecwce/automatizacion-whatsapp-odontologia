@@ -1,85 +1,5 @@
 import { getUnnotifiedAppointments, markAsNotified } from './sheets.js';
-
-/**
- * Parsea un string de fecha en formato es-PE proveniente de Google Sheets.
- * Ejemplos de entrada esperados:
- *   "10/6/2026, 3:00:00 p. m."
- *   "10/6/2026, 11:30:00 a. m."
- *   "10/6/2026 15:00:00"
- * Construye el objeto Date de forma manual para evitar fallos del parser nativo
- * de JavaScript con formatos localizados de 12 horas en español.
- */
-function parseLocaleDateString(dateStr: string): Date | null {
-  try {
-    if (!dateStr || !dateStr.trim()) return null;
-
-    // Normalizar: quitar comas de separación y colapsar espacios múltiples
-    const normalized = dateStr.replace(/,/g, '').trim();
-
-    // Detectar si es formato de 12h (tiene 'a' o 'p' al final como indicador AM/PM)
-    // Los separadores en español pueden ser: "a. m.", "p. m.", "a.m.", "p.m.", "am", "pm"
-    const ampmMatch = normalized.match(/([ap])\.?\s*m\.?/i);
-    const isPm = ampmMatch ? ampmMatch[1].toLowerCase() === 'p' : false;
-    const isAmPm = Boolean(ampmMatch);
-
-    // Quitar el bloque AM/PM del string para parsear solo la parte numérica
-    const numericPart = normalized.replace(/[ap]\.?\s*m\.?/gi, '').trim();
-    const parts = numericPart.split(/\s+/);
-
-    if (parts.length < 2) return null;
-
-    // Parte de fecha: DD/MM/YYYY
-    const [datePart, timePart] = parts;
-    const dateSubparts = datePart.split('/');
-    if (dateSubparts.length !== 3) return null;
-
-    const day   = parseInt(dateSubparts[0], 10);
-    const month = parseInt(dateSubparts[1], 10) - 1; // 0-indexed en JS
-    const year  = parseInt(dateSubparts[2], 10);
-
-    // Parte de hora: HH:mm:ss o HH:mm
-    const timeSubparts = timePart.split(':');
-    if (timeSubparts.length < 2) return null;
-
-    let hours   = parseInt(timeSubparts[0], 10);
-    const minutes = parseInt(timeSubparts[1], 10);
-    const seconds = timeSubparts[2] ? parseInt(timeSubparts[2], 10) : 0;
-
-    // Convertir formato 12h a 24h
-    if (isAmPm) {
-      if (isPm && hours < 12) hours += 12;   // 3 PM -> 15
-      if (!isPm && hours === 12) hours = 0;  // 12 AM -> 0
-    }
-
-    // Validar rangos antes de construir el Date
-    if (
-      isNaN(day) || isNaN(month) || isNaN(year) ||
-      isNaN(hours) || isNaN(minutes) || isNaN(seconds) ||
-      month < 0 || month > 11 ||
-      day < 1 || day > 31 ||
-      hours < 0 || hours > 23 ||
-      minutes < 0 || minutes > 59
-    ) {
-      return null;
-    }
-
-    const result = new Date(year, month, day, hours, minutes, seconds);
-
-    // Guardar contra desbordamientos de fecha en JS (ej: 31 de Febrero -> 3 de Marzo)
-    if (
-      result.getFullYear() !== year ||
-      result.getMonth() !== month ||
-      result.getDate() !== day
-    ) {
-      return null;
-    }
-
-    return result;
-  } catch (err) {
-    console.error(`[Scheduler] Error al parsear fecha de cita "${dateStr}":`, err);
-    return null;
-  }
-}
+import { parseLocaleDateString } from '../utils/parser.js';
 
 /**
  * Ejecuta el ciclo de revisión de recordatorios.
@@ -142,7 +62,7 @@ Te recordamos que tu cita odontológica está programada para dentro de *30 minu
 
 📅 *Horario:* ${horaCita}
 👩‍⚕️ *Especialista:* Dra. Luisa Sánchez
-📍 *Sede Principal:* Av. Julio C. Tello 456, El Tambo (Huancayo)
+📍 *Sede Central:* Jr. Loreto 217, Huancayo (Cerca de Plaza Constitución, por el Parque 15 de Junio)
 
 Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cuidar tu sonrisa! ✨`;
 
