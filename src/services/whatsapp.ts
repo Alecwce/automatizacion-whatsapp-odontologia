@@ -498,8 +498,9 @@ export async function startWhatsAppBot(): Promise<WASocket> {
 
       // Adaptador para interactuar con Baileys de forma asíncrona
       const senderAdapter = {
-        sendMessage: async (targetJid: string, replyText: string) => {
-          return sock.sendMessage(targetJid, { text: replyText });
+        sendMessage: async (targetJid: string, replyText: string | { text: string }) => {
+          const textStr = typeof replyText === 'string' ? replyText : replyText.text;
+          return sock.sendMessage(targetJid, { text: textStr });
         }
       };
 

@@ -146,8 +146,10 @@ Te recordamos que tu cita odontológica está programada para dentro de *30 minu
 
 Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cuidar tu sonrisa! ✨`;
 
+        const textoRecordatorio = String(message || 'Hola, te recordamos tu cita programada.');
+
         try {
-          await socket.sendMessage(phoneJid, { text: message });
+          await socket.sendMessage(phoneJid, { text: textoRecordatorio });
           console.log(`[Scheduler] Mensaje de recordatorio enviado con éxito a ${phoneJid}. Marcando como notificado...`);
           
           const marked = await markAsNotified(appt.rowNumber);
