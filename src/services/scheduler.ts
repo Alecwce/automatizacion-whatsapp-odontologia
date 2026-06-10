@@ -125,15 +125,8 @@ export async function checkAndSendReminders(socket: any, isForceTest?: boolean):
           console.log(`[Scheduler] Cita de ${appt.name} califica para notificación (diferencia: ${diffMinutes.toFixed(1)} min). Enviando WhatsApp...`);
         }
 
-        const idClean = appt.whatsappId ? appt.whatsappId.trim() : '';
-        const phoneClean = appt.phone ? appt.phone.trim() : '';
-        
-        let phoneJid = '';
-        if (idClean) {
-          phoneJid = idClean.includes('@') ? idClean : `${idClean}@s.whatsapp.net`;
-        } else {
-          phoneJid = phoneClean.includes('@') ? phoneClean : `${phoneClean}@s.whatsapp.net`;
-        }
+        const phoneClean = (appt.phone || '').trim().replace(/\D/g, '');
+        const phoneJid = `51${phoneClean}@s.whatsapp.net`;
 
         const horaCita = apptDate.toLocaleTimeString('es-PE', {
           hour: '2-digit',
