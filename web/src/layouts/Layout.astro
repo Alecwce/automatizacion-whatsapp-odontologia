@@ -36,6 +36,32 @@ const {
   </head>
   <body class="font-sans antialiased bg-white text-gray-900 min-h-screen flex flex-col">
     <slot />
+
+    <!-- Botón Flotante de WhatsApp -->
+    <a
+      href="https://wa.me/51981314450?text=Hola%20quiero%20agendar"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="fixed bottom-6 right-6 z-50 flex items-center justify-center w-14 h-14 bg-green-500 rounded-full shadow-2xl hover:bg-green-600 hover:scale-110 active:scale-95 transition-all duration-300 group"
+      aria-label="Reservar cita por WhatsApp"
+    >
+      <!-- Efecto de Onda (Pulso) -->
+      <div class="absolute inset-0 rounded-full bg-green-500/50 animate-ping -z-10"></div>
+
+      <!-- Icono de WhatsApp (SVG) -->
+      <svg
+        class="w-8 h-8 text-white fill-current"
+        viewBox="0 0 24 24"
+        xmlns="http://www.w3.org/2000/svg"
+      >
+        <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946C.06 5.348 5.397.01 12.008.01c3.202.001 6.212 1.246 8.477 3.514 2.266 2.268 3.507 5.28 3.505 8.484-.004 6.657-5.34 11.997-11.953 11.997-2.005-.001-3.973-.502-5.724-1.455L0 24zm6.59-4.846c1.6.95 3.188 1.449 4.825 1.451 5.436 0 9.86-4.37 9.864-9.799.002-2.63-1.023-5.101-2.885-6.965C16.29 1.977 13.821 1.05 11.999 1.05c-5.439 0-9.866 4.372-9.87 9.802-.001 1.772.475 3.502 1.378 5.027L2.5 21.5l5.964-1.574c.433.003.871.005 1.183.028zm11.304-7.854c-.29-.144-1.711-.834-1.976-.93-.264-.096-.456-.144-.648.144-.192.288-.744.93-.912 1.122-.168.192-.336.216-.624.072-1.359-.68-2.325-1.12-3.21-2.63-.23-.396.23-.368.66-.1.383.23.493.49.52.57.027.08.013.15-.007.222-.02-.072-.192-.462-.264-.636-.07-.17-.15-.144-.204-.144H8.76c-.168 0-.44.062-.67.312-.23.25-.88.85-.88 2.074 0 1.222.9 2.404 1.02 2.568.12.164 1.77 2.666 4.29 3.726.6.252 1.07.403 1.43.516.6.19 1.15.163 1.58.098.48-.073 1.71-.69 1.95-1.358.24-.668.24-1.24.168-1.358-.07-.118-.26-.19-.55-.336z"/>
+      </svg>
+
+      <!-- Tooltip -->
+      <span class="absolute right-16 bg-gray-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none">
+        ¡Reserva tu Cita Aquí! ⚡
+      </span>
+    </a>
   </body>
 </html>
 

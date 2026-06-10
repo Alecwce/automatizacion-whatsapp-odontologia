@@ -27,7 +27,7 @@ export const sessions = new Map<string, UserSession>();
 ): Promise<void> {
   // Limpiar remoteJid para evitar fragmentación de sesión y conservar número limpio
   const [user, domain] = senderJid.split('@');
-  const cleanJid = (user && domain && user.includes(':')) ? `${user.split(':')[0]}@${domain}` : senderJid;
+  const cleanJid = (user && domain) ? `${user.split(':')[0].split(':')[0]}@${domain}` : senderJid;
 
   const normalizedText = messageText.trim();
   let session = sessions.get(cleanJid);
@@ -319,13 +319,14 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     for (const msg of m.messages) {
       if (msg.key.fromMe || !msg.message) continue;
 
-      let jid = msg.key.remoteJid;
-      if (!jid) continue;
+      const rawJid = msg.key.participant || msg.participant || msg.key.remoteJid;
+      if (!rawJid) continue;
 
-      // Normalizar remoteJid para evitar fragmentación de sesión y conservar número limpio
-      const [user, domain] = jid.split('@');
-      if (user && domain && user.includes(':')) {
-        jid = `${user.split(':')[0]}@${domain}`;
+      // Normalizar rawJid para evitar fragmentación de sesión y conservar número limpio
+      const [user, domain] = rawJid.split('@');
+      let jid = rawJid;
+      if (user && domain) {
+        jid = `${user.split(':')[0].split(':')[0]}@${domain}`;
       }
 
       // Extrae el texto del mensaje entrante
