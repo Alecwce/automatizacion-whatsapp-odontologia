@@ -4,7 +4,8 @@ import pkg, {
   WASocket,
   ConnectionState,
   MessageUpsertType,
-  fetchLatestWaWebVersion
+  fetchLatestWaWebVersion,
+  jidNormalizedUser
 } from '@whiskeysockets/baileys';
 import { Boom } from '@hapi/boom';
 import { UserSession } from '../types.js';
@@ -370,31 +371,20 @@ export async function startWhatsAppBot(): Promise<WASocket> {
     for (const msg of m.messages) {
       if (msg.key.fromMe || !msg.message) continue;
 
-      // Estrategia de extracción de JID real del remitente:
-      // En mensajes DM (1-a-1), el número real siempre está en msg.key.remoteJid (@s.whatsapp.net).
-      // msg.key.participant puede contener un LID interno de Baileys (@lid) en cuentas vinculadas,
-      // lo que causaba que se persistiera un ID numérico largo en lugar del MSISDN real.
-      // Solo se usa participant para mensajes de grupo (donde remoteJid apunta al grupo @g.us).
+      // Desofuscar el JID usando la utilidad oficial de Baileys.
+      // jidNormalizedUser convierte cualquier @lid (LID interno de dispositivos vinculados)
+      // al MSISDN real en formato @s.whatsapp.net. En mensajes de grupo, extrae el
+      // participante individual correcto.
       const remoteJid: string = msg.key.remoteJid || '';
       const isGroupMessage = remoteJid.endsWith('@g.us');
+      const rawForNormalization = isGroupMessage
+        ? (msg.key.participant || msg.participant || remoteJid)
+        : remoteJid;
 
-      let rawJid: string;
-      if (isGroupMessage) {
-        // En grupos, el participante individual está en msg.key.participant
-        rawJid = msg.key.participant || msg.participant || remoteJid;
-      } else {
-        // En DMs, el número real del remitente está siempre en remoteJid (@s.whatsapp.net)
-        rawJid = remoteJid;
-      }
+      if (!rawForNormalization) continue;
 
-      if (!rawJid) continue;
-
-      // Normalizar el JID: extraer solo la parte numérica antes de '@' y reconstruir con su dominio
-      const [user, domain] = rawJid.split('@');
-      let jid = rawJid;
-      if (user && domain) {
-        jid = `${user.split(':')[0]}@${domain}`;
-      }
+      // jidNormalizedUser elimina la máscara @lid y devuelve el número real @s.whatsapp.net
+      const jid = jidNormalizedUser(rawForNormalization);
 
       // Extrae el texto del mensaje entrante
       const text =
