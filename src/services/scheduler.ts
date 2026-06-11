@@ -69,6 +69,11 @@ Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cui
         const textoRecordatorio = String(message || 'Hola, te recordamos tu cita programada.');
 
         try {
+          // Validar estado del socket para evitar llamadas a conexiones caídas/nulas
+          if (!socket || typeof socket.sendMessage !== 'function') {
+            throw new Error('Conexión de WhatsApp caída o no disponible (socket es nulo o inválido)');
+          }
+
           await socket.sendMessage(phoneJid, { text: textoRecordatorio });
           console.log(`[Scheduler] Mensaje de recordatorio enviado con éxito a ${phoneJid}. Marcando como notificado...`);
           
@@ -78,8 +83,8 @@ Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cui
           } else {
             console.warn(`[Scheduler] Alerta: No se pudo marcar como notificado en Google Sheets para el paciente ${appt.name} (fila ${appt.rowNumber}).`);
           }
-        } catch (sendErr) {
-          console.error(`[Scheduler] Falló el envío de WhatsApp para ${appt.name} (${phoneJid}):`, sendErr);
+        } catch (sendErr: any) {
+          console.error(`[Scheduler] No se pudo enviar el recordatorio para ${appt.name} (${phoneJid}) debido a un error de conexión de WhatsApp. Se reintentará en el próximo ciclo. Detalle:`, sendErr?.message || sendErr);
         }
       }
     }
