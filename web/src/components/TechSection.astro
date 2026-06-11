@@ -1,19 +1,21 @@
 ---
 // TechSection: Bloque que destaca la automatización IA del consultorio.
+import { Bot, ClipboardList } from 'lucide-astro';
+
 interface Feature {
-  icon: string;
+  icon: any;
   title: string;
   description: string;
 }
 
 const features: Feature[] = [
   {
-    icon: '🤖',
+    icon: Bot,
     title: 'Bot con IA 24/7',
     description: 'Nuestro asistente virtual procesa tu mensaje en WhatsApp, valida la disponibilidad en tiempo real y confirma tu cita al instante — sin intervención humana.',
   },
   {
-    icon: '📋',
+    icon: ClipboardList,
     title: 'Historial Electrónico',
     description: 'Cada paciente cuenta con un expediente digital seguro en la nube. El doctor accede a radiografías, diagnósticos y tratamientos anteriores antes de cada consulta.',
   },
@@ -41,10 +43,10 @@ const features: Feature[] = [
           {features.map((feature) => (
             <div class="flex items-start gap-5">
               <div
-                class="text-2xl w-12 h-12 flex-shrink-0 flex items-center justify-center bg-[#e8f2ff] rounded-xl"
+                class="w-12 h-12 flex-shrink-0 flex items-center justify-center bg-[#e8f2ff] rounded-xl"
                 aria-hidden="true"
               >
-                {feature.icon}
+                <feature.icon class="w-6 h-6 text-purple-600 stroke-[2]" />
               </div>
               <div>
                 <h3 class="font-bold text-gray-900 text-base mb-1">{feature.title}</h3>

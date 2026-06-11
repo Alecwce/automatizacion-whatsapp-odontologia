@@ -4,6 +4,7 @@ import Layout from '../layouts/Layout.astro';
 import Nav from '../components/Nav.astro';
 import Values from '../components/Values.astro';
 import Footer from '../components/Footer.astro';
+import { Cpu, Scan, Activity, Target, Eye, GraduationCap, Heart, MapPin, Star, Zap } from 'lucide-astro';
 
 const whatsappUrl = 'https://wa.me/51900554341?text=Hola%20quiero%20agendar';
 
@@ -12,17 +13,17 @@ const technologies = [
   {
     name: 'Sistema CAD/CAM InLab MC X5',
     desc: 'Unidad robótica de tallado dental asistido por computadora. Diseña y confecciona carillas, coronas e incrustaciones de porcelana en minutos con precisión microscópica, reduciendo visitas clínicas.',
-    icon: '🤖',
+    icon: Cpu,
   },
   {
     name: 'Escáner Intraoral 3D',
     desc: 'Captura digital en 3D de la dentadura del paciente en tiempo real. Elimina las molestas cubetas de pasta tradicionales, aportando un diagnóstico exacto, limpio y sumamente rápido.',
-    icon: '✨',
+    icon: Scan,
   },
   {
     name: 'Radiología Digital Avanzada',
     desc: 'Diagnóstico inmediato por imagen de alta resolución que reduce hasta en un 90% la radiación comparado con placas tradicionales, permitiendo detectar caries ocultas sin dolor.',
-    icon: '🔬',
+    icon: Activity,
   },
 ];
 ---
@@ -92,8 +93,8 @@ const technologies = [
           <div class="grid grid-cols-1 md:grid-cols-2 gap-12">
             <!-- Misión -->
             <div class="bg-gray-50/50 p-8 rounded-3xl border border-gray-100/80 shadow-sm flex flex-col gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl font-bold shadow-sm" aria-hidden="true">
-                🎯
+              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center shadow-sm" aria-hidden="true">
+                <Target class="w-6 h-6 stroke-[2]" />
               </div>
               <h2 class="text-2xl font-bold text-gray-900">Misión Institucional</h2>
               <p class="text-sm text-gray-650 leading-relaxed">
@@ -102,8 +103,8 @@ const technologies = [
             </div>
             <!-- Visión -->
             <div class="bg-gray-50/50 p-8 rounded-3xl border border-gray-100/80 shadow-sm flex flex-col gap-4">
-              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-xl font-bold shadow-sm" aria-hidden="true">
-                👁️
+              <div class="w-12 h-12 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center shadow-sm" aria-hidden="true">
+                <Eye class="w-6 h-6 stroke-[2]" />
               </div>
               <h2 class="text-2xl font-bold text-gray-900">Visión Institucional</h2>
               <p class="text-sm text-gray-655 leading-relaxed">
@@ -172,20 +173,20 @@ const technologies = [
                 <!-- Características destacadas -->
                 <div class="grid grid-cols-2 gap-4 mb-6">
                   <div class="flex items-center gap-2">
-                    <span class="text-violet-700 text-lg">🎓</span>
-                    <span class="text-xs font-semibold text-gray-705">Especialista Registrada</span>
+                    <GraduationCap class="w-5 h-5 text-violet-700 stroke-[2]" />
+                    <span class="text-xs font-semibold text-gray-755">Especialista Registrada</span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-violet-700 text-lg">❤️</span>
-                    <span class="text-xs font-semibold text-gray-705">Calidez y Empatía</span>
+                    <Heart class="w-5 h-5 text-violet-700 stroke-[2]" />
+                    <span class="text-xs font-semibold text-gray-755">Calidez y Empatía</span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-violet-700 text-lg">📍</span>
-                    <span class="text-xs font-semibold text-gray-705">Huancayo, Junín</span>
+                    <MapPin class="w-5 h-5 text-violet-700 stroke-[2]" />
+                    <span class="text-xs font-semibold text-gray-755">Huancayo, Junín</span>
                   </div>
                   <div class="flex items-center gap-2">
-                    <span class="text-violet-700 text-lg">⭐</span>
-                    <span class="text-xs font-semibold text-gray-705">Atención Premium</span>
+                    <Star class="w-5 h-5 text-violet-700 stroke-[2]" />
+                    <span class="text-xs font-semibold text-gray-755">Atención Premium</span>
                   </div>
                 </div>
               </div>
@@ -236,10 +237,10 @@ const technologies = [
               <div>
                 <!-- Icono circular animado -->
                 <div
-                  class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center text-2xl mb-6 shadow-sm group-hover:bg-violet-700 group-hover:text-white group-hover:scale-110 transition-all duration-300"
+                  class="w-14 h-14 rounded-2xl bg-violet-100 text-violet-700 flex items-center justify-center mb-6 shadow-sm group-hover:bg-violet-700 group-hover:text-white group-hover:scale-110 transition-all duration-300"
                   aria-hidden="true"
                 >
-                  {tech.icon}
+                  <tech.icon class="w-6 h-6 stroke-[2]" />
                 </div>
 
                 <!-- Título -->
@@ -254,7 +255,7 @@ const technologies = [
               </div>
 
               <div class="mt-6 pt-4 border-t border-gray-100/50 flex items-center gap-1.5 text-xs font-bold text-violet-700 group-hover:translate-x-1.5 transition-transform duration-300">
-                Tecnología de última generación ⚡
+                Tecnología de última generación <Zap class="w-3 h-3 text-purple-600 stroke-[2]" />
               </div>
             </article>
           ))}

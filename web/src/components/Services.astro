@@ -1,7 +1,9 @@
 ---
 // Services: Grid de 6 tarjetas tridimensionales con imágenes de stock premium y enlaces a WhatsApp.
+import { Search, Sparkles, Smile, Shield, Scan, Heart } from 'lucide-astro';
+
 interface Service {
-  icon: string;
+  icon: any;
   title: string;
   description: string;
   image: string;
@@ -11,37 +13,37 @@ const whatsappUrl = 'https://wa.me/51900554341?text=Hola%20quiero%20agendar';
 
 const services: Service[] = [
   {
-    icon: '🔍',
+    icon: Search,
     title: 'Diagnóstico',
     description: 'Evaluación clínica completa, radiografías digitales de alta precisión y diseño de un plan de tratamiento preventivo y correctivo personalizado.',
     image: '/servicios/diagnostico.jpg',
   },
   {
-    icon: '✨',
+    icon: Sparkles,
     title: 'Estética Dental',
     description: 'Carillas de porcelana de alta gama, diseño digital de sonrisa y blanqueamiento avanzado para devolver el brillo y naturalidad a tus dientes.',
     image: '/servicios/estetica.jpg',
   },
   {
-    icon: '👶',
+    icon: Smile,
     title: 'Odontopediatría',
     description: 'Atención dental infantil especializada, preventiva y lúdica. Cuidamos el crecimiento bucal de tus hijos en un espacio seguro y sin dolor.',
     image: '/servicios/odontopediatria.jpg',
   },
   {
-    icon: '🦷',
+    icon: Shield,
     title: 'Ortodoncia',
     description: 'Alineación dental mediante brackets metálicos tradicionales, cerámicos estéticos y alineadores invisibles termoplásticos de última generación.',
     image: '/servicios/ortodoncia.jpg',
   },
   {
-    icon: '🔬',
+    icon: Scan,
     title: 'Cirugía e Implantes',
     description: 'Restauración funcional y estética mediante implantes de titanio oseointegrados y cirugías bucales guiadas por especialistas calificados.',
     image: '/servicios/cirugia.jpg',
   },
   {
-    icon: '🩺',
+    icon: Heart,
     title: 'Odontología Integral',
     description: 'Profilaxis dental ultrasónica, curación estética de caries, tratamientos de conducto (endodoncia) y prótesis fijas o removibles de alta duración.',
     image: '/servicios/integral.jpg',
@@ -104,8 +106,8 @@ const services: Service[] = [
                 <span class="transition-transform duration-200 group-hover:translate-x-1" aria-hidden="true">→</span>
               </a>
               <!-- Icono flotante sutil -->
-              <span class="text-xl opacity-80 select-none" aria-hidden="true">
-                {service.icon}
+              <span class="text-xl opacity-80 select-none flex items-center justify-center" aria-hidden="true">
+                <service.icon class="w-6 h-6 text-purple-600 stroke-[2]" />
               </span>
             </div>
           </div>

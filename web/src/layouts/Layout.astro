@@ -2,6 +2,7 @@
 // Source: https://docs.astro.build/en/guides/styling/#import-a-local-stylesheet
 // Los estilos globales se importan en el frontmatter para que Vite los procese.
 import '../styles/global.css';
+import { Zap } from 'lucide-astro';
 
 interface Props {
   title?: string;
@@ -57,8 +58,8 @@ const {
       </svg>
 
       <!-- Tooltip -->
-      <span class="absolute right-16 bg-gray-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none">
-        ¡Reserva tu Cita Aquí! ⚡
+      <span class="absolute right-16 bg-gray-900 text-white text-xs font-bold px-3 py-2 rounded-lg shadow-xl opacity-0 translate-x-3 group-hover:opacity-100 group-hover:translate-x-0 transition-all duration-300 whitespace-nowrap pointer-events-none flex items-center gap-1.5">
+        ¡Reserva tu Cita Aquí! <Zap class="w-3.5 h-3.5 text-yellow-400 fill-yellow-400 stroke-[2]" />
       </span>
     </a>
   </body>

@@ -1,5 +1,7 @@
 ---
 // Hero Section: Eslogan de impacto + CTA de WhatsApp con URLSearchParams.
+import { Activity, Zap } from 'lucide-astro';
+
 const whatsappUrl = 'https://wa.me/51900554341?text=Hola%20quiero%20agendar';
 ---
 
@@ -75,9 +77,9 @@ const whatsappUrl = 'https://wa.me/51900554341?text=Hola%20quiero%20agendar';
           <!-- Contenedor -->
           <div class="relative p-1.5 rounded-[32px] bg-gradient-to-tr from-violet-100 via-white to-violet-50 shadow-2xl shadow-violet-200/50">
             <div class="relative bg-white/90 backdrop-blur-md p-8 sm:p-12 rounded-[26px] border border-violet-50/50 max-w-sm overflow-hidden flex flex-col items-center justify-center text-center gap-6 min-h-[300px]">
-              <!-- Isotipo de Diente Premium -->
-              <div class="w-20 h-20 bg-violet-50 text-violet-700 rounded-3xl flex items-center justify-center text-4xl shadow-inner transition-transform duration-300 hover:rotate-12 select-none" aria-hidden="true">
-                🦷
+              <!-- Isotipo Premium -->
+              <div class="w-20 h-20 bg-violet-50 text-violet-700 rounded-3xl flex items-center justify-center shadow-inner transition-transform duration-300 hover:rotate-12 select-none" aria-hidden="true">
+                <Activity class="w-10 h-10 text-violet-700 stroke-[2]" />
               </div>
               <div>
                 <span class="text-xs font-bold text-violet-500 tracking-widest uppercase block mb-1">Odontología Avanzada</span>
@@ -85,8 +87,8 @@ const whatsappUrl = 'https://wa.me/51900554341?text=Hola%20quiero%20agendar';
               </div>
             </div>
             <!-- Badge -->
-            <div class="absolute -top-2.5 -right-2.5 z-10 bg-white text-violet-700 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md border border-violet-100/80 animate-pulse flex items-center gap-1 select-none">
-              Atención Rápida ⚡
+            <div class="absolute -top-2.5 -right-2.5 z-10 bg-white text-violet-700 font-extrabold text-xs px-3.5 py-1.5 rounded-full shadow-md border border-violet-100/80 animate-pulse flex items-center gap-1.5 select-none">
+              Atención Rápida <Zap class="w-3.5 h-3.5 text-yellow-500 fill-yellow-500 stroke-[2]" />
             </div>
           </div>
         </div>
