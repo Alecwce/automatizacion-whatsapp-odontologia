@@ -62,7 +62,7 @@ Te recordamos que tu cita odontológica está programada para dentro de *30 minu
 
 📅 *Horario:* ${horaCita}
 👩‍⚕️ *Especialista:* Dra. Luisa Sánchez
-📍 *Sede Central:* Jr. Loreto 217, Huancayo (Cerca de Plaza Constitución, por el Parque 15 de Junio)
+📍 *Sede Central:* Jr. Loreto 217, Huancayo (a media cuadra del parque 15 de junio)
 
 Por favor, procura asistir 10 minutos antes de tu turno. ¡Te esperamos para cuidar tu sonrisa! ✨`;
 
