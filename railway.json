@@ -1,0 +1,11 @@
+{
+  "$schema": "https://railway.com/railway.schema.json",
+  "build": {
+    "builder": "NIXPACKS",
+    "buildCommand": "pnpm tsc"
+  },
+  "deploy": {
+    "startCommand": "node -e \"const creds = process.env['service-account.json'] || process.env.SERVICE_ACCOUNT_JSON; if (creds) require('fs').writeFileSync('service-account.json', creds)\" && node dist/index.js",
+    "restartPolicyType": "ON_FAILURE"
+  }
+}
